@@ -17,7 +17,7 @@ export default function OrderDetails({ order }) {
               <p><strong>Precio:</strong> Bs. {item.price}</p>
             </div>
             <div style={styles.itemImage}>
-              <img src={styles.image} alt={item.name} style={styles.image} />
+              <img src={item.image} alt={item.name} style={styles.image} />
             </div>
           </div>
         ))
@@ -74,11 +74,13 @@ const styles = {
     marginTop: '10px',
   },
   itemImage: {
-    width: '60px',
-    height: '60px',
+    width: '135px',
+    height: '135px',
     position: 'absolute',
     bottom: '10px',
     right: '10px',
+    borderRadius: '80px',
+    overflow: 'hidden',
   },
   image: {
     width: '100%',

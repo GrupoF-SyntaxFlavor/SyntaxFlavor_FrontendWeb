@@ -11,7 +11,7 @@ const ordersMock = [
     status: 'En preparación',
     items: [
       { name: 'Cheesecake', description: 'Un postre único que combina la suavidad del cheesecake tradicional...', quantity: 2, price: 29, image:'https://assets.tmecosys.com/image/upload/t_web767x639/img/recipe/vimdb/230649.jpg' },
-      { name: 'Sushi', description: 'Rollo de sushi con salmón fresco...', quantity: 1, price: 29 }
+      { name: 'Sushi', description: 'Rollo de sushi con salmón fresco...', quantity: 1, price: 29, image: 'https://assets.tmecosys.com/image/upload/t_web767x639/img/recipe/ras/Assets/0749D9BC-260D-40F4-A07F-54814C4A82B4/Derivates/A73A7793-F3EE-4B90-ABA4-1CC1A0C3E18F.jpg' }
     ]
   },
   {
@@ -22,7 +22,7 @@ const ordersMock = [
     totalPrice: 29,
     status: 'Listo',
     items: [
-      { name: 'Cheesecake', description: 'Un postre único que combina la suavidad del cheesecake tradicional...', quantity: 1, price: 29 }
+      { name: 'Cheesecake', description: 'Un postre único que combina la suavidad del cheesecake tradicional...', quantity: 1, price: 29, image:'https://assets.tmecosys.com/image/upload/t_web767x639/img/recipe/vimdb/230649.jpg' }
     ]
   },
 ];
