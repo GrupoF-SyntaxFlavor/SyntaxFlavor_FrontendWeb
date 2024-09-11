@@ -2,28 +2,32 @@ export default function OrderDetails({ order }) {
   return (
     <div style={styles.container}>
       <h2>Platos del Pedido</h2>
-      {order.items?.map((item, index) => (
-        <div key={index} style={styles.item}>
-          <div style={styles.itemDescription}>
-            <h3>{item}</h3>
-            <p>
-              Cantidad: {order.quantity}
-            </p>
-            <p>Bs. {order.total}</p>
+      {order.items && order.items.length > 0 ? (
+        order.items.map((item, index) => (
+          <div key={index} style={styles.itemBox}>
+            <div style={styles.itemHeader}>
+              <h3>{item.name}</h3>
+              <div style={styles.itemQuantity}>
+                <span>{item.quantity}</span>
+              </div>
+            </div>
+            <div style={styles.itemDescription}>
+              <p>{item.description}</p>
+              <p><strong>Cantidad:</strong> {item.quantity}</p>
+              <p><strong>Precio:</strong> Bs. {item.price}</p>
+            </div>
+            <div style={styles.itemImage}>
+              <img src={styles.image} alt={item.name} style={styles.image} />
+            </div>
           </div>
-          <div style={styles.itemImage}>
-            {/* Imagen de referencia */}
-            <img
-              src="/sushi-icon.png"
-              alt={item}
-              style={styles.image}
-            />
-          </div>
-        </div>
-      ))}
+        ))
+      ) : (
+        <p>No hay platos en este pedido.</p>
+      )}
+
       <div style={styles.statusContainer}>
-        <button style={styles.completeButton}>
-          Pedido {order.status === '✓' ? 'Completado' : 'En proceso'}
+        <button style={styles.statusButton}>
+          Pedido {order.status === 'Completado' ? 'Completado' : order.status}
         </button>
       </div>
     </div>
@@ -38,19 +42,43 @@ const styles = {
     borderRadius: '8px',
     border: '1px solid #ddd',
   },
-  item: {
+  itemBox: {
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+    border: '1px solid #ccc',
+    padding: '10px',
+    marginBottom: '10px',
+    borderRadius: '8px',
+    backgroundColor: '#fff',
+    position: 'relative',
+  },
+  itemHeader: {
     display: 'flex',
     justifyContent: 'space-between',
+    width: '100%',
+  },
+  itemQuantity: {
+    backgroundColor: '#e0e0e0',
+    borderRadius: '50%',
+    padding: '5px 10px',
+    fontWeight: 'bold',
+    display: 'flex',
     alignItems: 'center',
-    borderBottom: '1px solid #ccc',
-    padding: '10px 0',
+    justifyContent: 'center',
+    width: '30px',
+    height: '30px',
   },
   itemDescription: {
-    flex: '1',
+    marginTop: '10px',
   },
   itemImage: {
     width: '60px',
     height: '60px',
+    position: 'absolute',
+    bottom: '10px',
+    right: '10px',
   },
   image: {
     width: '100%',
@@ -60,14 +88,14 @@ const styles = {
   statusContainer: {
     textAlign: 'center',
     marginTop: '20px',
-    fontWeight: 'bold',
   },
-  completeButton: {
-    padding: '10px 20px',
+  statusButton: {
     backgroundColor: '#4CAF50',
     color: 'white',
+    padding: '10px 20px',
     border: 'none',
     borderRadius: '5px',
     cursor: 'pointer',
+    fontWeight: 'bold',
   },
 };
