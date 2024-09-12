@@ -40,3 +40,33 @@ a {
     color-scheme: dark;
   }
 } */
+
+
+body {
+  font-family: var(--font-family);
+}                                        
+      
+/* Archivo: KitchenSidebar.css */
+.menu-button {
+  position: fixed;
+  top: 10px;
+  left: -40px; /* Oculto en el borde izquierdo */
+  width: 50px;
+  height: 50px;
+  background-color: #00a1d9; /* Color de fondo */
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: left 0.3s ease; /* Animación para que el botón aparezca */
+}
+
+.menu-button:hover {
+  left: 10px; /* Cuando se hace hover, el botón aparece */
+}
+
+.menu-icon {
+  color: white; /* Color del icono */
+  font-size: 24px;
+}

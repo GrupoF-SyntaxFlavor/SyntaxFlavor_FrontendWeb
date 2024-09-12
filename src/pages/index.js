@@ -1,8 +1,19 @@
+//theme
+import "primereact/resources/themes/lara-light-teal/theme.css";   
+//core
+import "primereact/resources/primereact.min.css";  
+//icons
+import "primeicons/primeicons.css";
+//primeflex
+import "primeflex/primeflex.css";
+
 // import Head from "next/head";
 // import Image from "next/image";
 // import localFont from "next/font/local";
 // import styles from "@/styles/Home.module.css";
-import Order from "./kitchen/page";
+// import Login from "@/components/login";
+// import Order from "./kitchen/order";
+import KitchenSiderBar from "@/components/kitchen/KitchenSidebar";
 
 // const geistSans = localFont({
 //   src: "./fonts/GeistVF.woff",
@@ -17,6 +28,10 @@ import Order from "./kitchen/page";
 
 export default function Home() {
   return (
-    <Order />
+    // <Order />
+    // <Login />
+    <KitchenSiderBar/>
   );
 }
+
+

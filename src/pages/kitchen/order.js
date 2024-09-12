@@ -1,4 +1,4 @@
-import OrderDetails from '@/components/OrderDetails.js';
+import OrderDetails from '@/components/kitchen/OrderDetails.js';
 import { useState } from 'react';
 
 const ordersMock = [
