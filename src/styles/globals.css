@@ -70,3 +70,57 @@ body {
   color: white; /* Color del icono */
   font-size: 24px;
 }
+
+/* new */
+/* Contenedor principal del sidebar */
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 80px;
+  background-color: #f8f9fa;
+  padding-top: 20px;
+  height: 100vh;
+  border-right: 1px solid #dee2e6;
+}
+
+/* Contenedor del logo */
+.logo-container {
+  margin-bottom: 20px;
+}
+
+/* Imagen del logo */
+.logo {
+  width: 40px;
+  height: 40px;
+}
+
+/* Contenedor de los ítems del sidebar */
+.sidebar-items {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+/* Estilo de cada ítem (icono + texto) */
+.sidebar-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  font-size: 12px;
+  color: #495057;
+}
+
+/* Estilo para el texto debajo de los iconos */
+.sidebar-item span {
+  margin-top: 5px;
+  font-size: 12px;
+  color: #6c757d;
+}
+
+/* Aumenta el tamaño del ícono */
+.sidebar-item .pi {
+  font-size: 24px; /* Cambia a un tamaño mayor, ajusta según lo que necesites */
+}
