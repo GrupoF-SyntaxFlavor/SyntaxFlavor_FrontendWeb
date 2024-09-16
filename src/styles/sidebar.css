@@ -54,8 +54,8 @@
 
 /* Estilo de la imagen de perfil */
 .profile-pic {
-    width: 30px;
-    height: 30px;
+    width: 40px;
+    height: 40px;
     border-radius: 50%;
 }
 
@@ -64,6 +64,10 @@
     display: flex;
     /* flex: 1; */
     margin-top: 70px; /* Altura del navbar */
+    padding-top: 10px;
+    padding-left: 10px;
+    padding-bottom: 10px;
+    padding-right: 10px;
 }
 
 /* Estilo del sidebar */
@@ -118,7 +122,20 @@
 .content {
     margin-left: 80px; /* Ancho del sidebar */
     padding: 20px;
-    background-color: #f4f5f7;
+    background-color: #fdfdfd;
     width: 100%;
     height: 100%;
+    border-radius: 10px;
+}
+
+/* Para pantallas pequeñas, muestra el botón de menú */
+@media (max-width: 768px) {
+    .menu-button {
+        display: inline-block;
+    }
+
+    .content {
+        margin-left: 0; /* Sin margen para el sidebar en pantallas pequeñas */
+        padding: 20px;
+    }
 }

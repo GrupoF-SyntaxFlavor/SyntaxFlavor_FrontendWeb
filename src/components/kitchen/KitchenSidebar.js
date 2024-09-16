@@ -2,8 +2,9 @@ import React from 'react';
 import { Menubar } from 'primereact/menubar';
 import { Button } from 'primereact/button';
 import 'primeicons/primeicons.css';
+// import OrdersPage from '@/pages/kitchen/order';
 
-export default function KitchenSidebar() {
+export default function KitchenSidebar({ children }) {
     const start = (
         <div className="navbar-left">
             <div className="logo-container">
@@ -18,7 +19,7 @@ export default function KitchenSidebar() {
             <i className="pi pi-search p-mr-4"></i> {/* Ícono de búsqueda */}
             <i className="pi pi-bell p-mr-4"></i>   {/* Ícono de notificaciones */}
             <div className="user-profile">
-                <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="user" className="profile-pic" />
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRvrftcp5FwziJftgD1TlYJSl8WcOza-5iX5ZzgBk6gU0YEvN6UwYMa0mfROJOHwm6fBRk&usqp=CAU" alt="user" className="profile-pic" />
                 <span>Gene Russell</span>  {/* Nombre del usuario */}
                 <i className="pi pi-angle-down p-ml-2"></i>  {/* Ícono de menú desplegable */}
             </div>
@@ -78,9 +79,10 @@ export default function KitchenSidebar() {
                 </div>
 
                 <div className="content">
-                    {/* Aquí va el contenido principal de la página */}
-                    <h1>Bienvenido a la Gestión de la Cocina</h1>
-                    <p>Aquí puedes ver el contenido relacionado con los pedidos y el estado de la cocina.</p>
+                    {/* <h1>Bienvenido a la Gestión de la Cocina</h1>
+                    <p>Aquí puedes ver el contenido relacionado con los pedidos y el estado de la cocina.</p> */}
+                    {/* <OrdersPage /> */}
+                    {children}
                 </div>
             </div>
         </div>

@@ -12,8 +12,10 @@ import "primeflex/primeflex.css";
 // import localFont from "next/font/local";
 // import styles from "@/styles/Home.module.css";
 // import Login from "@/components/login";
-// import Order from "./kitchen/order";
-import KitchenSiderBar from "@/components/kitchen/KitchenSidebar";
+import Order from "./kitchen/order.js";
+
+// import KitchenSiderBar from "@/components/kitchen/KitchenSidebar";
+// import OrdersPage from "@/kitchen/order.js";
 
 // const geistSans = localFont({
 //   src: "./fonts/GeistVF.woff",
@@ -30,7 +32,8 @@ export default function Home() {
   return (
     // <Order />
     // <Login />
-    <KitchenSiderBar/>
+    // <KitchenSiderBar/>
+    <Order />
   );
 }
 

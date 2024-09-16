@@ -1,5 +1,10 @@
 import OrderDetails from '@/components/kitchen/OrderDetails.js';
+// import SideBar from '@/components/kitchen/KitchenSidebar.js';
 import { useState } from 'react';
+import KitchenSiderBar from "@/components/kitchen/KitchenSidebar.js";
+
+import React from 'react';
+import 'primeicons/primeicons.css';
 
 const ordersMock = [
   {
@@ -46,6 +51,10 @@ export default function OrdersPage() {
   };
 
   return (
+    <KitchenSiderBar>
+      <h1>Ordenes</h1>
+      {/* <KitchenSiderBar/> */}
+    
     <div style={styles.container}>
       <div style={styles.listContainer}>
         <h2>Pedidos</h2>
@@ -112,6 +121,7 @@ export default function OrdersPage() {
         <OrderDetails order={selectedOrder} />
       )}
     </div>
+    </KitchenSiderBar>
   );
 }
 
