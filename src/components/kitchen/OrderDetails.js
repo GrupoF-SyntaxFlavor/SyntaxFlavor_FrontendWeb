@@ -1,16 +1,28 @@
+import React from 'react';
+import { Button } from 'primereact/button';
+import { Card } from 'primereact/card';
+
 export default function OrderDetails({ order }) {
   return (
     <div style={styles.container}>
       <h2>Platos del Pedido</h2>
       {order.items && order.items.length > 0 ? (
         order.items.map((item, index) => (
-          <div key={index} style={styles.itemBox}>
-            <div style={styles.itemHeader}>
+          <Card title={item.name}
+            // <Card title={
+            // <div style={{justifyContent: 'space-between'}}>
+            //   {item.name}
+            //   <div style={styles.itemQuantity}>
+            //     {item.quantity}
+            //   </div>
+            // </div>} 
+            key={index} style={styles.itemBox}>
+            {/* <div style={styles.itemHeader}>
               <h3>{item.name}</h3>
-              <div style={styles.itemQuantity}>
+                <div style={styles.itemQuantity}>
                 <span>{item.quantity}</span>
-              </div>
-            </div>
+              </div> 
+            </div> */}
             <div style={styles.itemDescription}>
               <p>{item.description}</p>
               <p><strong>Cantidad:</strong> {item.quantity}</p>
@@ -19,7 +31,7 @@ export default function OrderDetails({ order }) {
             <div style={styles.itemImage}>
               <img src={item.image} alt={item.name} style={styles.image} />
             </div>
-          </div>
+          </Card>
         ))
       ) : (
         <p>No hay platos en este pedido.</p>
@@ -36,8 +48,8 @@ export default function OrderDetails({ order }) {
 
 const styles = {
   container: {
-    width: '45%',
-    backgroundColor: '#f5f5f5',
+    width: '35%',
+    // backgroundColor: '#f5f5f5',
     padding: '10px',
     borderRadius: '8px',
     border: '1px solid #ddd',
@@ -48,7 +60,7 @@ const styles = {
     justifyContent: 'space-between',
     alignItems: 'flex-start',
     border: '1px solid #ccc',
-    padding: '10px',
+    // padding: '10px',
     marginBottom: '10px',
     borderRadius: '8px',
     backgroundColor: '#fff',
@@ -71,13 +83,13 @@ const styles = {
     height: '30px',
   },
   itemDescription: {
-    marginTop: '10px',
+    // marginTop: '10px',
   },
   itemImage: {
     width: '135px',
     height: '135px',
     position: 'absolute',
-    bottom: '10px',
+    bottom: '40px',
     right: '10px',
     borderRadius: '80px',
     overflow: 'hidden',

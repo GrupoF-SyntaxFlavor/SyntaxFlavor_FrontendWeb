@@ -56,6 +56,17 @@ body {
   /* background: var(--background); */
   background: #eff3f8;
   font-family: Arial, Helvetica, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  /* -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale; */
+}
+
+.p-button-success {
+  background-color: rgb(76, 162, 162);
+  color: #ffffff;
+  /* tamaño mas pequeño */
+  
+}
+.p-button-danger{
+  background-color: rgb(226, 102, 102);
+  color: #ffffff;
 }

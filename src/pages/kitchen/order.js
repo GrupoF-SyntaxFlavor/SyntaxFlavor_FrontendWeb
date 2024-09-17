@@ -4,6 +4,12 @@ import { useState } from 'react';
 import KitchenSiderBar from "@/components/kitchen/KitchenSidebar.js";
 
 import React from 'react';
+
+import { DataTable } from 'primereact/datatable';
+import { Column } from 'primereact/column';
+import { Button } from 'primereact/button';
+import { Paginator } from 'primereact/paginator';
+
 import 'primeicons/primeicons.css';
 
 const ordersMock = [
@@ -30,11 +36,34 @@ const ordersMock = [
       { name: 'Cheesecake', description: 'Un postre único que combina la suavidad del cheesecake tradicional...', quantity: 1, price: 29, image:'https://assets.tmecosys.com/image/upload/t_web767x639/img/recipe/vimdb/230649.jpg' }
     ]
   },
+  {
+    id: 3,
+    table: 3,
+    client: 'xxx',
+    totalDishes: 3,
+    totalPrice: 29,
+    status: 'En preparación',
+    items: [
+      { name: 'Cheesecake', description: 'Un postre único que combina la suavidad del cheesecake tradicional...', quantity: 1, price: 29, image:'https://assets.tmecosys.com/image/upload/t_web767x639/img/recipe/vimdb/230649.jpg' },
+      { name: 'Sushi', description: 'Rollo de sushi con salmón fresco...', quantity: 1, price: 29, image: 'https://assets.tmecosys.com/image/upload/t_web767x639/img/recipe/ras/Assets/0749D9BC-260D-40F4-A07F-54814C4A82B4/Derivates/A73A7793-F3EE-4B90-ABA4-1CC1A0C3E18F.jpg' },
+      { name: 'Pastel de chocolate', description: 'Pastel de chocolate con relleno de fresa...', quantity: 1, price: 29, image: 'https://www.196flavors.com/wp-content/uploads/2014/10/sachertorte-3-FP.jpg' }
+    ]
+  },
+  {
+    id: 4,
+    table: 8,
+    client: 'xxx',
+    totalDishes: 0,
+    totalPrice: 0,
+    status: 'En preparación',
+    items: []
+  }
 ];
-
 export default function OrdersPage() {
   const [orders, setOrders] = useState(ordersMock);
   const [selectedOrder, setSelectedOrder] = useState(null);
+  const [first, setFirst] = useState(0); // Control de paginación
+  const [rows, setRows] = useState(5);  // Número de filas por página
 
   const handleCompleteOrder = (orderId) => {
     const updatedOrders = orders.map(order =>
@@ -50,76 +79,80 @@ export default function OrdersPage() {
     setOrders(updatedOrders);
   };
 
+  const statusBodyTemplate = (rowData) => {
+    if (rowData.status === 'Completado' || rowData.status === 'Cancelado') {
+      return rowData.status;
+    } else {
+      return (
+        <div style={styles.statusButtons}>
+          <Button
+            icon="pi pi-check"
+            // className="p-button-success p-button-rounded"
+            rounded severity='success'
+            onClick={(e) => {
+              e.stopPropagation(); // Evita que seleccionar el botón seleccione el pedido
+              handleCompleteOrder(rowData.id);
+            }}
+          />
+          <Button
+            icon="pi pi-times"
+            // className="p-button-danger p-button-rounded"
+            rounded severity='danger'
+            size='small'
+            onClick={(e) => {
+              e.stopPropagation();
+              handleCancelOrder(rowData.id);
+            }}
+          />
+        </div>
+      );
+    }
+  };
+
   return (
     <KitchenSiderBar>
-      <h1>Ordenes</h1>
-      {/* <KitchenSiderBar/> */}
-    
-    <div style={styles.container}>
-      <div style={styles.listContainer}>
-        <h2>Pedidos</h2>
-        <table style={styles.table}>
-          <thead>
-            <tr>
-              <th>#</th>
-              <th>Mesa</th>
-              <th>Cliente</th>
-              <th>Total platillos</th>
-              <th>Precio Total</th>
-              <th>Estado</th>
-            </tr>
-          </thead>
-          <tbody>
-            {orders.map((order, index) => (
-              <tr
-                key={order.id}
-                style={selectedOrder?.id === order.id ? styles.selectedRow : styles.row}
-                onClick={() => setSelectedOrder(order)}
-              >
-                <td>{index + 1}</td>
-                <td>{order.table}</td>
-                <td>{order.client}</td>
-                <td>{order.totalDishes}</td>
-                <td>Bs. {order.totalPrice}</td>
-                <td>
-                  {order.status === 'Completado' || order.status === 'Cancelado' ? (
-                    order.status
-                  ) : (
-                    <div style={styles.statusButtons}>
-                      <button
-                        style={styles.completeButton}
-                        onClick={(e) => {
-                          e.stopPropagation(); // Evita que seleccionar el botón seleccione el pedido
-                          handleCompleteOrder(order.id);
-                        }}
-                      >
-                        ✔️
-                      </button>
-                      <button
-                        style={styles.cancelButton}
-                        onClick={(e) => {
-                          e.stopPropagation(); // Evita que seleccionar el botón seleccione el pedido
-                          handleCancelOrder(order.id);
-                        }}
-                      >
-                        ❌
-                      </button>
-                    </div>
-                  )}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-        <div style={styles.pagination}>
-          <button>&lt; Anterior</button>
-          <button>Siguiente &gt;</button>
-        </div>
-      </div>
+    <div style={styles.containerCard}>
+      <h1>Órdenes del día</h1>
+      <hr />
+      <div style={styles.container}>
+        <div style={styles.listContainer}>
+          <h2>Pedidos</h2>
 
-      {selectedOrder && (
-        <OrderDetails order={selectedOrder} />
-      )}
+          <DataTable
+            value={orders}
+            selectionMode="single"
+            selection={selectedOrder}
+            onSelectionChange={(e) => setSelectedOrder(e.value)}
+            dataKey="id"
+            paginator={true}
+            rows={rows}
+            first={first}
+            onPage={(e) => setFirst(e.first)}
+          >
+            <Column field="id" header="#" />
+            <Column field="table" header="Mesa" />
+            <Column field="client" header="Cliente" />
+            <Column field="totalDishes" header="Total Platillos" />
+            <Column field="totalPrice" header="Precio Total" body={(rowData) => `Bs. ${rowData.totalPrice}`} />
+            <Column field="status" header="Estado" body={statusBodyTemplate} />
+          </DataTable>
+
+          {/* <Paginator
+            first={first}
+            rows={rows}
+            totalRecords={orders.length}
+            rowsPerPageOptions={[5, 10, 20]}
+            onPageChange={(e) => {
+              setFirst(e.first);
+              setRows(e.rows);
+            }}
+          /> */}
+        </div>
+
+        {selectedOrder && (
+          <OrderDetails order={selectedOrder} />
+        )}
+      </div>
     </div>
     </KitchenSiderBar>
   );
@@ -130,47 +163,24 @@ const styles = {
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-between',
+    
+    // backgroundColor: 'red',
   },
   listContainer: {
-    width: '50%',
+    width: '60%',
     marginRight: '2%',
-  },
-  table: {
-    width: '100%',
-    borderCollapse: 'collapse',
-  },
-  row: {
-    cursor: 'pointer',
-    borderBottom: '1px solid #ccc',
-  },
-  selectedRow: {
-    cursor: 'pointer',
-    backgroundColor: '#e0f7fa',
-    borderBottom: '1px solid #ccc',
+    
+    // backgroundColor: 'blue',
+    overflowY: 'auto',
   },
   statusButtons: {
     display: 'flex',
     justifyContent: 'space-around',
   },
-  completeButton: {
-    backgroundColor: 'green',
-    color: 'white',
-    border: 'none',
-    borderRadius: '4px',
-    cursor: 'pointer',
-    padding: '5px',
-  },
-  cancelButton: {
-    backgroundColor: 'red',
-    color: 'white',
-    border: 'none',
-    borderRadius: '4px',
-    cursor: 'pointer',
-    padding: '5px',
-  },
-  pagination: {
-    marginTop: '10px',
-    display: 'flex',
-    justifyContent: 'space-between',
+  containerCard: {
+    // backgroundColor: 'green',
+    // padding: '20px',
+    // borderRadius: '10px',
+    // boxShadow: '0 0 10px rgba(0, 0, 0, 0.1)',
   },
 };

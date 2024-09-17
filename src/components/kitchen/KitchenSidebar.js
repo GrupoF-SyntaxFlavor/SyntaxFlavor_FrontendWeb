@@ -42,13 +42,18 @@ export default function KitchenSidebar({ children }) {
                         </div>
 
                         <div className="sidebar-item">
-                            <Button icon="pi pi-star" className="p-button-text p-button-plain p-button-lg" />
-                            <span>UI Kit</span>
+                            <Button icon="pi pi-th-large" className="p-button-text p-button-plain p-button-lg" />
+                            <span>Ordenes</span>
                         </div>
 
                         <div className="sidebar-item">
-                            <Button icon="pi pi-th-large" className="p-button-text p-button-plain p-button-lg" />
-                            <span>Apps</span>
+                            <Button icon="pi pi-wallet" className="p-button-text p-button-plain p-button-lg" />
+                            <span>Menú</span>
+                        </div>
+
+                        {/* <div className="sidebar-item">
+                            <Button icon="pi pi-star" className="p-button-text p-button-plain p-button-lg" />
+                            <span>UI Kit</span>
                         </div>
 
                         <div className="sidebar-item">
@@ -67,14 +72,9 @@ export default function KitchenSidebar({ children }) {
                         </div>
 
                         <div className="sidebar-item">
-                            <Button icon="pi pi-wallet" className="p-button-text p-button-plain p-button-lg" />
-                            <span>E-Commerce</span>
-                        </div>
-
-                        <div className="sidebar-item">
                             <Button icon="pi pi-user" className="p-button-text p-button-plain p-button-lg" />
                             <span>User Management</span>
-                        </div>
+                        </div> */}
                     </div>
                 </div>
 

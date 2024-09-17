@@ -2,7 +2,7 @@
 .layout {
     display: flex;
     flex-direction: column;
-    height: 100vh;
+    /* height: 100vh; */
 }
 
 /* Estilo para el navbar en la parte superior */
@@ -68,6 +68,8 @@
     padding-left: 10px;
     padding-bottom: 10px;
     padding-right: 10px;
+    /* background-color:pink; */
+    height: calc(97vh - 70px); /* Calcula el espacio disponible debajo del navbar */
 }
 
 /* Estilo del sidebar */
@@ -78,7 +80,7 @@
     border-right: 1px solid #dee2e6;
     position: fixed;
     left: 0;
-    top: 75px; /* Alineado con el navbar */
+    top: 70px; /* Alineado con el navbar */
 }
 
 /* Logo en el sidebar */
@@ -122,9 +124,14 @@
 .content {
     margin-left: 80px; /* Ancho del sidebar */
     padding: 20px;
+    padding-top: 0% !important;
+    padding-bottom: 0% !important;
     background-color: #fdfdfd;
+    /* background-color: white; */
+    /* background-color: cyan; */
+    height: 101%;
     width: 100%;
-    height: 100%;
+    /* overflow: auto; */
     border-radius: 10px;
 }
 

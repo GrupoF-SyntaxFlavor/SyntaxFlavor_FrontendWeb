@@ -1,5 +1,5 @@
 //theme
-import "primereact/resources/themes/lara-light-teal/theme.css";   
+import "primereact/resources/themes/lara-light-cyan/theme.css";   
 //core
 import "primereact/resources/primereact.min.css";  
 //icons
