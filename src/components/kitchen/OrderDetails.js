@@ -5,7 +5,7 @@ import { Card } from 'primereact/card';
 export default function OrderDetails({ order }) {
   return (
     <div style={styles.container}>
-      <h2>Platos del Pedido</h2>
+      <h2>Platos de la orden</h2>
       {order.items && order.items.length > 0 ? (
         order.items.map((item, index) => (
           <Card title={item.name}
@@ -43,9 +43,12 @@ export default function OrderDetails({ order }) {
       )}
 
       <div style={styles.statusContainer}>
-        <button style={styles.statusButton}>
-          Pedido {order.status === 'Completado' ? 'Completado' : order.status}
-        </button>
+        {/* boton azul medio verde */}
+        <Button severity='success'>
+          {/*  style={styles.statusButton} */}
+          {/* Pedido {order.status === 'Completado' ? 'Completado' : order.status} */}
+          Marcar orden como completada
+        </Button>
       </div>
     </div>
   );

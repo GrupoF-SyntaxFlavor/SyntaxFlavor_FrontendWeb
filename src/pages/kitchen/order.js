@@ -64,9 +64,9 @@ const ordersMock = [
   {id: 8, table: 8, client: 'xxx', totalDishes: 0, totalPrice: 0, status: 'En preparación', items: []},
   {id: 9, table: 8, client: 'xxx', totalDishes: 0, totalPrice: 0, status: 'En preparación', items: []},
   {id: 10, table: 8, client: 'xxx', totalDishes: 0, totalPrice: 0, status: 'En preparación', items: []},
-  // {id: 11, table: 8, client: 'xxx', totalDishes: 0, totalPrice: 0, status: 'En preparación', items: []},
-  // {id: 12, table: 8, client: 'xxx', totalDishes: 0, totalPrice: 0, status: 'En preparación', items: []},
-  // {id: 13, table: 8, client: 'xxx', totalDishes: 0, totalPrice: 0, status: 'En preparación', items: []},
+  {id: 11, table: 8, client: 'xxx', totalDishes: 0, totalPrice: 0, status: 'En preparación', items: []},
+  {id: 12, table: 8, client: 'xxx', totalDishes: 0, totalPrice: 0, status: 'En preparación', items: []},
+  {id: 13, table: 8, client: 'xxx', totalDishes: 0, totalPrice: 0, status: 'En preparación', items: []},
 ];
 export default function OrdersPage() {
   const [orders, setOrders] = useState(ordersMock);
@@ -107,7 +107,7 @@ export default function OrdersPage() {
             icon="pi pi-times"
             // className="p-button-danger p-button-rounded"
             rounded severity='danger'
-            size='small'
+            // size='small'
             onClick={(e) => {
               e.stopPropagation();
               handleCancelOrder(rowData.id);
@@ -125,7 +125,7 @@ export default function OrdersPage() {
       <hr />
       <div style={styles.container}>
         <div style={styles.listContainer}>
-          <h2>Pedidos</h2>
+          <h2>Órdenes</h2>
 
           <DataTable
             value={orders}
