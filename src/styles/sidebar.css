@@ -69,7 +69,10 @@
     padding-bottom: 10px;
     padding-right: 10px;
     /* background-color:pink; */
-    height: calc(97vh - 70px); /* Calcula el espacio disponible debajo del navbar */
+
+    /* Calcula el espacio disponible debajo del navbar */
+    /* height: calc(97vh - 70px);  */
+    height: calc(120vh - 70px); 
 }
 
 /* Estilo del sidebar */

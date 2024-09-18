@@ -70,3 +70,11 @@ body {
   background-color: rgb(226, 102, 102);
   color: #ffffff;
 }
+.p-datatable-tbody, td{
+  padding: 1vh;
+}
+
+.p-button.p-button-icon-only.p-button-rounded{
+  width: 2rem;
+  height: 2rem;
+}

@@ -57,13 +57,22 @@ const ordersMock = [
     totalPrice: 0,
     status: 'En preparación',
     items: []
-  }
+  },
+  {id: 5, table: 8, client: 'xxx', totalDishes: 0, totalPrice: 0, status: 'En preparación', items: []},
+  {id: 6, table: 8, client: 'xxx', totalDishes: 0, totalPrice: 0, status: 'En preparación', items: []},
+  {id: 7, table: 8, client: 'xxx', totalDishes: 0, totalPrice: 0, status: 'En preparación', items: []},
+  {id: 8, table: 8, client: 'xxx', totalDishes: 0, totalPrice: 0, status: 'En preparación', items: []},
+  {id: 9, table: 8, client: 'xxx', totalDishes: 0, totalPrice: 0, status: 'En preparación', items: []},
+  {id: 10, table: 8, client: 'xxx', totalDishes: 0, totalPrice: 0, status: 'En preparación', items: []},
+  // {id: 11, table: 8, client: 'xxx', totalDishes: 0, totalPrice: 0, status: 'En preparación', items: []},
+  // {id: 12, table: 8, client: 'xxx', totalDishes: 0, totalPrice: 0, status: 'En preparación', items: []},
+  // {id: 13, table: 8, client: 'xxx', totalDishes: 0, totalPrice: 0, status: 'En preparación', items: []},
 ];
 export default function OrdersPage() {
   const [orders, setOrders] = useState(ordersMock);
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [first, setFirst] = useState(0); // Control de paginación
-  const [rows, setRows] = useState(5);  // Número de filas por página
+  const [rows, setRows] = useState(10);  // Número de filas por página
 
   const handleCompleteOrder = (orderId) => {
     const updatedOrders = orders.map(order =>
@@ -169,9 +178,10 @@ const styles = {
   listContainer: {
     width: '60%',
     marginRight: '2%',
-    
+    justifyContent: 'center',
     // backgroundColor: 'blue',
     overflowY: 'auto',
+    height: '0%',
   },
   statusButtons: {
     display: 'flex',

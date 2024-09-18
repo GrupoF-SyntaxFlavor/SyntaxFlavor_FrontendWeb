@@ -16,6 +16,10 @@ export default function OrderDetails({ order }) {
             //     {item.quantity}
             //   </div>
             // </div>} 
+            
+            // footer={<div>
+            //   <strong>Cantidad:</strong> {item.quantity}
+            // </div>}
             key={index} style={styles.itemBox}>
             {/* <div style={styles.itemHeader}>
               <h3>{item.name}</h3>
@@ -25,8 +29,9 @@ export default function OrderDetails({ order }) {
             </div> */}
             <div style={styles.itemDescription}>
               <p>{item.description}</p>
-              <p><strong>Cantidad:</strong> {item.quantity}</p>
+              
               <p><strong>Precio:</strong> Bs. {item.price}</p>
+              <p><strong>Cantidad:</strong> {item.quantity}</p>
             </div>
             <div style={styles.itemImage}>
               <img src={item.image} alt={item.name} style={styles.image} />
