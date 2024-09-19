@@ -11,28 +11,61 @@ import 'primeicons/primeicons.css';
 export default function OrdersPage() {
     const [orders, setOrders] = useState([]);  // Almacena las órdenes desde el backend
     const [selectedOrder, setSelectedOrder] = useState(null);  // Almacena la orden seleccionada
+    const [first, setFirst] = useState(0);  // Control de paginación (inicio)
+    const [rows, setRows] = useState(10);  // Cantidad de filas por página
     const [totalRecords, setTotalRecords] = useState(0);  // Número total de registros
     const [loading, setLoading] = useState(false);  // Control de carga
-    const [error, setError] = useState(null);  // Manejo de errores
+    const [error, setError] = useState(null);  // Almacena el error si ocurre
+    const [isLastPage, setIsLastPage] = useState(false);  // Bandera para saber si estamos en la última página
+    let pollingInterval = null;  // Variable para almacenar el intervalo del polling
 
     const orderService = new OrderService();  // Instanciamos el servicio
 
     useEffect(() => {
-        loadOrders();  // Cargamos las órdenes cuando se monta el componente
-    }, []);
+        loadOrders(first / rows);  // Cargamos las órdenes cuando cambia la paginación
+    }, [first, rows]);
 
-    const loadOrders = async () => {
+    useEffect(() => {
+        // Si estamos en la última página, iniciamos el polling
+        if (isLastPage) {
+            pollingInterval = setInterval(() => {
+                console.log('Polling on last page...');
+                loadOrders(first / rows);
+            }, 10000);  // Polling cada 10 segundos
+
+            // Limpiamos el intervalo al salir de la última página o cuando el componente se desmonte
+            return () => clearInterval(pollingInterval);
+        } else {
+            // Si no estamos en la última página, limpiar cualquier intervalo de polling
+            clearInterval(pollingInterval);
+        }
+    }, [isLastPage, first, rows]);
+
+    const loadOrders = async (pageNumber) => {
         setLoading(true);
         try {
-            const data = await orderService.getOrders(0, 10); // Cargar los primeros 10 registros
-            setOrders(data.content);  // Actualizamos las órdenes
+            const data = await orderService.getOrders(pageNumber, rows);
+            // Evitar re-renderizar si no hay cambios en los datos
+            if (JSON.stringify(data.content) !== JSON.stringify(orders)) {
+                setOrders(data.content);  // Solo actualizar si los datos son diferentes
+            }
             setTotalRecords(data.totalElements);  // Total de registros para la paginación
-            setError(null);  // Reseteamos errores anteriores si la carga es exitosa
+
+            // Verificar si estamos en la última página
+            const isLastPageCheck = first + rows >= data.totalElements;
+            setIsLastPage(isLastPageCheck);
+
+            setError(null);  // Limpiamos cualquier error previo
         } catch (err) {
-            setError('Error loading orders: ' + err.message);  // Actualizamos el mensaje de error
+            setError('Error loading orders: ' + err.message);
         } finally {
             setLoading(false);  // Terminamos la carga
         }
+    };
+
+    const handlePageChange = (event) => {
+        setFirst(event.first);  // Actualizamos el primer registro visible
+        setRows(event.rows);    // Actualizamos el número de registros visibles por página
     };
 
     const handleCompleteOrder = (orderId) => {
@@ -81,7 +114,7 @@ export default function OrdersPage() {
     };
 
     const rowIndexTemplate = (_rowData, options) => {
-        return options.rowIndex + 1;  // Calcula el número secuencial basado en el índice
+        return options.rowIndex + 1;  // Calcula el número secuencial
     };
 
     return (
@@ -93,35 +126,24 @@ export default function OrdersPage() {
                     <div style={styles.listContainer}>
                         <h2>Ordenes</h2>
 
-                        {error && <p style={{ color: 'red' }}>{error}</p>}  {/* Mostrar error si existe */}
+                        {error && <p style={{ color: 'red' }}>{error}</p>}
 
                         <DataTable
                             value={orders}
                             selectionMode="single"
                             selection={selectedOrder}
-                            onSelectionChange={(e) => setSelectedOrder(e.value)}  // Actualiza la orden seleccionada
-                            dataKey="orderId"  // Asegúrate de que este sea un valor único para cada fila
+                            onSelectionChange={(e) => setSelectedOrder(e.value)}
+                            dataKey="orderId"
                             paginator={true}
-                            rows={10}  // Número de filas por página
-                            totalRecords={totalRecords}  // Total de registros del backend
-                            loading={loading}  // Muestra un indicador de carga si está cargando
-                            lazy={true}  // Cargar los datos de forma diferida (bajo demanda)
+                            rows={rows}
+                            first={first}
+                            totalRecords={totalRecords}
+                            onPage={handlePageChange}
+                            // loading={loading}
+                            lazy={true}
                         >
-                            {/* Columna para enumeración secuencial */}
-                            <Column
-                                header="#"
-                                body={rowIndexTemplate}
-                                style={{ width: '50px' }}
-                            />
-                            
-                            {/* Nueva columna para el número de orden formateado */}
-                            <Column
-                                field="orderId"
-                                header="N° de Orden"
-                                body={orderNumberTemplate}
-                                style={{ width: '150px' }}
-                            />
-
+                            <Column header="#" body={rowIndexTemplate} style={{ width: '50px' }} />
+                            <Column field="orderId" header="N° de Orden" body={orderNumberTemplate} style={{ width: '150px' }} />
                             <Column key="table" field="cutomerTable" header="Mesa" />
                             <Column key="customerName" field="customerName" header="Cliente" />
                             <Column key="totalDishes" field="orderItems" header="Total Platillos" body={(rowData) => rowData.orderItems.length} />
@@ -131,7 +153,7 @@ export default function OrdersPage() {
                     </div>
 
                     {selectedOrder && (
-                        <OrderDetails order={selectedOrder} />  // Mostrar detalles de la orden seleccionada
+                        <OrderDetails order={selectedOrder} />
                     )}
                 </div>
             </div>
