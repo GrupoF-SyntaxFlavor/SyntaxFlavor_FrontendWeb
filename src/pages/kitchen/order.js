@@ -11,27 +11,25 @@ import 'primeicons/primeicons.css';
 export default function OrdersPage() {
     const [orders, setOrders] = useState([]);  // Almacena las órdenes desde el backend
     const [selectedOrder, setSelectedOrder] = useState(null);  // Almacena la orden seleccionada
-    const [first, setFirst] = useState(0);  // Control de paginación (inicio)
-    const [rows, setRows] = useState(10);  // Cantidad de filas por página
     const [totalRecords, setTotalRecords] = useState(0);  // Número total de registros
     const [loading, setLoading] = useState(false);  // Control de carga
-    const [error, setError] = useState(null);  // Almacena el error si ocurre
+    const [error, setError] = useState(null);  // Manejo de errores
 
     const orderService = new OrderService();  // Instanciamos el servicio
 
     useEffect(() => {
-        loadOrders(first / rows);  // Cargamos las órdenes cuando cambia la paginación
-    }, [first, rows]);
+        loadOrders();  // Cargamos las órdenes cuando se monta el componente
+    }, []);
 
-    const loadOrders = async (pageNumber) => {
+    const loadOrders = async () => {
         setLoading(true);
         try {
-            const data = await orderService.getOrders(pageNumber, rows);
-            setOrders(data.content);  // Establecemos las órdenes obtenidas
+            const data = await orderService.getOrders(0, 10); // Cargar los primeros 10 registros
+            setOrders(data.content);  // Actualizamos las órdenes
             setTotalRecords(data.totalElements);  // Total de registros para la paginación
-            setError(null);  // Limpiamos cualquier error previo
+            setError(null);  // Reseteamos errores anteriores si la carga es exitosa
         } catch (err) {
-            setError('Error loading orders: ' + err.message);
+            setError('Error loading orders: ' + err.message);  // Actualizamos el mensaje de error
         } finally {
             setLoading(false);  // Terminamos la carga
         }
@@ -54,7 +52,7 @@ export default function OrdersPage() {
     const statusBodyTemplate = (rowData) => {
         if (rowData.orderStatus === 'Completado' || rowData.orderStatus === 'Cancelado') {
             return rowData.orderStatus;
-        } else {
+        } else {    
             return (
                 <div style={styles.statusButtons}>
                     <Button
@@ -83,32 +81,31 @@ export default function OrdersPage() {
     };
 
     const rowIndexTemplate = (_rowData, options) => {
-        return options.rowIndex + 1 + first;  // Calcula el número secuencial
+        return options.rowIndex + 1;  // Calcula el número secuencial basado en el índice
     };
 
     return (
         <KitchenSiderBar>
-            <div style={styles.containerCard}>
+            <div>
                 <h1>Ordenes del día</h1>
                 <hr />
                 <div style={styles.container}>
                     <div style={styles.listContainer}>
                         <h2>Ordenes</h2>
 
-                        {error && <p style={{ color: 'red' }}>{error}</p>}
+                        {error && <p style={{ color: 'red' }}>{error}</p>}  {/* Mostrar error si existe */}
 
                         <DataTable
                             value={orders}
                             selectionMode="single"
                             selection={selectedOrder}
-                            onSelectionChange={(e) => setSelectedOrder(e.value)}
+                            onSelectionChange={(e) => setSelectedOrder(e.value)}  // Actualiza la orden seleccionada
                             dataKey="orderId"  // Asegúrate de que este sea un valor único para cada fila
                             paginator={true}
-                            rows={rows}
-                            first={first}
-                            totalRecords={totalRecords}  // Total de registros para la paginación
-                            onPage={(e) => setFirst(e.first)}
+                            rows={10}  // Número de filas por página
+                            totalRecords={totalRecords}  // Total de registros del backend
                             loading={loading}  // Muestra un indicador de carga si está cargando
+                            lazy={true}  // Cargar los datos de forma diferida (bajo demanda)
                         >
                             {/* Columna para enumeración secuencial */}
                             <Column
@@ -134,7 +131,7 @@ export default function OrdersPage() {
                     </div>
 
                     {selectedOrder && (
-                        <OrderDetails order={selectedOrder} />
+                        <OrderDetails order={selectedOrder} />  // Mostrar detalles de la orden seleccionada
                     )}
                 </div>
             </div>

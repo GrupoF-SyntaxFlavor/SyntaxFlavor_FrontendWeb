@@ -10,11 +10,12 @@ export default function OrderDetails({ order }) {
         order.orderItems.map((item, index) => (
           <Card title={item.menuItemName}
             key={index} style={styles.itemBox}>
-            <div style={styles.itemDescription}>
-              <p>{item.description}</p>
               <p><strong>Precio:</strong> Bs. {item.price}</p>
               <p><strong>Cantidad:</strong> {item.quantity}</p>
-            </div>
+            {/* <div style={styles.itemDescription}>
+              <p>{item.description}</p>
+              
+            </div> */}
             <div style={styles.itemImage}>
               <img src={item.image} alt={item.menuItemName} style={styles.image} />
             </div>
