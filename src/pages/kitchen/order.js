@@ -152,10 +152,14 @@ export default function OrdersPage() {
                         <Column key="orderStatus" field="orderStatus" header="Estado" body={statusBodyTemplate} style={{ textAlign: 'center' }} />
                     </DataTable>
                     </div>
-
+                    <div style={styles.containerItems}>
                     {selectedOrder && (
                         <OrderDetails order={selectedOrder} />
                     )}
+                    {!selectedOrder && (    
+                        <Card style={{ fontSize: '1rem', fontWeight: '700' }}>Seleccione una orden para ver sus platos</Card>
+                    )}
+                    </div>
                 </div>
             </div>
         </KitchenSiderBar>
@@ -184,4 +188,9 @@ const styles = {
         display: 'flex',
         justifyContent: 'space-around',
     },
+    containerItems:{
+            width: '35%',
+            borderLeft: '3px solid #ccc',
+            paddingLeft: '2.5vh',
+    }
 };

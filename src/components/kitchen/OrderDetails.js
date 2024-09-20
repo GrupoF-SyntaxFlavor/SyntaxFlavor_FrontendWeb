@@ -14,7 +14,7 @@ const imageMapping = {
 
 export default function OrderDetails({ order }) {
   return (
-    <div style={styles.container}>
+    <div>
       <Card title={`Platos de la orden: ORD-${order.orderId}`} />
       <br />
       {order.orderItems && order.orderItems.length > 0 ? (
@@ -44,7 +44,7 @@ export default function OrderDetails({ order }) {
 
       <div style={styles.statusContainer}>
         <Button severity='success'>
-          Marcar orden como completada
+          <strong>Marcar orden como completada</strong>
         </Button>
       </div>
     </div>
