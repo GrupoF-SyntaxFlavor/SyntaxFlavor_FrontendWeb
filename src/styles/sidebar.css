@@ -8,8 +8,13 @@
 /* Estilo para el navbar en la parte superior */
 .navbar {
     width: 100%;
-    height: 70px;
-    background-color: #f8f9fa;
+    /* height: 70px; */
+    /* height responsive  */
+    height: 11vh;
+    /* background-color: #f8f9fa; */
+    /* background-color: #86aba9; 86AB9A */
+    background-color: #d1e4de;
+    /* background-color: #0a95a4; */
     border-bottom: 1px solid #dee2e6;
     display: flex;
     justify-content: space-between;
@@ -21,6 +26,7 @@
     z-index: 1000;
 }
 
+
 /* Contenedor de la izquierda (logo + título) */
 .navbar-left {
     display: flex;
@@ -29,8 +35,10 @@
 
 /* Título de la gestión de la cocina */
 .navbar-title {
-    flex: auto;
-    font-size: 30px;
+    /* flex: auto; */
+    /* tamaño de letra responsive */
+    font-size: 1.5rem;
+    /* font-size: 30px; */
     font-weight: bold;
     color: #333;
     margin-left: 15px;
@@ -48,14 +56,14 @@
     display: flex;
     align-items: center;
     gap: 10px;
-    font-size: 14px;
+    /* font-size: 14px; */
     color: #333;
 }
 
 /* Estilo de la imagen de perfil */
 .profile-pic {
     width: 40px;
-    height: 40px;
+    /* height: 40px; */
     border-radius: 50%;
 }
 
@@ -68,7 +76,7 @@
     padding-left: 10px;
     padding-bottom: 10px;
     padding-right: 10px;
-    /* background-color:pink; */
+    background-color:pink;
 
     /* Calcula el espacio disponible debajo del navbar */
     /* height: calc(97vh - 70px);  */
@@ -77,13 +85,15 @@
 
 /* Estilo del sidebar */
 .sidebar {
-    width: 80px;
+    /* width: 80px; */
+    /* width responsive */
+    width: 10.5vh;
     background-color: #f8f9fa;
     height: 100vh;
     border-right: 1px solid #dee2e6;
     position: fixed;
     left: 0;
-    top: 70px; /* Alineado con el navbar */
+    top: 11vh; /* Alineado con el navbar */
 }
 
 /* Logo en el sidebar */
@@ -107,7 +117,7 @@
     flex-direction: column;
     align-items: center;
     text-align: center;
-    font-size: 12px;
+    font-size: 0px;
     color: #495057;
 }
 
@@ -119,33 +129,31 @@
 /* Estilo para el texto debajo de los iconos */
 .sidebar-item span {
     margin-top: 5px;
-    font-size: 12px;
-    color: #6c757d;
+    /* font-size: 12px; */
+    /* font-size responsive */
+    font-size: 1.7vh;
+    color: #86aaab;/*#6c757d;*/
 }
 
 /* Contenedor de la derecha, donde va el contenido principal */
 .content {
-    margin-left: 80px; /* Ancho del sidebar */
-    padding: 20px;
-    padding-top: 0% !important;
-    padding-bottom: 0% !important;
+    /* margin-left: 90px; */
+    /* margin left responsive */
+    margin-left: 14vh;
+    margin-top: 11vh;
+    margin-right: 100px;
+    /* padding: 20px; */
+    /* padding responsive */
+    padding: 3vh;
+    padding-top: 0.5vh;
+    /* padding-top: 0% !important; */
+    /* padding-bottom: 0% !important; */
     background-color: #fdfdfd;
     /* background-color: white; */
-    /* background-color: cyan; */
+    background-color: cyan;
     height: 101%;
-    width: 100%;
+    width: 92%;
     /* overflow: auto; */
-    border-radius: 10px;
-}
-
-/* Para pantallas pequeñas, muestra el botón de menú */
-@media (max-width: 768px) {
-    .menu-button {
-        display: inline-block;
-    }
-
-    .content {
-        margin-left: 0; /* Sin margen para el sidebar en pantallas pequeñas */
-        padding: 20px;
-    }
+    /* border-radius: 10px; */
+    border-radius: 1%;
 }
