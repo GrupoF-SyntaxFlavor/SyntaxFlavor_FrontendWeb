@@ -1,196 +1,185 @@
+import React, { useState, useEffect } from 'react';
 import OrderDetails from '@/components/kitchen/OrderDetails.js';
-// import SideBar from '@/components/kitchen/KitchenSidebar.js';
-import { useState } from 'react';
 import KitchenSiderBar from "@/components/kitchen/KitchenSidebar.js";
-
-import React from 'react';
-
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { Button } from 'primereact/button';
-import { Paginator } from 'primereact/paginator';
+import OrderService from '@/service/OrderService';  // Importamos el servicio
 
 import 'primeicons/primeicons.css';
 
-const ordersMock = [
-  {
-    id: 1,
-    table: 12,
-    client: 'xxx',
-    totalDishes: 2,
-    totalPrice: 58,
-    status: 'En preparación',
-    items: [
-      { name: 'Cheesecake', description: 'Un postre único que combina la suavidad del cheesecake tradicional...', quantity: 2, price: 29, image:'https://assets.tmecosys.com/image/upload/t_web767x639/img/recipe/vimdb/230649.jpg' },
-      { name: 'Sushi', description: 'Rollo de sushi con salmón fresco...', quantity: 1, price: 29, image: 'https://assets.tmecosys.com/image/upload/t_web767x639/img/recipe/ras/Assets/0749D9BC-260D-40F4-A07F-54814C4A82B4/Derivates/A73A7793-F3EE-4B90-ABA4-1CC1A0C3E18F.jpg' }
-    ]
-  },
-  {
-    id: 2,
-    table: 5,
-    client: 'xxx',
-    totalDishes: 3,
-    totalPrice: 29,
-    status: 'Listo',
-    items: [
-      { name: 'Cheesecake', description: 'Un postre único que combina la suavidad del cheesecake tradicional...', quantity: 1, price: 29, image:'https://assets.tmecosys.com/image/upload/t_web767x639/img/recipe/vimdb/230649.jpg' }
-    ]
-  },
-  {
-    id: 3,
-    table: 3,
-    client: 'xxx',
-    totalDishes: 3,
-    totalPrice: 29,
-    status: 'En preparación',
-    items: [
-      { name: 'Cheesecake', description: 'Un postre único que combina la suavidad del cheesecake tradicional...', quantity: 1, price: 29, image:'https://assets.tmecosys.com/image/upload/t_web767x639/img/recipe/vimdb/230649.jpg' },
-      { name: 'Sushi', description: 'Rollo de sushi con salmón fresco...', quantity: 1, price: 29, image: 'https://assets.tmecosys.com/image/upload/t_web767x639/img/recipe/ras/Assets/0749D9BC-260D-40F4-A07F-54814C4A82B4/Derivates/A73A7793-F3EE-4B90-ABA4-1CC1A0C3E18F.jpg' },
-      { name: 'Pastel de chocolate', description: 'Pastel de chocolate con relleno de fresa...', quantity: 1, price: 29, image: 'https://www.196flavors.com/wp-content/uploads/2014/10/sachertorte-3-FP.jpg' }
-    ]
-  },
-  {
-    id: 4,
-    table: 8,
-    client: 'xxx',
-    totalDishes: 0,
-    totalPrice: 0,
-    status: 'En preparación',
-    items: []
-  },
-  {id: 5, table: 8, client: 'xxx', totalDishes: 0, totalPrice: 0, status: 'En preparación', items: []},
-  {id: 6, table: 8, client: 'xxx', totalDishes: 0, totalPrice: 0, status: 'En preparación', items: []},
-  {id: 7, table: 8, client: 'xxx', totalDishes: 0, totalPrice: 0, status: 'En preparación', items: []},
-  {id: 8, table: 8, client: 'xxx', totalDishes: 0, totalPrice: 0, status: 'En preparación', items: []},
-  {id: 9, table: 8, client: 'xxx', totalDishes: 0, totalPrice: 0, status: 'En preparación', items: []},
-  {id: 10, table: 8, client: 'xxx', totalDishes: 0, totalPrice: 0, status: 'En preparación', items: []},
-  {id: 11, table: 8, client: 'xxx', totalDishes: 0, totalPrice: 0, status: 'En preparación', items: []},
-  {id: 12, table: 8, client: 'xxx', totalDishes: 0, totalPrice: 0, status: 'En preparación', items: []},
-  {id: 13, table: 8, client: 'xxx', totalDishes: 0, totalPrice: 0, status: 'En preparación', items: []},
-];
 export default function OrdersPage() {
-  const [orders, setOrders] = useState(ordersMock);
-  const [selectedOrder, setSelectedOrder] = useState(null);
-  const [first, setFirst] = useState(0); // Control de paginación
-  const [rows, setRows] = useState(10);  // Número de filas por página
+    const [orders, setOrders] = useState([]);  // Almacena las órdenes desde el backend
+    const [selectedOrder, setSelectedOrder] = useState(null);  // Almacena la orden seleccionada
+    const [first, setFirst] = useState(0);  // Control de paginación (inicio)
+    const [rows, setRows] = useState(10);  // Cantidad de filas por página
+    const [totalRecords, setTotalRecords] = useState(0);  // Número total de registros
+    const [loading, setLoading] = useState(false);  // Control de carga
+    const [error, setError] = useState(null);  // Almacena el error si ocurre
+    const [isLastPage, setIsLastPage] = useState(false);  // Bandera para saber si estamos en la última página
+    let pollingInterval = null;  // Variable para almacenar el intervalo del polling
 
-  const handleCompleteOrder = (orderId) => {
-    const updatedOrders = orders.map(order =>
-      order.id === orderId ? { ...order, status: 'Completado' } : order
+    const orderService = new OrderService();  // Instanciamos el servicio
+
+    useEffect(() => {
+        loadOrders(first / rows);  // Cargamos las órdenes cuando cambia la paginación
+    }, [first, rows]);
+
+    useEffect(() => {
+        // Si estamos en la última página, iniciamos el polling
+        if (isLastPage) {
+            pollingInterval = setInterval(() => {
+                console.log('Polling on last page...');
+                loadOrders(first / rows);
+            }, 10000);  // Polling cada 10 segundos
+
+            // Limpiamos el intervalo al salir de la última página o cuando el componente se desmonte
+            return () => clearInterval(pollingInterval);
+        } else {
+            // Si no estamos en la última página, limpiar cualquier intervalo de polling
+            clearInterval(pollingInterval);
+        }
+    }, [isLastPage, first, rows]);
+
+    const loadOrders = async (pageNumber) => {
+        setLoading(true);
+        try {
+            const data = await orderService.getOrders(pageNumber, rows);
+            // Evitar re-renderizar si no hay cambios en los datos
+            if (JSON.stringify(data.content) !== JSON.stringify(orders)) {
+                setOrders(data.content);  // Solo actualizar si los datos son diferentes
+            }
+            setTotalRecords(data.totalElements);  // Total de registros para la paginación
+
+            // Verificar si estamos en la última página
+            const isLastPageCheck = first + rows >= data.totalElements;
+            setIsLastPage(isLastPageCheck);
+
+            setError(null);  // Limpiamos cualquier error previo
+        } catch (err) {
+            setError('Error loading orders: ' + err.message);
+        } finally {
+            setLoading(false);  // Terminamos la carga
+        }
+    };
+
+    const handlePageChange = (event) => {
+        setFirst(event.first);  // Actualizamos el primer registro visible
+        setRows(event.rows);    // Actualizamos el número de registros visibles por página
+    };
+
+    const handleCompleteOrder = (orderId) => {
+        const updatedOrders = orders.map(order =>
+            order.orderId === orderId ? { ...order, status: 'Completado' } : order
+        );
+        setOrders(updatedOrders);
+    };
+
+    const handleCancelOrder = (orderId) => {
+        const updatedOrders = orders.map(order =>
+            order.orderId === orderId ? { ...order, status: 'Cancelado' } : order
+        );
+        setOrders(updatedOrders);
+    };
+
+    const statusBodyTemplate = (rowData) => {
+        if (rowData.orderStatus === 'Completado' || rowData.orderStatus === 'Cancelado') {
+            return rowData.orderStatus;
+        } else {    
+            return (
+                <div style={styles.statusButtons}>
+                    <Button
+                        icon="pi pi-check"
+                        rounded severity='success'
+                        onClick={(e) => {
+                            e.stopPropagation();  // Evita seleccionar la fila al hacer clic en el botón
+                            handleCompleteOrder(rowData.orderId);
+                        }}
+                    />
+                    <Button
+                        icon="pi pi-times"
+                        rounded severity='danger'
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            handleCancelOrder(rowData.orderId);
+                        }}
+                    />
+                </div>
+            );
+        }
+    };
+
+    const orderNumberTemplate = (rowData) => {
+        return `ORD-${rowData.orderId}`;
+    };
+
+    const rowIndexTemplate = (_rowData, options) => {
+        return options.rowIndex + 1;  // Calcula el número secuencial
+    };
+
+    return (
+        <KitchenSiderBar>
+            <div>
+                <h1>Ordenes del día</h1>
+                <hr />
+                <div style={styles.container}>
+                    <div style={styles.listContainer}>
+                        <h2>Ordenes</h2>
+
+                        {error && <p style={{ color: 'red' }}>{error}</p>}
+
+                        <DataTable
+                            value={orders}
+                            selectionMode="single"
+                            selection={selectedOrder}
+                            onSelectionChange={(e) => setSelectedOrder(e.value)}
+                            dataKey="orderId"
+                            paginator={true}
+                            rows={rows}
+                            first={first}
+                            totalRecords={totalRecords}
+                            onPage={handlePageChange}
+                            // loading={loading}
+                            lazy={true}
+                        >
+                            <Column header="#" body={rowIndexTemplate} style={{ width: '50px' }} />
+                            <Column field="orderId" header="N° de Orden" body={orderNumberTemplate} style={{ width: '150px' }} />
+                            <Column key="table" field="cutomerTable" header="Mesa" />
+                            <Column key="customerName" field="customerName" header="Cliente" />
+                            <Column key="totalDishes" field="orderItems" header="Total Platillos" body={(rowData) => rowData.orderItems.length} />
+                            <Column key="totalPrice" field="orderItems" header="Precio Total" body={(rowData) => `Bs. ${rowData.orderItems.reduce((acc, item) => acc + item.price * item.quantity, 0)}`} />
+                            <Column key="orderStatus" field="orderStatus" header="Estado" body={statusBodyTemplate} />
+                        </DataTable>
+                    </div>
+
+                    {selectedOrder && (
+                        <OrderDetails order={selectedOrder} />
+                    )}
+                </div>
+            </div>
+        </KitchenSiderBar>
     );
-    setOrders(updatedOrders);
-  };
-
-  const handleCancelOrder = (orderId) => {
-    const updatedOrders = orders.map(order =>
-      order.id === orderId ? { ...order, status: 'Cancelado' } : order
-    );
-    setOrders(updatedOrders);
-  };
-
-  const statusBodyTemplate = (rowData) => {
-    if (rowData.status === 'Completado' || rowData.status === 'Cancelado') {
-      return rowData.status;
-    } else {
-      return (
-        <div style={styles.statusButtons}>
-          <Button
-            icon="pi pi-check"
-            // className="p-button-success p-button-rounded"
-            rounded severity='success'
-            onClick={(e) => {
-              e.stopPropagation(); // Evita que seleccionar el botón seleccione el pedido
-              handleCompleteOrder(rowData.id);
-            }}
-          />
-          <Button
-            icon="pi pi-times"
-            // className="p-button-danger p-button-rounded"
-            rounded severity='danger'
-            // size='small'
-            onClick={(e) => {
-              e.stopPropagation();
-              handleCancelOrder(rowData.id);
-            }}
-          />
-        </div>
-      );
-    }
-  };
-
-  return (
-    <KitchenSiderBar>
-    <div style={styles.containerCard}>
-      <h1>Órdenes del día</h1>
-      <hr />
-      <div style={styles.container}>
-        <div style={styles.listContainer}>
-          <h2>Órdenes</h2>
-
-          <DataTable
-            value={orders}
-            selectionMode="single"
-            selection={selectedOrder}
-            onSelectionChange={(e) => setSelectedOrder(e.value)}
-            dataKey="id"
-            paginator={true}
-            rows={rows}
-            first={first}
-            onPage={(e) => setFirst(e.first)}
-          >
-            <Column field="id" header="#" />
-            <Column field="table" header="Mesa" />
-            <Column field="client" header="Cliente" />
-            <Column field="totalDishes" header="Total Platillos" />
-            <Column field="totalPrice" header="Precio Total" body={(rowData) => `Bs. ${rowData.totalPrice}`} />
-            <Column field="status" header="Estado" body={statusBodyTemplate} />
-          </DataTable>
-
-          {/* <Paginator
-            first={first}
-            rows={rows}
-            totalRecords={orders.length}
-            rowsPerPageOptions={[5, 10, 20]}
-            onPageChange={(e) => {
-              setFirst(e.first);
-              setRows(e.rows);
-            }}
-          /> */}
-        </div>
-
-        {selectedOrder && (
-          <OrderDetails order={selectedOrder} />
-        )}
-      </div>
-    </div>
-    </KitchenSiderBar>
-  );
 }
 
 const styles = {
-  container: {
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    
-    // backgroundColor: 'red',
-  },
-  listContainer: {
-    width: '60%',
-    marginRight: '2%',
-    justifyContent: 'center',
-    // backgroundColor: 'blue',
-    overflowY: 'auto',
-    height: '0%',
-  },
-  statusButtons: {
-    display: 'flex',
-    justifyContent: 'space-around',
-  },
-  containerCard: {
-    // backgroundColor: 'green',
-    // padding: '20px',
-    // borderRadius: '10px',
-    // boxShadow: '0 0 10px rgba(0, 0, 0, 0.1)',
-  },
+    container: {
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+    },
+    listContainer: {
+        width: '60%',
+        marginRight: '2%',
+        justifyContent: 'center',
+        overflowY: 'auto',
+    },
+    statusButtons: {
+        display: 'flex',
+        justifyContent: 'space-around',
+    },
+    containerCard: {
+        padding: '20px',
+        borderRadius: '10px',
+        boxShadow: '0 0 10px rgba(0, 0, 0, 0.1)',
+    },
 };
