@@ -4,6 +4,7 @@ import KitchenSiderBar from "@/components/kitchen/KitchenSidebar.js";
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { Button } from 'primereact/button';
+import { Card } from 'primereact/card';
 import OrderService from '@/service/OrderService';  // Importamos el servicio
 
 import 'primeicons/primeicons.css';
@@ -120,12 +121,13 @@ export default function OrdersPage() {
     return (
         <KitchenSiderBar>
             <div>
-                <h1>Ordenes del día</h1>
-                <hr />
+                <Card title="Ordenes del día"></Card>
+                <br />
                 <div style={styles.container}>
                     <div style={styles.listContainer}>
-                        <h2>Ordenes</h2>
-
+                        {/* <h2>Ordenes</h2> */}
+                        <Card title="Ordenes"></Card>
+                            <br />
                         {error && <p style={{ color: 'red' }}>{error}</p>}
 
                         <DataTable
@@ -166,9 +168,14 @@ const styles = {
         display: 'flex',
         flexDirection: 'row',
         justifyContent: 'space-between',
+        backgroundColor: '#333',
+        // padding: '20px',
+        paddingTop: '0px',
+        borderRadius: '10px',
     },
     listContainer: {
-        width: '60%',
+        margingTop: '0px !important',
+        width: '65%',
         marginRight: '2%',
         justifyContent: 'center',
         overflowY: 'auto',
@@ -176,10 +183,5 @@ const styles = {
     statusButtons: {
         display: 'flex',
         justifyContent: 'space-around',
-    },
-    containerCard: {
-        padding: '20px',
-        borderRadius: '10px',
-        boxShadow: '0 0 10px rgba(0, 0, 0, 0.1)',
     },
 };

@@ -42,6 +42,7 @@
     font-weight: bold;
     color: #333;
     margin-left: 15px;
+    /* color: #ffffffec; */
 }
 
 /* Contenedor de la derecha (íconos + usuario) */
@@ -144,13 +145,13 @@
     margin-right: 100px;
     /* padding: 20px; */
     /* padding responsive */
-    padding: 3vh;
+    /* padding: 3vh;este */
     padding-top: 0.5vh;
     /* padding-top: 0% !important; */
     /* padding-bottom: 0% !important; */
-    background-color: #fdfdfd;
+    /* background-color: #fdfdfd;blanco */
     /* background-color: white; */
-    background-color: cyan;
+    /* background-color: cyan; */
     height: 101%;
     width: 92%;
     /* overflow: auto; */
