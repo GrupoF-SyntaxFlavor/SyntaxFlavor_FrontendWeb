@@ -20,18 +20,18 @@ export default function KitchenSidebar({ children }) {
             <i className="pi pi-bell p-mr-4"></i>   {/* Ícono de notificaciones */}
             <div className="user-profile">
                 <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRvrftcp5FwziJftgD1TlYJSl8WcOza-5iX5ZzgBk6gU0YEvN6UwYMa0mfROJOHwm6fBRk&usqp=CAU" alt="user" className="profile-pic" />
-                <span>Gene Russell</span>  {/* Nombre del usuario */}
+                <span>Kitchen Master</span>  {/* Nombre del usuario */}
                 <i className="pi pi-angle-down p-ml-2"></i>  {/* Ícono de menú desplegable */}
             </div>
         </div>
     );
 
     return (
-        <div className="layout">
+        <div>
             {/* Navbar */}
             <Menubar start={start} end={end} className="navbar" />
             
-            <div className="main-content">
+            <div>
                 {/* Sidebar */}
                 <div className="sidebar"> 
 
