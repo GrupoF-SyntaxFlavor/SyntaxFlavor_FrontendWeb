@@ -121,7 +121,7 @@ export default function OrdersPage() {
     return (
         <KitchenSiderBar>
             <div>
-                <Card title="Ordenes del día"></Card>
+                {/* <Card title="Ordenes del día"></Card> */}
                 <br />
                 <div style={styles.container}>
                     <div style={styles.listContainer}>
@@ -131,27 +131,26 @@ export default function OrdersPage() {
                         {error && <p style={{ color: 'red' }}>{error}</p>}
 
                         <DataTable
-                            value={orders}
-                            selectionMode="single"
-                            selection={selectedOrder}
-                            onSelectionChange={(e) => setSelectedOrder(e.value)}
-                            dataKey="orderId"
-                            paginator={true}
-                            rows={rows}
-                            first={first}
-                            totalRecords={totalRecords}
-                            onPage={handlePageChange}
-                            // loading={loading}
-                            lazy={true}
+                        value={orders}
+                        selectionMode="single"
+                        selection={selectedOrder}
+                        onSelectionChange={(e) => setSelectedOrder(e.value)}
+                        dataKey="orderId"
+                        paginator={true}
+                        rows={rows}
+                        first={first}
+                        totalRecords={totalRecords}
+                        onPage={handlePageChange}
+                        lazy={true}
                         >
-                            <Column header="#" body={rowIndexTemplate} style={{ width: '50px' }} />
-                            <Column field="orderId" header="N° de Orden" body={orderNumberTemplate} style={{ width: '150px' }} />
-                            <Column key="table" field="cutomerTable" header="Mesa" />
-                            <Column key="customerName" field="customerName" header="Cliente" />
-                            <Column key="totalDishes" field="orderItems" header="Total Platillos" body={(rowData) => rowData.orderItems.length} />
-                            <Column key="totalPrice" field="orderItems" header="Precio Total" body={(rowData) => `Bs. ${rowData.orderItems.reduce((acc, item) => acc + item.price * item.quantity, 0)}`} />
-                            <Column key="orderStatus" field="orderStatus" header="Estado" body={statusBodyTemplate} />
-                        </DataTable>
+                        <Column header="#" body={rowIndexTemplate} style={{  textAlign: 'center' }} />
+                        <Column field="orderId" header="N° de Orden" body={orderNumberTemplate} style={{ width: '150px', textAlign: 'center' }} />
+                        <Column key="orderTimestamp" field="orderTimestamp" header="Hora" body={(rowData) => new Date(rowData.orderTimestamp).toLocaleTimeString()} />
+                        <Column key="customerName" field="customerName" header="Cliente" />
+                        <Column key="totalDishes" field="orderItems" header="N° Platos" body={(rowData) => rowData.orderItems.length} style={{textAlign: 'center' }} />
+                        <Column key="totalPrice" field="orderItems" header="Precio Total" body={(rowData) => `Bs. ${rowData.orderItems.reduce((acc, item) => acc + item.price * item.quantity, 0)}`} style={{ textAlign: 'center' }} />
+                        <Column key="orderStatus" field="orderStatus" header="Estado" body={statusBodyTemplate} style={{ textAlign: 'center' }} />
+                    </DataTable>
                     </div>
 
                     {selectedOrder && (
@@ -168,7 +167,7 @@ const styles = {
         display: 'flex',
         flexDirection: 'row',
         justifyContent: 'space-between',
-        backgroundColor: '#333',
+        // backgroundColor: '#333',
         // padding: '20px',
         paddingTop: '0px',
         borderRadius: '10px',
@@ -179,6 +178,7 @@ const styles = {
         marginRight: '2%',
         justifyContent: 'center',
         overflowY: 'auto',
+        // backgroundColor: '#fff',
     },
     statusButtons: {
         display: 'flex',

@@ -2,12 +2,24 @@ import React from 'react';
 import { Button } from 'primereact/button';
 import { Card } from 'primereact/card';
 
+const imageMapping = {
+  'Onigiris de Atún': 'https://images.pond5.com/pixel-sushi-vector-illustration-isolated-illustration-155825087_iconm.jpeg',
+  'Cheesecake de Uvas': 'https://assets.tmecosys.com/image/upload/t_web767x639/img/recipe/vimdb/230649.jpg',
+  'Tacos de Pollo': 'https://www.vvsupremo.com/wp-content/uploads/2017/06/Chicken-Tacos-900x570-sRGB.jpg',
+  'Pizza de Pepperoni': 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSIoXjS-sXqWGIsMTB_m3av-Oh-Fgi93hBrzg&s',
+  'Hamburguesa Clásica': 'https://img.freepik.com/fotos-premium/foto-stock-hamburguesa-clasica-aislada-blanco_940723-217.jpg',
+  'Té Helado': 'https://imag.bonviveur.com/te-helado.jpg',
+  'Pastel de Chocolate': 'https://i.pinimg.com/736x/42/36/b1/4236b10d070cb898106d84a6f2fa4a2c.jpg',
+};
+
 export default function OrderDetails({ order }) {
   return (
     <div style={styles.container}>
-      <h2>Platos de la orden</h2>
+      <Card title={`Platos de la orden: ORD-${order.orderId}`} />
+      <br />
       {order.orderItems && order.orderItems.length > 0 ? (
         order.orderItems.map((item, index) => (
+          
           <Card title={item.menuItemName}
             key={index} style={styles.itemBox}>
               <p><strong>Precio:</strong> Bs. {item.price}</p>
@@ -17,7 +29,12 @@ export default function OrderDetails({ order }) {
               
             </div> */}
             <div style={styles.itemImage}>
-              <img src={item.image} alt={item.menuItemName} style={styles.image} />
+              {/* <img src={item.image} alt={item.menuItemName} style={styles.image} /> */}
+              <img 
+                src={imageMapping[item.menuItemName]} 
+                alt={item.menuItemName} 
+                style={styles.image} 
+              />
             </div>
           </Card>
         ))
@@ -37,9 +54,8 @@ export default function OrderDetails({ order }) {
 const styles = {
   container: {
     width: '35%',
-    padding: '10px',
-    borderRadius: '8px',
-    border: '1px solid #ddd',
+    borderLeft: '3px solid #ccc',
+    paddingLeft: '2.5vh',
   },
   itemBox: {
     display: 'flex',
@@ -47,19 +63,18 @@ const styles = {
     justifyContent: 'space-between',
     alignItems: 'flex-start',
     border: '1px solid #ccc',
-    marginBottom: '10px',
+    // marginBottom: '10px',
+    marginBottom: '1.4vh',
     borderRadius: '8px',
     backgroundColor: '#fff',
     position: 'relative',
-  },
-  itemDescription: {
   },
   itemImage: {
     width: '135px',
     height: '135px',
     position: 'absolute',
-    bottom: '40px',
-    right: '10px',
+    bottom: '1.2vh',
+    right: '2vh',
     borderRadius: '80px',
     overflow: 'hidden',
   },
@@ -70,6 +85,6 @@ const styles = {
   },
   statusContainer: {
     textAlign: 'center',
-    marginTop: '20px',
+    marginTop: '2.5vh',
   },
 };

@@ -79,3 +79,6 @@ body {
   width: 2rem;
   height: 2rem;
 }
+.p-card .p-card-content{
+  padding: 0;
+}
