@@ -2,39 +2,39 @@ import React from 'react';
 import { Button } from 'primereact/button';
 import { Card } from 'primereact/card';
 
+const imageMapping = {
+  'Onigiris de Atún': 'https://images.pond5.com/pixel-sushi-vector-illustration-isolated-illustration-155825087_iconm.jpeg',
+  'Cheesecake de Uvas': 'https://assets.tmecosys.com/image/upload/t_web767x639/img/recipe/vimdb/230649.jpg',
+  'Tacos de Pollo': 'https://www.vvsupremo.com/wp-content/uploads/2017/06/Chicken-Tacos-900x570-sRGB.jpg',
+  'Pizza de Pepperoni': 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSIoXjS-sXqWGIsMTB_m3av-Oh-Fgi93hBrzg&s',
+  'Hamburguesa Clásica': 'https://img.freepik.com/fotos-premium/foto-stock-hamburguesa-clasica-aislada-blanco_940723-217.jpg',
+  'Té Helado': 'https://imag.bonviveur.com/te-helado.jpg',
+  'Pastel de Chocolate': 'https://i.pinimg.com/736x/42/36/b1/4236b10d070cb898106d84a6f2fa4a2c.jpg',
+};
+
 export default function OrderDetails({ order }) {
   return (
     <div style={styles.container}>
-      <h2>Platos de la orden</h2>
-      {order.items && order.items.length > 0 ? (
-        order.items.map((item, index) => (
-          <Card title={item.name}
-            // <Card title={
-            // <div style={{justifyContent: 'space-between'}}>
-            //   {item.name}
-            //   <div style={styles.itemQuantity}>
-            //     {item.quantity}
-            //   </div>
-            // </div>} 
-            
-            // footer={<div>
-            //   <strong>Cantidad:</strong> {item.quantity}
-            // </div>}
+      <Card title={`Platos de la orden: ORD-${order.orderId}`} />
+      <br />
+      {order.orderItems && order.orderItems.length > 0 ? (
+        order.orderItems.map((item, index) => (
+          
+          <Card title={item.menuItemName}
             key={index} style={styles.itemBox}>
-            {/* <div style={styles.itemHeader}>
-              <h3>{item.name}</h3>
-                <div style={styles.itemQuantity}>
-                <span>{item.quantity}</span>
-              </div> 
-            </div> */}
-            <div style={styles.itemDescription}>
-              <p>{item.description}</p>
-              
               <p><strong>Precio:</strong> Bs. {item.price}</p>
               <p><strong>Cantidad:</strong> {item.quantity}</p>
-            </div>
+            {/* <div style={styles.itemDescription}>
+              <p>{item.description}</p>
+              
+            </div> */}
             <div style={styles.itemImage}>
-              <img src={item.image} alt={item.name} style={styles.image} />
+              {/* <img src={item.image} alt={item.menuItemName} style={styles.image} /> */}
+              <img 
+                src={imageMapping[item.menuItemName]} 
+                alt={item.menuItemName} 
+                style={styles.image} 
+              />
             </div>
           </Card>
         ))
@@ -43,10 +43,7 @@ export default function OrderDetails({ order }) {
       )}
 
       <div style={styles.statusContainer}>
-        {/* boton azul medio verde */}
         <Button severity='success'>
-          {/*  style={styles.statusButton} */}
-          {/* Pedido {order.status === 'Completado' ? 'Completado' : order.status} */}
           Marcar orden como completada
         </Button>
       </div>
@@ -57,10 +54,8 @@ export default function OrderDetails({ order }) {
 const styles = {
   container: {
     width: '35%',
-    // backgroundColor: '#f5f5f5',
-    padding: '10px',
-    borderRadius: '8px',
-    border: '1px solid #ddd',
+    borderLeft: '3px solid #ccc',
+    paddingLeft: '2.5vh',
   },
   itemBox: {
     display: 'flex',
@@ -68,37 +63,18 @@ const styles = {
     justifyContent: 'space-between',
     alignItems: 'flex-start',
     border: '1px solid #ccc',
-    // padding: '10px',
-    marginBottom: '10px',
+    // marginBottom: '10px',
+    marginBottom: '1.4vh',
     borderRadius: '8px',
     backgroundColor: '#fff',
     position: 'relative',
-  },
-  itemHeader: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    width: '100%',
-  },
-  itemQuantity: {
-    backgroundColor: '#e0e0e0',
-    borderRadius: '50%',
-    padding: '5px 10px',
-    fontWeight: 'bold',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    width: '30px',
-    height: '30px',
-  },
-  itemDescription: {
-    // marginTop: '10px',
   },
   itemImage: {
     width: '135px',
     height: '135px',
     position: 'absolute',
-    bottom: '40px',
-    right: '10px',
+    bottom: '1.2vh',
+    right: '2vh',
     borderRadius: '80px',
     overflow: 'hidden',
   },
@@ -109,15 +85,6 @@ const styles = {
   },
   statusContainer: {
     textAlign: 'center',
-    marginTop: '20px',
-  },
-  statusButton: {
-    backgroundColor: '#4CAF50',
-    color: 'white',
-    padding: '10px 20px',
-    border: 'none',
-    borderRadius: '5px',
-    cursor: 'pointer',
-    fontWeight: 'bold',
+    marginTop: '2.5vh',
   },
 };
