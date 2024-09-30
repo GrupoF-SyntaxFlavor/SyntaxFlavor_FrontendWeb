@@ -77,58 +77,6 @@ export default function OrdersPage() {
         setOrders(updatedOrders);
     };
 
-    // const handleCancelOrder = (orderId) => {
-    //     const updatedOrders = orders.map(order =>
-    //         order.orderId === orderId ? { ...order, status: 'Cancelado' } : order
-    //     );
-    //     setOrders(updatedOrders);
-    // };
-
-    // const handleCancelOrder = async (orderId) => {
-    //     try {
-    //         console.log('Canceling order:', orderId);
-    //         const result = await orderService.cancelOrder(orderId); // Llama al método del servicio
-    //         if (result.success) {
-    //             // Actualiza el estado local solo si la API ha sido exitosa
-    //             const updatedOrders = orders.map(order =>
-    //                 order.orderId === orderId ? { ...order, status: 'Cancelado' } : order
-    //             );
-    //             setOrders(updatedOrders);
-    //         } else {
-    //             console.error('Error canceling the order:', result.message);
-    //         }
-    //     } catch (error) {
-    //         console.error('Error canceling the order:', error);
-    //         setError('Error al cancelar la orden: ' + error.message);
-    //     }
-    // };
-    
-    // const handleCancelOrder = async (orderId) => {
-    //     setLoading(true);
-    //     try {
-    //         console.log('Canceling order:', orderId);
-    //         const result = await orderService.cancelOrder(orderId);
-    //         if (result.responseCode == "ORD-003") {
-    //             // Filtrar la orden cancelada fuera del estado de órdenes.
-    //             const updatedOrders = orders.filter(order => order.orderId !== orderId);
-    //             setOrders(updatedOrders);
-    
-    //             // Comprobar si es necesario cargar más ítems para mantener la paginación completa
-    //             if (updatedOrders.length % rows === 0 && first > 0) {
-    //                 setFirst(first - rows);  // Ajusta el 'first' para cargar la página anterior si la actual queda vacía
-    //             } else {
-    //                 loadOrders(first / rows);  // Recarga las órdenes para rellenar la lista si aún hay más páginas
-    //             }
-    //         } else {
-    //             throw new Error(result.message);
-    //         }
-    //     } catch (error) {
-    //         console.error('Error canceling the order:', error);
-    //         setError('Error al cancelar la orden: ' + error.message);
-    //     } finally {
-    //         setLoading(false);
-    //     }
-    // };
     const handleCancelOrder = async (orderId) => {
         setLoading(true);
         try {
@@ -149,8 +97,6 @@ export default function OrdersPage() {
         }
     };
     
-    
-
     const statusBodyTemplate = (rowData) => {
         if (rowData.orderStatus === 'Completado' || rowData.orderStatus === 'Cancelado') {
             return rowData.orderStatus;

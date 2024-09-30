@@ -47,7 +47,6 @@ export default class OrderService {
 
     //metodo para cacelar una orden
     // PUT http://localhost:8080/api/v1/order/cancel?orderId=1
-    // Accept: application/json
     async cancelOrder(orderId) {
         const BASE_URL = 'http://localhost:8080/api/v1/order/cancel';
         console.log('Canceling order in service:', orderId);
