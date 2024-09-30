@@ -1,10 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import OrderDetails from '@/components/kitchen/OrderDetails.js';
 import KitchenSiderBar from "@/components/kitchen/KitchenSidebar.js";
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { Button } from 'primereact/button';
 import { Card } from 'primereact/card';
+import { Toast } from 'primereact/toast';
+
 import OrderService from '@/service/OrderService';
 
 import 'primeicons/primeicons.css';
@@ -20,7 +22,8 @@ export default function OrdersPage() {
     const [isLastPage, setIsLastPage] = useState(false);  // Bandera para saber si estamos en la última página
     let pollingInterval = null;  // Variable para almacenar el intervalo del polling
 
-    const orderService = new OrderService();  // Instanciamos el servicio
+    const orderService = new OrderService(); 
+    const toast = useRef(null);
 
     useEffect(() => {
         loadOrders(first / rows);  // Cargamos las órdenes cuando cambia la paginación
@@ -84,14 +87,14 @@ export default function OrdersPage() {
             if (result.responseCode == 'ORD-002') {
                 const updatedOrders = orders.filter(order => order.orderId !== orderId);
                 setOrders(updatedOrders);  // Actualiza el estado removiendo la orden cancelada
-                // Aquí puedes añadir una notificación de éxito
+                toast.current.show({ severity: 'success', summary: 'Success', detail: 'Order cancelled successfully', life: 3000 });
             } else {
                 throw new Error(result.message);
             }
         } catch (error) {
             console.error('Error canceling the order:', error);
             setError('Error al cancelar la orden: ' + error.message);
-            // Considera mostrar un mensaje de error en la interfaz de usuario aquí también
+            toast.current.show({ severity: 'error', summary: 'Error', detail: error.message || 'Error cancelling the order', life: 5000 });
         } finally {
             setLoading(false);
         }
@@ -134,6 +137,7 @@ export default function OrdersPage() {
 
     return (
         <KitchenSiderBar>
+            <Toast ref={toast} />
             <div>
                 {/* <Card title="Ordenes del día"></Card> */}
                 <br />
