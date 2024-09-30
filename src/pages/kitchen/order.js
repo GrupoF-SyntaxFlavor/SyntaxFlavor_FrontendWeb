@@ -95,7 +95,17 @@ export default function OrdersPage() {
             setLoading(false);
         }
     };
-
+    const showConfirmComplete = (orderId) => {
+        confirmDialog({
+            message: '¿Marcar orden como completada?',
+            header: 'Confirmar',
+            icon: 'pi pi-exclamation-triangle',
+            accept: () => handleCompleteOrder(orderId),
+            reject: () => {
+                toast.current.show({ severity: 'warn', summary: 'Cancelado', detail: 'Has cancelado la operación', life: 2000 });
+            }
+        });
+    };
 
     const handleCancelOrder = async (orderId) => {
         setLoading(true);
