@@ -57,7 +57,7 @@ export default function OrderDetails({ order, onConfirmComplete }) {
         </Button>
       </div> */}
 
-      {showDetails && (
+      {showDetails && order.orderItems && order.orderItems.length > 0 && (
         <div style={styles.statusContainer}>
           <Button
             onClick={handleConfirmCompleteOrder}
