@@ -74,12 +74,28 @@ export default function OrdersPage() {
         setRows(event.rows);    // Actualizamos el número de registros visibles por página
     };
 
-    const handleCompleteOrder = (orderId) => {
-        const updatedOrders = orders.map(order =>
-            order.orderId === orderId ? { ...order, status: 'Completado' } : order
-        );
-        setOrders(updatedOrders);
+    const handleCompleteOrder = async (orderId) => {
+        setLoading(true);
+        try {
+            const result = await orderService.completeOrder(orderId);
+            if (result.responseCode == 'ORD-003') {
+                // const updatedOrders = orders.filter(order => order.orderId !== orderId);
+                // setOrders(updatedOrders);  // Actualiza el estado removiendo la orden cancelada
+                const newFirst = (orders.length === 1 && first > 0) ? first - rows : first;  // Ajusta 'first' si la página quedará vacía
+                await loadOrders(newFirst / rows);  // Recarga las órdenes después de eliminar una
+                toast.current.show({ severity: 'success', summary: 'Éxito', detail: 'Orden completada exitosamente', life: 2000 });
+            } else {
+                throw new Error(result.message);
+            }
+        } catch (error) {
+            console.error('Error canceling the order:', error);
+            setError('Error al completar la orden: ' + error.message);
+            toast.current.show({ severity: 'error', summary: 'Error', detail: error.message || 'Error completando la orden', life: 5000 });
+        } finally {
+            setLoading(false);
+        }
     };
+
 
     const handleCancelOrder = async (orderId) => {
         setLoading(true);
@@ -102,7 +118,7 @@ export default function OrdersPage() {
             setLoading(false);
         }
     };
-    const showConfirm = (orderId) => {
+    const showConfirmCancel = (orderId) => {
         confirmDialog({
             message: '¿Estás seguro de que deseas cancelar esta orden?',
             header: 'Confirmar',
@@ -124,8 +140,8 @@ export default function OrdersPage() {
                         icon="pi pi-check"
                         rounded severity='success'
                         onClick={(e) => {
-                            e.stopPropagation();  // Evita seleccionar la fila al hacer clic en el botón
-                            handleCompleteOrder(rowData.orderId);
+                            e.stopPropagation();
+                            showConfirmComplete(rowData.orderId);
                         }}
                     />
                     <Button
@@ -133,7 +149,7 @@ export default function OrdersPage() {
                         rounded severity='danger'
                         onClick={(e) => {
                             e.stopPropagation();
-                            showConfirm(rowData.orderId);
+                            showConfirmCancel(rowData.orderId);
                         }}
                     />
                 </div>
