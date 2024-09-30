@@ -214,7 +214,9 @@ export default function OrdersPage() {
                     </div>
                     <div style={styles.containerItems}>
                     {selectedOrder && (
-                        <OrderDetails order={selectedOrder} />
+                        // <OrderDetails order={selectedOrder} />
+                        <OrderDetails order={selectedOrder} onConfirmComplete={showConfirmComplete} />
+
                     )}
                     {!selectedOrder && (    
                         <Card style={{ fontSize: '1rem', fontWeight: '700' }}>Seleccione una orden para ver sus platos</Card>

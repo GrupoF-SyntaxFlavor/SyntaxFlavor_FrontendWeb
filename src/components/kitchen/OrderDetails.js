@@ -12,7 +12,7 @@ const imageMapping = {
   'Pastel de Chocolate': 'https://i.pinimg.com/736x/42/36/b1/4236b10d070cb898106d84a6f2fa4a2c.jpg',
 };
 
-export default function OrderDetails({ order }) {
+export default function OrderDetails({ order, onConfirmComplete }) {
   return (
     <div>
       <Card title={`Platos de la orden: ORD-${order.orderId}`} />
@@ -43,7 +43,9 @@ export default function OrderDetails({ order }) {
       )}
 
       <div style={styles.statusContainer}>
-        <Button severity='success'>
+        <Button severity='success'
+          onClick={() => onConfirmComplete(order.orderId)}
+        >
           <strong>Marcar orden como completada</strong>
         </Button>
       </div>
