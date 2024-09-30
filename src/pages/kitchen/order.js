@@ -100,7 +100,11 @@ export default function OrdersPage() {
             message: '¿Marcar orden como completada?',
             header: 'Confirmar',
             icon: 'pi pi-exclamation-triangle',
-            accept: () => handleCompleteOrder(orderId),
+            // accept: () => handleCompleteOrder(orderId),
+            accept: () => {
+                handleCompleteOrder(orderId);
+                setSelectedOrder(null);
+            },
             reject: () => {
                 toast.current.show({ severity: 'warn', summary: 'Cancelado', detail: 'Has cancelado la operación', life: 2000 });
             }

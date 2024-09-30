@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Button } from 'primereact/button';
 import { Card } from 'primereact/card';
 
@@ -13,11 +13,18 @@ const imageMapping = {
 };
 
 export default function OrderDetails({ order, onConfirmComplete }) {
+
+  const [showDetails, setShowDetails] = useState(true);
+
+  const handleConfirmCompleteOrder = () => {
+    onConfirmComplete(order.orderId, () => setShowDetails(false));
+  };
+
   return (
     <div>
       <Card title={`Platos de la orden: ORD-${order.orderId}`} />
       <br />
-      {order.orderItems && order.orderItems.length > 0 ? (
+      {showDetails && order.orderItems && order.orderItems.length > 0 ? (
         order.orderItems.map((item, index) => (
           
           <Card title={item.menuItemName}
@@ -39,16 +46,28 @@ export default function OrderDetails({ order, onConfirmComplete }) {
           </Card>
         ))
       ) : (
-        <p>No hay platos en este pedido.</p>
+        !showDetails ? <p>La orden ha sido completada.</p> : <p>No hay platos en este pedido.</p>
       )}
 
-      <div style={styles.statusContainer}>
+      {/* <div style={styles.statusContainer}>
         <Button severity='success'
           onClick={() => onConfirmComplete(order.orderId)}
         >
           <strong>Marcar orden como completada</strong>
         </Button>
-      </div>
+      </div> */}
+
+      {showDetails && (
+        <div style={styles.statusContainer}>
+          <Button
+            onClick={handleConfirmCompleteOrder}
+            // label="Marcar orden como completada" 
+            className="p-button-success"
+          >
+            <strong>Marcar orden como completada</strong>
+          </Button>
+        </div>
+      )}
     </div>
   );
 }
