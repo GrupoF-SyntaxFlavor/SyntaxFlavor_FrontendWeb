@@ -6,6 +6,7 @@ import { Column } from 'primereact/column';
 import { Button } from 'primereact/button';
 import { Card } from 'primereact/card';
 import { Toast } from 'primereact/toast';
+import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
 
 import OrderService from '@/service/OrderService';
 
@@ -85,19 +86,32 @@ export default function OrdersPage() {
         try {
             const result = await orderService.cancelOrder(orderId);
             if (result.responseCode == 'ORD-002') {
-                const updatedOrders = orders.filter(order => order.orderId !== orderId);
-                setOrders(updatedOrders);  // Actualiza el estado removiendo la orden cancelada
-                toast.current.show({ severity: 'success', summary: 'Success', detail: 'Order cancelled successfully', life: 3000 });
+                // const updatedOrders = orders.filter(order => order.orderId !== orderId);
+                // setOrders(updatedOrders);  // Actualiza el estado removiendo la orden cancelada
+                const newFirst = (orders.length === 1 && first > 0) ? first - rows : first;  // Ajusta 'first' si la página quedará vacía
+                await loadOrders(newFirst / rows);  // Recarga las órdenes después de eliminar una
+                toast.current.show({ severity: 'success', summary: 'Éxito', detail: 'Orden cancelada exitosamente', life: 2000 });
             } else {
                 throw new Error(result.message);
             }
         } catch (error) {
             console.error('Error canceling the order:', error);
             setError('Error al cancelar la orden: ' + error.message);
-            toast.current.show({ severity: 'error', summary: 'Error', detail: error.message || 'Error cancelling the order', life: 5000 });
+            toast.current.show({ severity: 'error', summary: 'Error', detail: error.message || 'Error cancelando la orden', life: 5000 });
         } finally {
             setLoading(false);
         }
+    };
+    const showConfirm = (orderId) => {
+        confirmDialog({
+            message: '¿Estás seguro de que deseas cancelar esta orden?',
+            header: 'Confirmar',
+            icon: 'pi pi-exclamation-triangle',
+            accept: () => handleCancelOrder(orderId),
+            reject: () => {
+                toast.current.show({ severity: 'warn', summary: 'Cancelado', detail: 'Has cancelado la operación', life: 2000 });
+            }
+        });
     };
     
     const statusBodyTemplate = (rowData) => {
@@ -119,7 +133,7 @@ export default function OrdersPage() {
                         rounded severity='danger'
                         onClick={(e) => {
                             e.stopPropagation();
-                            handleCancelOrder(rowData.orderId);
+                            showConfirm(rowData.orderId);
                         }}
                     />
                 </div>
@@ -138,6 +152,7 @@ export default function OrdersPage() {
     return (
         <KitchenSiderBar>
             <Toast ref={toast} />
+            <ConfirmDialog />
             <div>
                 {/* <Card title="Ordenes del día"></Card> */}
                 <br />
