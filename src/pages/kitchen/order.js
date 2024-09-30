@@ -45,7 +45,8 @@ export default function OrdersPage() {
     const loadOrders = async (pageNumber) => {
         setLoading(true);
         try {
-            const data = await orderService.getOrders(pageNumber, rows);
+            // const data = await orderService.getOrders(pageNumber, rows);
+            const data = await orderService.getOrdersByStatus('Pendiente',pageNumber); 
             // Evitar re-renderizar si no hay cambios en los datos
             if (JSON.stringify(data.content) !== JSON.stringify(orders)) {
                 setOrders(data.content);  // Solo actualizar si los datos son diferentes
@@ -142,6 +143,7 @@ export default function OrdersPage() {
                         totalRecords={totalRecords}
                         onPage={handlePageChange}
                         lazy={true}
+                        // loading={loading}
                         >
                         <Column header="#" body={rowIndexTemplate} style={{  textAlign: 'center' }} />
                         <Column field="orderId" header="N° de Orden" body={orderNumberTemplate} style={{ width: '150px', textAlign: 'center' }} />
