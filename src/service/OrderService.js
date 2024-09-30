@@ -44,4 +44,32 @@ export default class OrderService {
             throw error;  // Lanzamos el error para que pueda ser manejado en el front
         }
     }
+
+    //metodo para cacelar una orden
+    // PUT http://localhost:8080/api/v1/order/cancel?orderId=1
+    // Accept: application/json
+    async cancelOrder(orderId) {
+        const BASE_URL = 'http://localhost:8080/api/v1/order/cancel';
+        console.log('Canceling order in service:', orderId);
+        try {
+            const response = await fetch(`${BASE_URL}?orderId=${orderId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            });
+            
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const data = await response.json();
+            console.log('Cancel order response:', data);
+            return data;  // Retornamos el contenido del payload
+        } catch (error) {
+            console.error("Error fetching orders", error);
+            throw error;  // Lanzamos el error para que pueda ser manejado en el front
+        }
+    }
+    
 }
