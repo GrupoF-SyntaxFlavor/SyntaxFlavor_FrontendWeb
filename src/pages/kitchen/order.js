@@ -1,11 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import OrderDetails from '@/components/kitchen/OrderDetails.js';
 import KitchenSiderBar from "@/components/kitchen/KitchenSidebar.js";
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { Button } from 'primereact/button';
 import { Card } from 'primereact/card';
-import OrderService from '@/service/OrderService';  // Importamos el servicio
+import { Toast } from 'primereact/toast';
+import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
+
+import OrderService from '@/service/OrderService';
 
 import 'primeicons/primeicons.css';
 
@@ -20,7 +23,8 @@ export default function OrdersPage() {
     const [isLastPage, setIsLastPage] = useState(false);  // Bandera para saber si estamos en la última página
     let pollingInterval = null;  // Variable para almacenar el intervalo del polling
 
-    const orderService = new OrderService();  // Instanciamos el servicio
+    const orderService = new OrderService(); 
+    const toast = useRef(null);
 
     useEffect(() => {
         loadOrders(first / rows);  // Cargamos las órdenes cuando cambia la paginación
@@ -45,7 +49,8 @@ export default function OrdersPage() {
     const loadOrders = async (pageNumber) => {
         setLoading(true);
         try {
-            const data = await orderService.getOrders(pageNumber, rows);
+            // const data = await orderService.getOrders(pageNumber, rows);
+            const data = await orderService.getOrdersByStatus('Pendiente',pageNumber); 
             // Evitar re-renderizar si no hay cambios en los datos
             if (JSON.stringify(data.content) !== JSON.stringify(orders)) {
                 setOrders(data.content);  // Solo actualizar si los datos son diferentes
@@ -69,20 +74,76 @@ export default function OrdersPage() {
         setRows(event.rows);    // Actualizamos el número de registros visibles por página
     };
 
-    const handleCompleteOrder = (orderId) => {
-        const updatedOrders = orders.map(order =>
-            order.orderId === orderId ? { ...order, status: 'Completado' } : order
-        );
-        setOrders(updatedOrders);
+    const handleCompleteOrder = async (orderId) => {
+        setLoading(true);
+        try {
+            const result = await orderService.completeOrder(orderId);
+            if (result.responseCode == 'ORD-003') {
+                // const updatedOrders = orders.filter(order => order.orderId !== orderId);
+                // setOrders(updatedOrders);  // Actualiza el estado removiendo la orden cancelada
+                const newFirst = (orders.length === 1 && first > 0) ? first - rows : first;  // Ajusta 'first' si la página quedará vacía
+                await loadOrders(newFirst / rows);  // Recarga las órdenes después de eliminar una
+                toast.current.show({ severity: 'success', summary: 'Éxito', detail: 'Orden completada exitosamente', life: 2000 });
+            } else {
+                throw new Error(result.message);
+            }
+        } catch (error) {
+            console.error('Error canceling the order:', error);
+            setError('Error al completar la orden: ' + error.message);
+            toast.current.show({ severity: 'error', summary: 'Error', detail: error.message || 'Error completando la orden', life: 5000 });
+        } finally {
+            setLoading(false);
+        }
+    };
+    const showConfirmComplete = (orderId) => {
+        confirmDialog({
+            message: '¿Marcar orden como completada?',
+            header: 'Confirmar',
+            icon: 'pi pi-exclamation-triangle',
+            // accept: () => handleCompleteOrder(orderId),
+            accept: () => {
+                handleCompleteOrder(orderId);
+                setSelectedOrder(null);
+            },
+            reject: () => {
+                toast.current.show({ severity: 'warn', summary: 'Cancelado', detail: 'Has cancelado la operación', life: 2000 });
+            }
+        });
     };
 
-    const handleCancelOrder = (orderId) => {
-        const updatedOrders = orders.map(order =>
-            order.orderId === orderId ? { ...order, status: 'Cancelado' } : order
-        );
-        setOrders(updatedOrders);
+    const handleCancelOrder = async (orderId) => {
+        setLoading(true);
+        try {
+            const result = await orderService.cancelOrder(orderId);
+            if (result.responseCode == 'ORD-002') {
+                // const updatedOrders = orders.filter(order => order.orderId !== orderId);
+                // setOrders(updatedOrders);  // Actualiza el estado removiendo la orden cancelada
+                const newFirst = (orders.length === 1 && first > 0) ? first - rows : first;  // Ajusta 'first' si la página quedará vacía
+                await loadOrders(newFirst / rows);  // Recarga las órdenes después de eliminar una
+                toast.current.show({ severity: 'success', summary: 'Éxito', detail: 'Orden cancelada exitosamente', life: 2000 });
+            } else {
+                throw new Error(result.message);
+            }
+        } catch (error) {
+            console.error('Error canceling the order:', error);
+            setError('Error al cancelar la orden: ' + error.message);
+            toast.current.show({ severity: 'error', summary: 'Error', detail: error.message || 'Error cancelando la orden', life: 5000 });
+        } finally {
+            setLoading(false);
+        }
     };
-
+    const showConfirmCancel = (orderId) => {
+        confirmDialog({
+            message: '¿Estás seguro de que deseas cancelar esta orden?',
+            header: 'Confirmar',
+            icon: 'pi pi-exclamation-triangle',
+            accept: () => handleCancelOrder(orderId),
+            reject: () => {
+                toast.current.show({ severity: 'warn', summary: 'Cancelado', detail: 'Has cancelado la operación', life: 2000 });
+            }
+        });
+    };
+    
     const statusBodyTemplate = (rowData) => {
         if (rowData.orderStatus === 'Completado' || rowData.orderStatus === 'Cancelado') {
             return rowData.orderStatus;
@@ -93,8 +154,8 @@ export default function OrdersPage() {
                         icon="pi pi-check"
                         rounded severity='success'
                         onClick={(e) => {
-                            e.stopPropagation();  // Evita seleccionar la fila al hacer clic en el botón
-                            handleCompleteOrder(rowData.orderId);
+                            e.stopPropagation();
+                            showConfirmComplete(rowData.orderId);
                         }}
                     />
                     <Button
@@ -102,7 +163,7 @@ export default function OrdersPage() {
                         rounded severity='danger'
                         onClick={(e) => {
                             e.stopPropagation();
-                            handleCancelOrder(rowData.orderId);
+                            showConfirmCancel(rowData.orderId);
                         }}
                     />
                 </div>
@@ -120,6 +181,8 @@ export default function OrdersPage() {
 
     return (
         <KitchenSiderBar>
+            <Toast ref={toast} />
+            <ConfirmDialog />
             <div>
                 {/* <Card title="Ordenes del día"></Card> */}
                 <br />
@@ -142,6 +205,7 @@ export default function OrdersPage() {
                         totalRecords={totalRecords}
                         onPage={handlePageChange}
                         lazy={true}
+                        // loading={loading}
                         >
                         <Column header="#" body={rowIndexTemplate} style={{  textAlign: 'center' }} />
                         <Column field="orderId" header="N° de Orden" body={orderNumberTemplate} style={{ width: '150px', textAlign: 'center' }} />
@@ -154,7 +218,9 @@ export default function OrdersPage() {
                     </div>
                     <div style={styles.containerItems}>
                     {selectedOrder && (
-                        <OrderDetails order={selectedOrder} />
+                        // <OrderDetails order={selectedOrder} />
+                        <OrderDetails order={selectedOrder} onConfirmComplete={showConfirmComplete} />
+
                     )}
                     {!selectedOrder && (    
                         <Card style={{ fontSize: '1rem', fontWeight: '700' }}>Seleccione una orden para ver sus platos</Card>
