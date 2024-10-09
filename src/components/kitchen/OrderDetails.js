@@ -35,6 +35,7 @@ export default function OrderDetails({ order, onConfirmComplete }) {
               <p>{item.description}</p>
               
             </div> */}
+            {/* TODO: Add image of Minio */}
             <div style={styles.itemImage}>
               {/* <img src={item.image} alt={item.menuItemName} style={styles.image} /> */}
               <img 

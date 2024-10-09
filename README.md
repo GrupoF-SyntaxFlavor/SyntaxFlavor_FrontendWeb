@@ -1,3 +1,36 @@
+# Previo
+## Archivo .env.local
+Crear el archivo ".env.local" con el contenido:
+
+```bash
+NEXT_PUBLIC_BACKEND_URL = http://localhost:8080
+NEXT_PUBLIC_MINIO_URL = http://localhost:9000
+```
+## Estructura de Archivos
+
+```bash
+
+SYNTAXFLAVOR_FRONTEND_WEB
+├── .next
+├── node_modules
+├── public
+│   └── favicon.ico
+├── src
+│   ├── components
+│   ├── pages
+│   ├── service
+│   └── styles
+├── .env.local        <----------
+├── .eslintrc.json
+├── .gitignore
+├── jsconfig.json
+├── next.config.mjs
+├── package-lock.json
+├── package.json
+├── pnpm-lock.yaml
+└── README.md
+```
+
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
 ## Previous installations
