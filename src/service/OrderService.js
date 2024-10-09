@@ -13,7 +13,6 @@ export default class OrderService {
                     'Content-Type': 'application/json',
                 }
             });
-            console.log('Response orders------------------:', response);
             
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
@@ -36,13 +35,11 @@ export default class OrderService {
                     'Content-Type': 'application/json',
                 }
             });
-            console.log('fetch------------------:', response);
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
 
             const data = await response.json();
-            // confirm.log('data------------------:', this.addImagesToOrderItems(data.payload));
             return data.payload;  // Retornamos el contenido del payload
         } catch (error) {
             console.error("Error fetching orders", error);
@@ -100,16 +97,4 @@ export default class OrderService {
         }
     }
 
-    addImagesToOrderItems(orders) {//FIXME:
-        return orders.content.map(order => {
-            order.orderItems = order.orderItems.map(item => {
-                return {
-                    ...item,
-                    image: `${this.IMAGE_URL}/${item.menuItemId}.jpeg`  // Asigna la URL de la imagen desde MinIO
-                };
-            });
-            return order;
-        });
-    }
-    
 }
