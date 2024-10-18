@@ -31,14 +31,9 @@ export default function OrderDetails({ order, onConfirmComplete }) {
             key={index} style={styles.itemBox}>
               <p><strong>Precio:</strong> Bs. {item.price}</p>
               <p><strong>Cantidad:</strong> {item.quantity}</p>
-            {/* <div style={styles.itemDescription}>
-              <p>{item.description}</p>
-              
-            </div> */}
             <div style={styles.itemImage}>
-              {/* <img src={item.image} alt={item.menuItemName} style={styles.image} /> */}
               <img 
-                src={imageMapping[item.menuItemName]} 
+                src={item.image}
                 alt={item.menuItemName} 
                 style={styles.image} 
               />
@@ -49,19 +44,10 @@ export default function OrderDetails({ order, onConfirmComplete }) {
         !showDetails ? <p>La orden ha sido completada.</p> : <p>No hay platos en este pedido.</p>
       )}
 
-      {/* <div style={styles.statusContainer}>
-        <Button severity='success'
-          onClick={() => onConfirmComplete(order.orderId)}
-        >
-          <strong>Marcar orden como completada</strong>
-        </Button>
-      </div> */}
-
       {showDetails && order.orderItems && order.orderItems.length > 0 && (
         <div style={styles.statusContainer}>
           <Button
             onClick={handleConfirmCompleteOrder}
-            // label="Marcar orden como completada" 
             className="p-button-success"
           >
             <strong>Marcar orden como completada</strong>

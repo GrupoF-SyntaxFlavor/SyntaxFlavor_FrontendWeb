@@ -10,8 +10,6 @@ import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
 
 import OrderService from '@/service/OrderService';
 
-import 'primeicons/primeicons.css';
-
 export default function OrdersPage() {
     const [orders, setOrders] = useState([]);  // Almacena las órdenes desde el backend
     const [selectedOrder, setSelectedOrder] = useState(null);  // Almacena la orden seleccionada
