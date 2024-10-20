@@ -14,7 +14,8 @@
     "primeicons": "^7.0.0",
     "primereact": "^10.8.2",
     "react": "^18",
-    "react-dom": "^18"
+    "react-dom": "^18",
+    "syntaxflavor_frontend_web": "file:"
   },
   "devDependencies": {
     "eslint": "^8",
