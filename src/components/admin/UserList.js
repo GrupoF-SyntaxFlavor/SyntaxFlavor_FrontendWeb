@@ -7,18 +7,17 @@ export default function UserList({ users }) {
     const addIndexToUsers = users.map((user, index) => ({ ...user, index: index + 1 }));
 
     return (
-        <div>
-            <h1>Usuarios</h1>
+        <div style={styles.container}>
             <DataTable
                 value={addIndexToUsers}
                 className="p-datatable-sm"
                 paginator
                 rows={10}
             >
-                <Column field="index" header="#" />
-                <Column field="username" header="Nombre de usuario" />
-                <Column field="email" header="Correo electrónico" />
-                <Column field="location" header="Ubicación" />
+                <Column field="index" header="#" bodyStyle={styles.tableRow} headerStyle={styles.tableHeader} />
+                <Column field="username" header="Nombre de usuario" bodyStyle={styles.tableRow} headerStyle={styles.tableHeader} />
+                <Column field="email" header="Correo electrónico" bodyStyle={styles.tableRow} headerStyle={styles.tableHeader} />
+                <Column field="location" header="Ubicación" bodyStyle={styles.tableRow} headerStyle={styles.tableHeader} />
 
             </DataTable>
         </div>
@@ -27,9 +26,14 @@ export default function UserList({ users }) {
 
 const styles = {
     container: {
-        display: 'flex',
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        flexWrap: 'wrap',
+        alignItems: "center",
+        padding: "20px",
+    },
+    tableRow: {
+        fontSize: "22px",
+    },
+    tableHeader: {
+        fontSize: "24px",
+        fontWeight: "bold",
     },
 };
