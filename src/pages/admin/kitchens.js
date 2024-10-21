@@ -1,10 +1,12 @@
-import React from "react";
+import React, { useState } from "react";
 import UserList from "@/components/admin/UserList";
 import Loader from "@/components/misc/Loader";
-
 import UserService from "@/service/UserService";
-import KitchenSidebar from "@/components/kitchen/KitchenSidebar";
+import AdminSidebar from "@/components/admin/AdminSidebar";
 import { debounce } from "lodash";
+import { Card } from 'primereact/card';
+import { useRouter } from 'next/router'; 
+
 
 const debouncedFetchUsers = debounce((searchTerm, setUsers) => {
     const userService = new UserService();
@@ -18,10 +20,10 @@ const debouncedFetchUsers = debounce((searchTerm, setUsers) => {
 }, 1500);
 
 export default function KitchenAccountsPage() {
-    const [users, setUsers] = React.useState([]);
-    const [nameSearch, setNameSearch] = React.useState("");
-    const [loading, setLoading] = React.useState(true);
-
+    const router = useRouter();  
+    const [users, setUsers] = useState([]);
+    const [nameSearch, setNameSearch] = useState("");
+    const [loading, setLoading] = useState(true);
     const fetchUsers = React.useCallback(
         (searchTerm) => {
             setLoading(true);
@@ -30,11 +32,11 @@ export default function KitchenAccountsPage() {
                 setLoading(false);
             });
         },
-        [] // No dependencies needed here
+        [] // No dependencies needed aquí
     );
 
     React.useEffect(() => {
-        setLoading(true); // Show loader while fetching new data
+        setLoading(true); // Mostrar loader mientras se buscan los datos
         fetchUsers(nameSearch);
     }, [nameSearch, fetchUsers]);
 
@@ -42,41 +44,84 @@ export default function KitchenAccountsPage() {
         setNameSearch(event.target.value);
     };
 
+    const handleCreateAccountClick = () => {
+        router.push("/admin/kitchen-account-form");
+
+    };
+
     return (
-        <KitchenSidebar>
-            <div>
-                <h1 style={styles.header}>Usuarios</h1>
-                <input
-                    type="text"
-                    placeholder="Search by name"
-                    value={nameSearch}
-                    onChange={handleSearchChange}
-                    onFocus={(e) => e.target.style.outline = styles.searchBarActive.outline}
-                    onBlur={(e) => e.target.style.outline = styles.searchBar.outline}
-                    style={{
-                        ...styles.searchBar,
-                    }}
-                />
-                {loading ? <Loader /> : <UserList users={users} />}
+        <AdminSidebar>
+            <div style={styles.container}>
+                <Card title="Usuarios"></Card>
+                <div style={styles.searchAndButtonContainer}>
+                    <input
+                        type="text"
+                        placeholder="Buscar por nombre"
+                        value={nameSearch}
+                        onChange={handleSearchChange}
+                        onFocus={(e) => e.target.style.outline = styles.searchBarActive.outline}
+                        onBlur={(e) => e.target.style.outline = styles.searchBar.outline}
+                        style={styles.searchBar}
+                    />
+                    <button onClick={handleCreateAccountClick} style={styles.createAccountButton}>
+                        Crear Cuenta
+                    </button>
+                </div>
+                {loading ? (
+                    <div style={styles.loaderContainer}>
+                        <Loader />
+                    </div>
+                ) : (
+                    <UserList users={users} />
+                )}
+
             </div>
-        </KitchenSidebar>
+        </AdminSidebar>
     );
 }
 
 const styles = {
+    container: {
+        paddingTop: '10px',
+        borderRadius: '10px',
+    },
     header: {
         fontSize: "25px",
         fontWeight: "bold",
     },
     searchBar: {
-        width: "90%",
-        fontSize: "21px",
-        outline: "2px solid transparent",
+        width: "90%", 
+        height:"47px",
+        fontSize: "20px",
+        border: "1px solid #ccc",
         padding: "10px",
-        marginLeft: "20px",
-        marginRight: "20px",
+        borderRadius: "10px",
+        marginRight: "10px", 
     },
     searchBarActive: {
-        outline: "2px solid #0000ff", // Change color as needed
+        outline: "2px solid #0000ff", // Cambia el color si es necesario
+    },
+    createAccountButton: {
+        width: "10%", 
+        height:"45px",
+        backgroundColor: "#86AB9A",
+        color: "white",
+        border: "none",
+        borderRadius: "10px",
+        cursor: "pointer",
+        fontSize: "20px",
+        alignSelf: "center", 
+    },
+    searchAndButtonContainer: {
+        display: "flex",
+        justifyContent: "flex-start",
+        alignItems: "center",
+        margin: "20px", // Añade un poco de espacio alrededor
+    },
+    loaderContainer: {
+        display: "flex",
+        justifyContent: "center",  // Centra horizontalmente
+        alignItems: "center",       // Centra verticalmente
+        height: "70vh",             // Ajusta el alto del contenedor para centrar verticalmente
     },
 };

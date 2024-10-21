@@ -50,31 +50,10 @@ export default function AdminSidebar({ children }) {
                             <Button icon="pi pi-wallet" className="p-button-text p-button-plain p-button-lg" />
                             <span>Menú</span>
                         </div>
-
-                        {/* <div className="sidebar-item">
-                            <Button icon="pi pi-star" className="p-button-text p-button-plain p-button-lg" />
-                            <span>UI Kit</span>
-                        </div>
-
                         <div className="sidebar-item">
-                            <Button icon="pi pi-shield" className="p-button-text p-button-plain p-button-lg" />
-                            <span>Prime Blocks</span>
-                        </div>
-
-                        <div className="sidebar-item">
-                            <Button icon="pi pi-pencil" className="p-button-text p-button-plain p-button-lg" />
-                            <span>Utilities</span>
-                        </div>
-
-                        <div className="sidebar-item">
-                            <Button icon="pi pi-briefcase" className="p-button-text p-button-plain p-button-lg" />
-                            <span>Pages</span>
-                        </div>
-
-                        <div className="sidebar-item">
-                            <Button icon="pi pi-user" className="p-button-text p-button-plain p-button-lg" />
-                            <span>User Management</span>
-                        </div> */}
+                            <Button icon="pi pi-users" className="p-button-text p-button-plain p-button-lg" />
+                            <span>Cuentas de Cocina</span>
+                        </div>      
                     </div>
                 </div>
 
