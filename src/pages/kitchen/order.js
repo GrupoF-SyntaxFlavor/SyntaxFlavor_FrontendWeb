@@ -195,29 +195,29 @@ export default function OrdersPage() {
                         {error && <p style={{ color: 'red' }}>{error}</p>}
 
                         <DataTable
-                        value={orders}
-                        selectionMode="single"
-                        selection={selectedOrder}
-                        onSelectionChange={(e) => setSelectedOrder(e.value)}
-                        dataKey="orderId"
-                        paginator={true}
-                        rows={rows}
-                        first={first}
-                        totalRecords={totalRecords}
-                        onPage={handlePageChange}
-                        lazy={true}
-                        // loading={loading}
-                        >
-                        <Column header="#" body={rowIndexTemplate} style={{  textAlign: 'center' }} />
-                        <Column field="orderId" header="N° de Orden" body={orderNumberTemplate} style={{ width: '150px', textAlign: 'center' }} />
-                        <Column key="orderTimestamp" field="orderTimestamp" header="Hora" body={(rowData) => new Date(rowData.orderTimestamp).toLocaleTimeString()} />
-                        <Column key="customerName" field="customerName" header="Cliente" />
-                        <Column key="totalDishes" field="orderItems" header="N° Platos" body={(rowData) => rowData.orderItems.length} style={{textAlign: 'center' }} />
-                        <Column key="diningOption" field="customerTable" header="Opción de Consumo"  body={(rowData) => rowData.customerTable ? `Mesa: ${rowData.customerTable}` : 'Para llevar'} style={{ textAlign: 'center' }} />
-                        <Column key="totalPrice" field="orderItems" header="Precio Total" body={(rowData) => `Bs. ${rowData.orderItems.reduce((acc, item) => acc + item.price * item.quantity, 0)}`} style={{ textAlign: 'center' }} />
-                        <Column key="orderStatus" field="orderStatus" header="Estado" body={statusBodyTemplate} style={{ textAlign: 'center' }} />
-                        
-                    </DataTable>
+                            value={orders}
+                            selectionMode="single"
+                            selection={selectedOrder}
+                            onSelectionChange={(e) => setSelectedOrder(e.value)}
+                            dataKey="orderId"
+                            paginator={true}
+                            rows={rows}
+                            first={first}
+                            totalRecords={totalRecords}
+                            onPage={handlePageChange}
+                            lazy={true}
+                            // loading={loading}
+                            >
+                            <Column header="#" body={rowIndexTemplate} style={{  textAlign: 'center' }} />
+                            <Column field="orderId" header="N° de Orden" body={orderNumberTemplate} style={{ width: '150px', textAlign: 'center' }} />
+                            <Column key="orderTimestamp" field="orderTimestamp" header="Hora" body={(rowData) => new Date(rowData.orderTimestamp).toLocaleTimeString()} />
+                            <Column key="customerName" field="customerName" header="Cliente" />
+                            <Column key="totalDishes" field="orderItems" header="N° Platos" body={(rowData) => rowData.orderItems.length} style={{textAlign: 'center' }} />
+                            <Column key="diningOption" field="customerTable" header="Opción de Consumo"  body={(rowData) => rowData.customerTable ? `Mesa: ${rowData.customerTable}` : 'Para llevar'} style={{ textAlign: 'center' }} />
+                            <Column key="totalPrice" field="orderItems" header="Precio Total" body={(rowData) => `Bs. ${rowData.orderItems.reduce((acc, item) => acc + item.price * item.quantity, 0)}`} style={{ textAlign: 'center' }} />
+                            <Column key="orderStatus" field="orderStatus" header="Estado" body={statusBodyTemplate} style={{ textAlign: 'center' }} />
+                            
+                        </DataTable>
                     </div>
                     <div style={styles.containerItems}>
                     {selectedOrder && (
