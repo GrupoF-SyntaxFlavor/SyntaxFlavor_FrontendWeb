@@ -185,8 +185,6 @@ export default function OrdersPage() {
             <Toast ref={toast} />
             <ConfirmDialog />
             <div>
-                {/* <Card title="Ordenes del día"></Card> */}
-                <br />
                 <div style={styles.container}>
                     <div style={styles.listContainer}>
                         {/* <h2>Ordenes</h2> */}
@@ -242,7 +240,7 @@ const styles = {
         justifyContent: 'space-between',
         // backgroundColor: '#333',
         // padding: '20px',
-        paddingTop: '0px',
+        paddingTop: '18px',
         borderRadius: '10px',
     },
     listContainer: {
