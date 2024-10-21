@@ -25,25 +25,37 @@ const LoginForm = () => {
 
     return ( 
         
-        <div className="flex align-items-center justify-content-center min-h-screen">
-            <div className="surface-card p-4 shadow-2 border-round w-full lg:w-6" >
+        <div className="flex align-items-center justify-content-center min-h-screen " style={{
+            backgroundImage: `url('/syntax.png')`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            backgroundRepeat: 'no-repeat'
+            }}>
+            <div className="card p-4 shadow-2 border-round lg:w-6" 
+                style={{
+                    backgroundColor: 'rgba(255, 255, 255, 0.6)', // Mayor transparencia
+                    backdropFilter: 'blur(15px)', // Efecto de desenfoque del fondo
+                    WebkitBackdropFilter: 'blur(10px)', // Soporte adicional para Safari
+                    border: '1px solid rgba(255, 255, 255, 0.2)', // Opcional: borde suave para mayor contraste
+                  }}
+            >
                 <div className="text-center mb-5">
-                    <Image src="https://images.pond5.com/pixel-sushi-vector-illustration-isolated-illustration-155825087_iconm.jpeg" alt="hyper" height={150} className="mb-3" />
-                    <div className="text-900 text-3xl font-medium mb-3">Bienvenido a SyntaxFlavor</div>
+                    <Image src="/sushi.png" alt="hyper" height={150} className="mb-3" />
+                    <div className="text-900 text-4xl font-medium mb-3">Bienvenido a SyntaxFlavor</div>
                     <span className="text-600 font-medium line-height-3">Inicia tu sesión!</span>
                     
                 </div>
                 <div >
-                    <label htmlFor="email" className="block text-900 font-medium mb-2">Correo electrónico</label>
+                    <label htmlFor="email" className="block text-900 text-xl  font-medium mb-2">Correo electrónico</label>
                     <InputText id="email" type="text" placeholder="SyntaxFlavor@gmail.com" className="w-full mb-3"/>
 
-                    <label htmlFor="password" className="block text-900 font-medium mb-2">Contraseña</label>
+                    <label htmlFor="password" className="block text-900 text-xl  font-medium mb-2">Contraseña</label>
                     <InputText id="password" type="password" placeholder="********" className="w-full mb-3" />
 
                     <div className="mb-6">
                     </div>
                     
-                    <Button label="Iniciar Sesión" icon="pi pi-user" className="p-button-success w-full" type="submit" onClick={handleLogin}/>
+                    <Button label="Iniciar Sesión" icon="pi pi-user" className="p-button-login w-full" type="submit" onClick={handleLogin}/>
                 </div>
             </div>
         </div>
