@@ -13,7 +13,7 @@ const LoginForm = () => {
     const handleSubmit = (e) => {
         e.preventDefault();
         console.log("Correo:", email);
-        console.log("Contraseña:", password);
+        // console.log("Contraseña:", password);
         // Aquí puedes hacer la petición de login a tu backend
     };
     
