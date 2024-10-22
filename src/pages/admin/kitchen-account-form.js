@@ -1,7 +1,10 @@
 import React, { useState } from "react";
 import AdminSidebar from "@/components/admin/AdminSidebar";
 import { useRouter } from "next/router";
-import { Card } from 'primereact/card';  // Asegúrate de tener instalado PrimeReact y la Card
+import { Card } from 'primereact/card';
+import { InputText } from "primereact/inputtext";
+import { FloatLabel } from "primereact/floatlabel";
+import { Button } from "primereact/button";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import style from "styled-jsx/style";
@@ -45,55 +48,62 @@ export default function KitchenAccountForm() {
                     {error && <p style={styles.error}>{error}</p>}
                     <form onSubmit={handleSubmit} style={styles.form}>
                         <div style={styles.formGroup}>
-                            <label>Nombre</label>
-                            <input
-                                type="text"
-                                placeholder="Nombre"
+                        <label htmlFor="name">Nombre</label>
+                            <InputText
+                                id="name"
                                 value={name}
                                 onChange={(e) => setName(e.target.value)}
                                 required
-                                style={styles.input}
+                                className="w-full"
+                                type="text"
+                                placeholder="Nombre"
                             />
                         </div>
                         <div style={styles.formGroup}>
-                            <label>Email</label>
-                            <input
-                                type="email"
-                                placeholder="Correo electrónico"
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
-                                required
-                                style={styles.input}
-                            />
-                        </div>
-                       <div style={styles.formGroup}>
-                            <label>Contraseña</label>
-                            <div style={styles.passwordContainer}>
-                                <input
-                                    type={showPassword ? "text" : "password"}  // Cambia entre 'text' y 'password'
-                                    placeholder="Contraseña"
-                                    value={password}
-                                    onChange={(e) => setPassword(e.target.value)}
+                            <label htmlFor="email">Correo electrónico</label>
+                                <InputText
+                                    id="email"
+                                    type="email"
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
                                     required
-                                    style={styles.input}
+                                    className="w-full"
+                                    placeholder="Correo electrónico"
                                 />
-                                <FontAwesomeIcon 
-                                    icon={showPassword ? faEyeSlash : faEye}  // Ojo o ojo tachado
-                                    style={styles.eyeIcon} 
-                                    onClick={() => setShowPassword(!showPassword)}
-                                />
+                        </div>
+                        <div style={styles.formGroup}>
+                        <label htmlFor="password">Contraseña</label>
+                            <div style={styles.passwordContainer}>
+                            <InputText
+                                id="password"
+                                type={showPassword ? "text" : "password"}
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                required
+                                className="w-full"
+                                style={{ paddingRight: "2.5rem" }}
+                                placeholder="Contraseña"
+                            />
+                            <FontAwesomeIcon 
+                                icon={showPassword ? faEyeSlash : faEye}
+                                style={styles.eyeIcon} 
+                                onClick={() => setShowPassword(!showPassword)}
+                            />
                             </div>
                         </div>
                         <div style={styles.formGroup}>
-                            <label>Confirmar Contraseña</label>
+                        <label htmlFor="confirmPassword">Confirmar Contraseña</label>
+                            
                             <div style={styles.passwordContainer}>
-                                <input
-                                    type={showConfirmPassword ? "text" : "password"}  // Cambia entre 'text' y 'password'
-                                    placeholder="Confirmar contraseña"
+                                <InputText
+                                    id="confirmPassword"
+                                    type={showConfirmPassword ? "text" : "password"}
                                     value={confirmPassword}
                                     onChange={(e) => setConfirmPassword(e.target.value)}
                                     required
-                                    style={styles.input}
+                                    className="w-full"
+                                    style={{ paddingRight: "2.5rem" }}
+                                    placeholder="Confirmar Contraseña"
                                 />
                                 <FontAwesomeIcon 
                                     icon={showConfirmPassword ? faEyeSlash : faEye}  // Ojo o ojo tachado
@@ -102,7 +112,7 @@ export default function KitchenAccountForm() {
                                 />
                             </div>
                         </div>
-                        <button type="submit" style={styles.submitButton}>Crear Cuenta</button>
+                        <Button type="submit" label="Crear Cuenta" className="p-button-success mt-2" style={styles.submitButton}/>
                     </form>
                 </Card>
             </div>
@@ -130,20 +140,20 @@ const styles = {
     form: {
         display: "flex",
         flexDirection: "column",
-        fontSize: "20px",
+        // fontSize: "20px",
     },
     formGroup: {
         marginBottom: "20px",
-        fontSize: "18px",
+        // fontSize: "18px",
 
     },
-    input: {
-        width: "100%",
-        padding: "10px",
-        borderRadius: "5px",
-        border: "1px solid #ccc",
-        fontSize: "18px",
-    },
+    // input: {
+    //     width: "100%",
+    //     padding: "10px",
+    //     borderRadius: "5px",
+    //     border: "1px solid #ccc",
+    //     fontSize: "18px",
+    // },
     passwordContainer: {
         display: "flex",
         alignItems: "center",
@@ -153,15 +163,15 @@ const styles = {
         position: "absolute",
         right: "10px",
         cursor: "pointer",
-        fontSize: "20px",
+        // fontSize: "20px",
         color: "#666",
     },
     submitButton: {
         margin: "0 auto",
         width: "80%",
         height: "50px",
-        backgroundColor: "#86AB9A",
-        color: "white",
+        // backgroundColor: "#86AB9A",
+        // color: "white",
         border: "none",
         borderRadius: "10px",
         cursor: "pointer",

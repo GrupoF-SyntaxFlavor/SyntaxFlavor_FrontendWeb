@@ -1,6 +1,7 @@
 import React from 'react';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
+import { pad } from 'lodash';
 
 export default function UserList({ users }) {
 
@@ -10,8 +11,8 @@ export default function UserList({ users }) {
         <div style={styles.container}>
             <DataTable
                 value={addIndexToUsers}
-                className="p-datatable-sm"
-                paginator
+                // className="p-datatable-sm"
+                paginator={true}
                 rows={10}
             >
                 <Column field="index" header="#" bodyStyle={styles.tableRow} headerStyle={styles.tableHeader} />
@@ -27,13 +28,15 @@ export default function UserList({ users }) {
 const styles = {
     container: {
         alignItems: "center",
-        padding: "20px",
+        // padding: "20px",
     },
     tableRow: {
-        fontSize: "22px",
+        // aumentar el largo de la columna
+        padding: "1.5vh",
+        // fontSize: "22px",
     },
     tableHeader: {
-        fontSize: "24px",
-        fontWeight: "bold",
+        // fontSize: "24px",
+        // fontWeight: "bold",
     },
 };

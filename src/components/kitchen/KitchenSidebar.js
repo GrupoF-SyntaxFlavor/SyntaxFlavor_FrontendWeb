@@ -2,9 +2,13 @@ import React from 'react';
 import { Menubar } from 'primereact/menubar';
 import { Button } from 'primereact/button';
 import 'primeicons/primeicons.css';
-// import OrdersPage from '@/pages/kitchen/order';
+// import OrdersPage from '@/pages/kitchen/order'; 
+import { useRouter } from "next/router";
 
 export default function KitchenSidebar({ children }) {
+    
+    const router = useRouter();
+
     const start = (
         <div className="navbar-left">
             <div className="logo-container">
@@ -41,12 +45,12 @@ export default function KitchenSidebar({ children }) {
                             <span>Dashboards</span>
                         </div>
 
-                        <div className="sidebar-item">
+                        <div className="sidebar-item" onClick={() => router.push('/kitchen/order')}>
                             <Button icon="pi pi-th-large" className="p-button-text p-button-plain p-button-lg" />
                             <span>Ordenes</span>
                         </div>
 
-                        <div className="sidebar-item">
+                        <div className="sidebar-item" onClick={() => router.push('/kitchen/menu')}>
                             <Button icon="pi pi-wallet" className="p-button-text p-button-plain p-button-lg" />
                             <span>Menú</span>
                         </div>

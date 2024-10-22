@@ -9,7 +9,6 @@ import { Toast } from 'primereact/toast';
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
 
 import OrderService from '@/service/OrderService';
-import style from 'styled-jsx/style';
 
 export default function OrdersPage() {
     const [orders, setOrders] = useState([]);  // Almacena las órdenes desde el backend
@@ -185,8 +184,6 @@ export default function OrdersPage() {
             <Toast ref={toast} />
             <ConfirmDialog />
             <div>
-                {/* <Card title="Ordenes del día"></Card> */}
-                <br />
                 <div style={styles.container}>
                     <div style={styles.listContainer}>
                         {/* <h2>Ordenes</h2> */}
@@ -242,7 +239,7 @@ const styles = {
         justifyContent: 'space-between',
         // backgroundColor: '#333',
         // padding: '20px',
-        paddingTop: '0px',
+        paddingTop: '18px',
         borderRadius: '10px',
     },
     listContainer: {

@@ -5,6 +5,8 @@ import UserService from "@/service/UserService";
 import AdminSidebar from "@/components/admin/AdminSidebar";
 import { debounce } from "lodash";
 import { Card } from 'primereact/card';
+import { InputText } from 'primereact/inputtext';
+import { Button } from 'primereact/button';
 import { useRouter } from 'next/router'; 
 
 
@@ -53,20 +55,22 @@ export default function KitchenAccountsPage() {
         <AdminSidebar>
             <div style={styles.container}>
                 <Card title="Usuarios"></Card>
-                <div style={styles.searchAndButtonContainer}>
-                    <input
-                        type="text"
-                        placeholder="Buscar por nombre"
+                <div style={styles.searchAndButtonContainer} className="flex align-items-center gap-2 mb-3">
+                    <InputText
                         value={nameSearch}
                         onChange={handleSearchChange}
-                        onFocus={(e) => e.target.style.outline = styles.searchBarActive.outline}
-                        onBlur={(e) => e.target.style.outline = styles.searchBar.outline}
-                        style={styles.searchBar}
+                        placeholder="Buscar por nombre111"
+                        className="w-full"
+                        // style={styles.searchBar}
                     />
-                    <button onClick={handleCreateAccountClick} style={styles.createAccountButton}>
-                        Crear Cuenta
-                    </button>
+                    <Button 
+                        label="Crear cuenta" 
+                        onClick={handleCreateAccountClick} 
+                        className="p-button-success"
+                        style={styles.createAccountButton}
+                    />
                 </div>
+
                 {loading ? (
                     <div style={styles.loaderContainer}>
                         <Loader />
@@ -82,41 +86,44 @@ export default function KitchenAccountsPage() {
 
 const styles = {
     container: {
-        paddingTop: '10px',
+        paddingTop: '18px',
         borderRadius: '10px',
     },
     header: {
         fontSize: "25px",
         fontWeight: "bold",
     },
-    searchBar: {
-        width: "90%", 
-        height:"47px",
-        fontSize: "20px",
-        border: "1px solid #ccc",
-        padding: "10px",
-        borderRadius: "10px",
-        marginRight: "10px", 
-    },
-    searchBarActive: {
-        outline: "2px solid #0000ff", // Cambia el color si es necesario
-    },
+    // searchBar: {
+    //     width: "90%", 
+    //     height:"47px",
+    //     fontSize: "20px",
+    //     border: "1px solid #ccc",
+    //     padding: "10px",
+    //     borderRadius: "10px",
+    //     marginRight: "10px", 
+    // },
+    // searchBarActive: {
+    //     outline: "2px solid #0000ff", // Cambia el color si es necesario
+    // },
     createAccountButton: {
         width: "10%", 
         height:"45px",
-        backgroundColor: "#86AB9A",
-        color: "white",
-        border: "none",
-        borderRadius: "10px",
-        cursor: "pointer",
-        fontSize: "20px",
-        alignSelf: "center", 
+        // backgroundColor: "#86AB9A",
+        // color: "white",
+        
+        // border: "none",
+        // borderRadius: "10px",
+        // cursor: "pointer",
+        // fontSize: "20px",
+        // alignSelf: "center",
+        padding: "0px", 
     },
     searchAndButtonContainer: {
         display: "flex",
-        justifyContent: "flex-start",
+        marginBottom: "3px",
+        paddingTop: "15px",
+        // justifyContent: "flex-start",
         alignItems: "center",
-        margin: "20px", // Añade un poco de espacio alrededor
     },
     loaderContainer: {
         display: "flex",
