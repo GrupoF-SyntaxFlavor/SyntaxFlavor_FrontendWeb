@@ -20,6 +20,12 @@ body {
   /* tamaño mas pequeño */
   
 }
+.p-button-login {
+  background-color: rgb(12, 12, 12);
+  color: #ffffff;
+  /* tamaño mas pequeño */
+  
+}
 .p-button-danger{
   background-color: rgb(226, 102, 102);
   color: #ffffff;
