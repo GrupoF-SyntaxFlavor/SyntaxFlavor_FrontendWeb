@@ -34,7 +34,7 @@ export default function KitchenAccountForm() {
         console.log({
             email,
             name,
-            password,
+            // password,
         });
 
         // Redirigir al listado de usuarios después de crear la cuenta
