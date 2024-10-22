@@ -34,20 +34,10 @@ const LoginForm = () => {
     };
 
     return ( 
-        <div className="flex align-items-center justify-content-center min-h-screen" style={{
-            backgroundImage: `url('/syntax.png')`,
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-            backgroundRepeat: 'no-repeat'
-        }}>
+        <div className="flex align-items-center justify-content-center min-h-screen" style={styles.background}>
             <Toast ref={toast} /> {/* Componente para mostrar los mensajes emergentes */}
             <div className="card p-4 shadow-2 border-round lg:w-6" 
-                style={{
-                    backgroundColor: 'rgba(255, 255, 255, 0.6)', 
-                    backdropFilter: 'blur(15px)', 
-                    WebkitBackdropFilter: 'blur(10px)', 
-                    border: '1px solid rgba(255, 255, 255, 0.2)', 
-                }}
+                style={styles.card}
             >
                 <div className="text-center mb-5">
                     <Image src="/sushi.png" alt="hyper" height={150} className="mb-3" />
@@ -81,5 +71,19 @@ const LoginForm = () => {
         </div>
     );
 };
+const styles = {
+    background: {
+        backgroundImage: `url('/syntax.png')`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat'
+    },
+    card: {
+        backgroundColor: 'rgba(255, 255, 255, 0.6)', 
+        backdropFilter: 'blur(15px)', 
+        WebkitBackdropFilter: 'blur(10px)', 
+        border: '1px solid rgba(255, 255, 255, 0.2)', 
+    }
 
+}
 export default LoginForm;
