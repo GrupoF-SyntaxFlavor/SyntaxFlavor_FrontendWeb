@@ -9,7 +9,6 @@ import { Toast } from 'primereact/toast';
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
 
 import OrderService from '@/service/OrderService';
-import style from 'styled-jsx/style';
 
 export default function OrdersPage() {
     const [orders, setOrders] = useState([]);  // Almacena las órdenes desde el backend
