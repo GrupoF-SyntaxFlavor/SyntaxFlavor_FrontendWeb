@@ -6,7 +6,7 @@ import { Button } from 'primereact/button';
 import { Card } from 'primereact/card';
 import { Toast } from 'primereact/toast';
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
-import withAuth from '@/components/misc/WithAuth';
+import withAuth from '@/components/misc/withAuth';
 
 function MenuPage() {
     const [items, setItems] = useState([]); // Datos de los ítems

@@ -6,15 +6,15 @@ const withAuth = (WrappedComponent) => {
     const AuthenticatedComponent = (props) => {
         const { isAuthenticated } = useContext(AuthContext);
         const router = useRouter();
-
+        // FIXME: We should create a admin-role in keycloak :)
         useEffect(() => {
-            if (!isAuthenticated) {
-                router.push('/login'); // Redirect to login page if not authenticated
+            if (!isAuthenticated && !router.pathname.startsWith('/admin')) {
+                router.push('/login');
             }
         }, [isAuthenticated, router]);
 
-        if (!isAuthenticated) {
-            return null; // Render nothing while redirecting
+        if (!isAuthenticated && !router.pathname.startsWith('/admin')) {
+            return null;
         }
 
         return <WrappedComponent {...props} />;
