@@ -1,3 +1,5 @@
+import { AuthProvider } from "../../context/AuthContext";
+
 import "@/styles/globals.css";
 import "@/styles/sidebar.css";
 //PrimeReact CSS
@@ -11,5 +13,9 @@ import "primeicons/primeicons.css";
 import "primeflex/primeflex.css";
 
 export default function App({ Component, pageProps }) {
-  return <Component {...pageProps} />;
+  return (
+    <AuthProvider>
+      <Component {...pageProps} />
+    </AuthProvider>
+  );
 }

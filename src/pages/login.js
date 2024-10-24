@@ -1,14 +1,16 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useContext } from 'react';
 import { useRouter } from "next/router";
 import { InputText } from 'primereact/inputtext';
 import { Button } from 'primereact/button';
 import { Image } from 'primereact/image';
 import { Toast } from 'primereact/toast';
+import { AuthContext } from '../../context/AuthContext';
 
 const LoginForm = () => {
     const router = useRouter();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const { authToken, isAuthenticated, login } = useContext(AuthContext);
     const toast = useRef(null); // Referencia para mostrar los mensajes emergentes
 
     // Validación de correo
@@ -19,7 +21,7 @@ const LoginForm = () => {
     };
 
     // Lógica para manejar el login
-    const handleLogin = () => {
+    const handleLogin = async () => {
         if (!validateEmail(email)) {
             toast.current.show({ severity: 'error', summary: 'Error', detail: 'El correo no es válido', life: 3000 });
             return;
@@ -29,8 +31,17 @@ const LoginForm = () => {
             return;
         }
         // Si las validaciones pasan
-        console.log("Correo:", email);
-        router.push("/kitchen/order");
+        console.log('Signing in with:', email)
+        try {
+            await login(email, password);
+            //console.log('isAuthenticated:', isAuthenticated);
+            //console.log('authToken:', authToken);
+            if (isAuthenticated) {
+                router.push('/kitchen/order'); // Redirigimos al home
+            }
+        } catch (error) {
+            toast.current.show({ severity: 'error', summary: 'Error', detail: 'Error al iniciar sesión', life: 3000 });
+        }
     };
 
     return ( 
