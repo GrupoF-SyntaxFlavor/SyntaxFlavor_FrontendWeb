@@ -59,7 +59,6 @@ function OrdersPage() {
 
     useEffect(() => {
         if (authToken) {
-            console.log("dates", dates);
             const selectedDates = dates ? dates : getCurrentDayRange();  // Usa las fechas seleccionadas o el rango del día actual por defecto
             const formattedDates = [
                 formatDate(new Date(selectedDates[0]), true),  // Formatea el startDate (00:00:00)
@@ -76,8 +75,14 @@ function OrdersPage() {
         if (isLastPage) {
             pollingInterval = setInterval(() => {
                 console.log('Polling on last page...');
-                //TODO:AGREGAR EL TOKEN
-                loadOrders(first / rows);
+                const selectedDates = dates ? dates : getCurrentDayRange();  // Usa las fechas seleccionadas o el rango del día actual por defecto
+                const formattedDates = [
+                    formatDate(new Date(selectedDates[0]), true),  // Formatea el startDate (00:00:00)
+                    formatDate(new Date(selectedDates[1]), false)  // Formatea el endDate (23:59:59)
+                ];
+        
+                console.log('Fechas a utilizar:', formattedDates);                
+                loadOrders(authToken, first / rows, formattedDates);
             }, 10000);  // Polling cada 10 segundos
 
             // Limpiamos el intervalo al salir de la última página o cuando el componente se desmonte
@@ -86,7 +91,7 @@ function OrdersPage() {
             // Si no estamos en la última página, limpiar cualquier intervalo de polling
             clearInterval(pollingInterval);
         }
-    }, [isLastPage, first, rows]);
+    }, [isLastPage, authToken, first, rows, status, dates, selectedItem]);
 
     const loadOrders = async (authToken, pageNumber, formattedDates = []) => {
         setLoading(true);
