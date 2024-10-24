@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useContext } from 'react';
 import OrderDetails from '@/components/kitchen/OrderDetails.js';
 import KitchenSiderBar from "@/components/kitchen/KitchenSidebar.js";
 import { DataTable } from 'primereact/datatable';
@@ -7,11 +7,17 @@ import { Button } from 'primereact/button';
 import { Card } from 'primereact/card';
 import { Toast } from 'primereact/toast';
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
+import { Calendar } from 'primereact/calendar';
+import { RadioButton } from 'primereact/radiobutton';
+import { Dropdown } from 'primereact/dropdown';
 
 import OrderService from '@/service/OrderService';
 import withAuth from '@/components/misc/WithAuth';
+import { AuthContext } from '../../../context/AuthContext';
+import { map, padStart } from 'lodash';
 
 function OrdersPage() {
+    const { authToken } = useContext(AuthContext);
     const [orders, setOrders] = useState([]);  // Almacena las órdenes desde el backend
     const [selectedOrder, setSelectedOrder] = useState(null);  // Almacena la orden seleccionada
     const [first, setFirst] = useState(0);  // Control de paginación (inicio)
@@ -20,21 +26,63 @@ function OrdersPage() {
     const [loading, setLoading] = useState(false);  // Control de carga
     const [error, setError] = useState(null);  // Almacena el error si ocurre
     const [isLastPage, setIsLastPage] = useState(false);  // Bandera para saber si estamos en la última página
+    const [dates, setDates] = useState(null);  // Almacena las fechas seleccionadas
+    const [status, setStatus] = useState('Pendiente'); 
+    const [selectedItem, setSelectedItem] = useState("true");
+    const items = [ {name: 'Ascendente', code: 'true'}, {name: 'Descendente', code: 'false'}];
+    
     let pollingInterval = null;  // Variable para almacenar el intervalo del polling
 
     const orderService = new OrderService(); 
     const toast = useRef(null);
 
+    const getCurrentDayRange = () => {
+        const today = new Date();
+        const startOfDay = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 0, 0, 0);
+        const endOfDay = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 23, 59, 59);
+        return [startOfDay, endOfDay];
+    };
+
+    const formatDate = (date, isStartDate = true) => {
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+    
+        // Si es startDate, ponemos la hora en 00:00:00, si es endDate, en 23:59:59
+        const hours = isStartDate ? '00' : '23';
+        const minutes = isStartDate ? '00' : '59';
+        const seconds = isStartDate ? '00' : '59';
+        
+        return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
+    };
+    
+
     useEffect(() => {
-        loadOrders(first / rows);  // Cargamos las órdenes cuando cambia la paginación
-    }, [first, rows]);
+        if (authToken) {
+            const selectedDates = dates ? dates : getCurrentDayRange();  // Usa las fechas seleccionadas o el rango del día actual por defecto
+            const formattedDates = [
+                formatDate(new Date(selectedDates[0]), true),  // Formatea el startDate (00:00:00)
+                formatDate(new Date(selectedDates[1]), false)  // Formatea el endDate (23:59:59)
+            ];
+    
+            console.log('Fechas a utilizar:', formattedDates);  // Debug para verificar el formato
+            loadOrders(authToken, first / rows, formattedDates);
+        }
+    }, [authToken, first, rows, status, dates, selectedItem]);
 
     useEffect(() => {
         // Si estamos en la última página, iniciamos el polling
         if (isLastPage) {
             pollingInterval = setInterval(() => {
                 console.log('Polling on last page...');
-                loadOrders(first / rows);
+                const selectedDates = dates ? dates : getCurrentDayRange();  // Usa las fechas seleccionadas o el rango del día actual por defecto
+                const formattedDates = [
+                    formatDate(new Date(selectedDates[0]), true),  // Formatea el startDate (00:00:00)
+                    formatDate(new Date(selectedDates[1]), false)  // Formatea el endDate (23:59:59)
+                ];
+        
+                console.log('Fechas a utilizar:', formattedDates);                
+                loadOrders(authToken, first / rows, formattedDates);
             }, 10000);  // Polling cada 10 segundos
 
             // Limpiamos el intervalo al salir de la última página o cuando el componente se desmonte
@@ -43,13 +91,13 @@ function OrdersPage() {
             // Si no estamos en la última página, limpiar cualquier intervalo de polling
             clearInterval(pollingInterval);
         }
-    }, [isLastPage, first, rows]);
+    }, [isLastPage, authToken, first, rows, status, dates, selectedItem]);
 
-    const loadOrders = async (pageNumber) => {
+    const loadOrders = async (authToken, pageNumber, formattedDates = []) => {
         setLoading(true);
         try {
-            // const data = await orderService.getOrders(pageNumber, rows);
-            const data = await orderService.getOrdersByStatus('Pendiente',pageNumber); 
+            const [startDate, endDate] = formattedDates; // Supone que tienes un rango de fechas (opcional)
+            const data = await orderService.getOrdersByStatus(status, pageNumber, selectedItem, startDate, endDate, authToken); 
             // Evitar re-renderizar si no hay cambios en los datos
             if (JSON.stringify(data.content) !== JSON.stringify(orders)) {
                 setOrders(data.content);  // Solo actualizar si los datos son diferentes
@@ -146,7 +194,7 @@ function OrdersPage() {
     
     // Template para mostrar los botones de estado
     const statusBodyTemplate = (rowData) => {
-        if (rowData.orderStatus === 'Completado' || rowData.orderStatus === 'Cancelado') {
+        if (rowData.orderStatus === 'Entregado' || rowData.orderStatus === 'Cancelado') {
             return rowData.orderStatus;
         } else {    
             return (
@@ -191,7 +239,29 @@ function OrdersPage() {
                         <Card title="Ordenes"></Card>
                             <br />
                         {error && <p style={{ color: 'red' }}>{error}</p>}
-
+                        
+                        <Card className="flex align-items-center gap-2 mb-3">
+                            <div style={styles.filterContainer} >
+                                <div style={styles.statusGroup}>
+                                    <div className="flex align-items-center">
+                                        <RadioButton inputId="status1" name="orderStatus" value="Pendiente" onChange={(e) => setStatus(e.value)} checked={status === 'Pendiente'} />
+                                        <label htmlFor="status1" className="ml-2">Pendiente</label>
+                                    </div>
+                                    <div className="flex align-items-center">
+                                        <RadioButton inputId="status2" name="orderStatus" value="Entregado" onChange={(e) => setStatus(e.value)} checked={status === 'Entregado'} />
+                                        <label htmlFor="status2" className="ml-2">Entregado</label>
+                                    </div>
+                                    <div className="flex align-items-center">
+                                        <RadioButton inputId="status3" name="orderStatus" value="Cancelado" onChange={(e) => setStatus(e.value)} checked={status === 'Cancelado'} />
+                                        <label htmlFor="status3" className="ml-2">Cancelado</label>
+                                    </div>
+                                    
+                                </div>
+                                <Calendar value={dates} onChange={(e) => setDates(e.value)} placeholder="Rango de Fecha" selectionMode="range" dateFormat='yy/mm/dd'readOnlyInput hideOnRangeSelection style={styles.calendar} />
+                                <Dropdown value={selectedItem} onChange={(e) => setSelectedItem(e.value)} options={items} optionLabel="name" optionValue="code" placeholder="Ascendente" className="w-full md:w-14rem" />
+                            </div>
+                        </Card>
+                        <br />
                         <DataTable
                             value={orders}
                             selectionMode="single"
@@ -238,8 +308,6 @@ const styles = {
         display: 'flex',
         flexDirection: 'row',
         justifyContent: 'space-between',
-        // backgroundColor: '#333',
-        // padding: '20px',
         paddingTop: '18px',
         borderRadius: '10px',
     },
@@ -249,17 +317,32 @@ const styles = {
         marginRight: '2%',
         justifyContent: 'center',
         overflowY: 'auto',
-        // backgroundColor: '#fff',
     },
     statusButtons: {
         display: 'flex',
         justifyContent: 'space-around',
     },
-    containerItems:{
-            width: '35%',
-            borderLeft: '3px solid #ccc',
-            paddingLeft: '2.5vh',
+    containerItems: {
+        width: '35%',
+        borderLeft: '3px solid #ccc',
+        paddingLeft: '2.5vh',
+    },
+    filterContainer: {
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',  // Adjust to align content horizontally
+        gap: '10px',  // Add some space between the elements if necessary
+    },
+    statusGroup: {
+        display: 'flex',
+        alignItems: 'center',
+        gap: '20px',  // Ensure sufficient space between radio buttons
+    },
+    calendar: {
+        marginLeft: '200px', 
+    },
+    ml2: {
+        marginLeft: '8px',
     }
 };
-
 export default withAuth(OrdersPage);
