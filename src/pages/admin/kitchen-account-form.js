@@ -8,9 +8,10 @@ import { Button } from "primereact/button";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import style from "styled-jsx/style";
+import withAuth from "@/components/misc/WithAuth";
 
 
-export default function KitchenAccountForm() {
+function KitchenAccountForm() {
     const router = useRouter();
     const [email, setEmail] = useState("");
     const [name, setName] = useState("");
@@ -182,3 +183,5 @@ const styles = {
         marginBottom: "15px",
     },
 };
+
+export default withAuth(KitchenAccountForm);

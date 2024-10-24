@@ -9,8 +9,9 @@ import { Toast } from 'primereact/toast';
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
 
 import OrderService from '@/service/OrderService';
+import withAuth from '@/components/misc/WithAuth';
 
-export default function OrdersPage() {
+function OrdersPage() {
     const [orders, setOrders] = useState([]);  // Almacena las órdenes desde el backend
     const [selectedOrder, setSelectedOrder] = useState(null);  // Almacena la orden seleccionada
     const [first, setFirst] = useState(0);  // Control de paginación (inicio)
@@ -260,3 +261,5 @@ const styles = {
             paddingLeft: '2.5vh',
     }
 };
+
+export default withAuth(OrdersPage);
