@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Button } from 'primereact/button';
 import { Card } from 'primereact/card';
+import style from 'styled-jsx/style';
 
 const imageMapping = {
   'Onigiris de Atún': 'https://images.pond5.com/pixel-sushi-vector-illustration-isolated-illustration-155825087_iconm.jpeg',
@@ -44,7 +45,7 @@ export default function OrderDetails({ order, onConfirmComplete }) {
         !showDetails ? <p>La orden ha sido completada.</p> : <p>No hay platos en este pedido.</p>
       )}
 
-      {showDetails && order.orderItems && order.orderItems.length > 0 && (
+      {showDetails && order.orderItems && order.orderItems.length > 0 && order.orderStatus === 'Pendiente' && (
         <div style={styles.statusContainer}>
           <Button
             onClick={handleConfirmCompleteOrder}
