@@ -28,9 +28,9 @@ export default class OrderService {
     }
     // Método para obtener las ordenes paginadas por estado
     //http://localhost:8080/api/v1/public/order/status?status=Cancelado&pageNumber=0
-    async getOrdersByStatus(status, pageNumber, token) {
+    async getOrdersByStatus(status, pageNumber, asc, token) {
         try {
-            const response = await fetch(`${this.BASE_URL}/api/v1/order?status=${status}&pageNumber=${pageNumber}`, {
+            const response = await fetch(`${this.BASE_URL}/api/v1/order?status=${status}&pageNumber=${pageNumber}&sortAscending=${asc}`, {
                 method: 'GET',
                 headers: {
                     'Authorization':  `Bearer ${token}`,

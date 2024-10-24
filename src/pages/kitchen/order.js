@@ -27,7 +27,7 @@ function OrdersPage() {
     const [isLastPage, setIsLastPage] = useState(false);  // Bandera para saber si estamos en la última página
     const [dates, setDates] = useState(null);  // Almacena las fechas seleccionadas
     const [status, setStatus] = useState('Pendiente'); 
-    const [selectedItem, setSelectedItem] = useState(null);
+    const [selectedItem, setSelectedItem] = useState("true");
     const items = [ {name: 'Ascendente', code: 'true'}, {name: 'Descendente', code: 'false'}];
     let pollingInterval = null;  // Variable para almacenar el intervalo del polling
 
@@ -38,7 +38,7 @@ function OrdersPage() {
         if (authToken) {  // Solo cargar si el token está disponible
             loadOrders(authToken,first / rows);  // Llamamos a loadOrders cuando cambian first o rows
         }
-    }, [first, rows, authToken,status]);
+    }, [first, rows, authToken, status, selectedItem]); //dates
 
     useEffect(() => {
         // Si estamos en la última página, iniciamos el polling
@@ -59,8 +59,9 @@ function OrdersPage() {
 
     const loadOrders = async (authToken, pageNumber) => {
         setLoading(true);
+        console.log("dates:", dates);
         try {
-            const data = await orderService.getOrdersByStatus(status, pageNumber, authToken); 
+            const data = await orderService.getOrdersByStatus(status, pageNumber, selectedItem, authToken); 
             // Evitar re-renderizar si no hay cambios en los datos
             if (JSON.stringify(data.content) !== JSON.stringify(orders)) {
                 setOrders(data.content);  // Solo actualizar si los datos son diferentes
