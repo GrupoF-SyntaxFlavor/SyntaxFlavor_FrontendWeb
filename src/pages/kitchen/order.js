@@ -7,6 +7,9 @@ import { Button } from 'primereact/button';
 import { Card } from 'primereact/card';
 import { Toast } from 'primereact/toast';
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
+import { Calendar } from 'primereact/calendar';
+import { RadioButton } from 'primereact/radiobutton';
+import { Dropdown } from 'primereact/dropdown';
 
 import OrderService from '@/service/OrderService';
 import withAuth from '@/components/misc/WithAuth';
@@ -20,6 +23,10 @@ function OrdersPage() {
     const [loading, setLoading] = useState(false);  // Control de carga
     const [error, setError] = useState(null);  // Almacena el error si ocurre
     const [isLastPage, setIsLastPage] = useState(false);  // Bandera para saber si estamos en la última página
+    const [dates, setDates] = useState(null);  // Almacena las fechas seleccionadas
+    const [status, setStatus] = useState('Pendiente'); 
+    const [selectedItem, setSelectedItem] = useState(null);
+    const items = [ {name: 'Ascendente', code: 'true'}, {name: 'Descendente', code: 'false'}];
     let pollingInterval = null;  // Variable para almacenar el intervalo del polling
 
     const orderService = new OrderService(); 
@@ -48,8 +55,8 @@ function OrdersPage() {
     const loadOrders = async (pageNumber) => {
         setLoading(true);
         try {
-            // const data = await orderService.getOrders(pageNumber, rows);
-            const data = await orderService.getOrdersByStatus('Pendiente',pageNumber); 
+            console.log('status:', status);
+            const data = await orderService.getOrdersByStatus(status, pageNumber); 
             // Evitar re-renderizar si no hay cambios en los datos
             if (JSON.stringify(data.content) !== JSON.stringify(orders)) {
                 setOrders(data.content);  // Solo actualizar si los datos son diferentes
@@ -191,7 +198,29 @@ function OrdersPage() {
                         <Card title="Ordenes"></Card>
                             <br />
                         {error && <p style={{ color: 'red' }}>{error}</p>}
-
+                        
+                        <Card className="flex align-items-center gap-2 mb-3">
+                            <div style={styles.filterContainer} >
+                                <div style={styles.statusGroup}>
+                                    <div className="flex align-items-center">
+                                        <RadioButton inputId="status1" name="orderStatus" value="Pendiente" onChange={(e) => setStatus(e.value)} checked={status === 'Pendiente'} />
+                                        <label htmlFor="status1" className="ml-2">Pendiente</label>
+                                    </div>
+                                    <div className="flex align-items-center">
+                                        <RadioButton inputId="status2" name="orderStatus" value="Entregado" onChange={(e) => setStatus(e.value)} checked={status === 'Entregado'} />
+                                        <label htmlFor="status2" className="ml-2">Entregado</label>
+                                    </div>
+                                    <div className="flex align-items-center">
+                                        <RadioButton inputId="status3" name="orderStatus" value="Cancelado" onChange={(e) => setStatus(e.value)} checked={status === 'Cancelado'} />
+                                        <label htmlFor="status3" className="ml-2">Cancelado</label>
+                                    </div>
+                                    
+                                </div>
+                                <Calendar value={dates} onChange={(e) => setDates(e.value)} placeholder="Rango de Fecha" selectionMode="range" dateFormat='yy/mm/dd'readOnlyInput hideOnRangeSelection style={styles.calendar} />
+                                <Dropdown value={selectedItem} onChange={(e) => setSelectedItem(e.value)} options={items} optionLabel="name" optionValue="code" placeholder="Ascendente" className="w-full md:w-14rem" />
+                            </div>
+                        </Card>
+                        <br />
                         <DataTable
                             value={orders}
                             selectionMode="single"
@@ -238,8 +267,6 @@ const styles = {
         display: 'flex',
         flexDirection: 'row',
         justifyContent: 'space-between',
-        // backgroundColor: '#333',
-        // padding: '20px',
         paddingTop: '18px',
         borderRadius: '10px',
     },
@@ -249,17 +276,32 @@ const styles = {
         marginRight: '2%',
         justifyContent: 'center',
         overflowY: 'auto',
-        // backgroundColor: '#fff',
     },
     statusButtons: {
         display: 'flex',
         justifyContent: 'space-around',
     },
-    containerItems:{
-            width: '35%',
-            borderLeft: '3px solid #ccc',
-            paddingLeft: '2.5vh',
+    containerItems: {
+        width: '35%',
+        borderLeft: '3px solid #ccc',
+        paddingLeft: '2.5vh',
+    },
+    filterContainer: {
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',  // Adjust to align content horizontally
+        gap: '10px',  // Add some space between the elements if necessary
+    },
+    statusGroup: {
+        display: 'flex',
+        alignItems: 'center',
+        gap: '20px',  // Ensure sufficient space between radio buttons
+    },
+    calendar: {
+        marginLeft: '200px', 
+    },
+    ml2: {
+        marginLeft: '8px',
     }
 };
-
 export default withAuth(OrdersPage);
