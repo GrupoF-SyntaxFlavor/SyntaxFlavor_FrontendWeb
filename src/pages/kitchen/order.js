@@ -12,7 +12,7 @@ import { RadioButton } from 'primereact/radiobutton';
 import { Dropdown } from 'primereact/dropdown';
 
 import OrderService from '@/service/OrderService';
-import withAuth from '@/components/misc/WithAuth';
+import withAuth from '@/components/misc/withAuth';
 import { AuthContext } from '../../../context/AuthContext';
 import { map, padStart } from 'lodash';
 
