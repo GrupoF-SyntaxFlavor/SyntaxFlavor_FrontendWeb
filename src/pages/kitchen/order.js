@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useContext } from 'react';
 import OrderDetails from '@/components/kitchen/OrderDetails.js';
 import KitchenSiderBar from "@/components/kitchen/KitchenSidebar.js";
 import { DataTable } from 'primereact/datatable';
@@ -13,8 +13,10 @@ import { Dropdown } from 'primereact/dropdown';
 
 import OrderService from '@/service/OrderService';
 import withAuth from '@/components/misc/WithAuth';
+import { AuthContext } from '../../../context/AuthContext';
 
 function OrdersPage() {
+    const { authToken } = useContext(AuthContext);
     const [orders, setOrders] = useState([]);  // Almacena las órdenes desde el backend
     const [selectedOrder, setSelectedOrder] = useState(null);  // Almacena la orden seleccionada
     const [first, setFirst] = useState(0);  // Control de paginación (inicio)
@@ -33,14 +35,17 @@ function OrdersPage() {
     const toast = useRef(null);
 
     useEffect(() => {
-        loadOrders(first / rows);  // Cargamos las órdenes cuando cambia la paginación
-    }, [first, rows]);
+        if (authToken) {  // Solo cargar si el token está disponible
+            loadOrders(authToken,first / rows);  // Llamamos a loadOrders cuando cambian first o rows
+        }
+    }, [first, rows, authToken,status]);
 
     useEffect(() => {
         // Si estamos en la última página, iniciamos el polling
         if (isLastPage) {
             pollingInterval = setInterval(() => {
                 console.log('Polling on last page...');
+                //TODO:AGREGAR EL TOKEN
                 loadOrders(first / rows);
             }, 10000);  // Polling cada 10 segundos
 
@@ -52,11 +57,10 @@ function OrdersPage() {
         }
     }, [isLastPage, first, rows]);
 
-    const loadOrders = async (pageNumber) => {
+    const loadOrders = async (authToken, pageNumber) => {
         setLoading(true);
         try {
-            console.log('status:', status);
-            const data = await orderService.getOrdersByStatus(status, pageNumber); 
+            const data = await orderService.getOrdersByStatus(status, pageNumber, authToken); 
             // Evitar re-renderizar si no hay cambios en los datos
             if (JSON.stringify(data.content) !== JSON.stringify(orders)) {
                 setOrders(data.content);  // Solo actualizar si los datos son diferentes
@@ -153,7 +157,7 @@ function OrdersPage() {
     
     // Template para mostrar los botones de estado
     const statusBodyTemplate = (rowData) => {
-        if (rowData.orderStatus === 'Completado' || rowData.orderStatus === 'Cancelado') {
+        if (rowData.orderStatus === 'Entregado' || rowData.orderStatus === 'Cancelado') {
             return rowData.orderStatus;
         } else {    
             return (

@@ -1,3 +1,4 @@
+
 export default class OrderService {
     constructor() {
         this.BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
@@ -27,11 +28,12 @@ export default class OrderService {
     }
     // Método para obtener las ordenes paginadas por estado
     //http://localhost:8080/api/v1/public/order/status?status=Cancelado&pageNumber=0
-    async getOrdersByStatus(status, pageNumber) {
+    async getOrdersByStatus(status, pageNumber, token) {
         try {
-            const response = await fetch(`${this.BASE_URL}/api/v1/public/order/status?status=${status}&pageNumber=${pageNumber}`, {
+            const response = await fetch(`${this.BASE_URL}/api/v1/order?status=${status}&pageNumber=${pageNumber}`, {
                 method: 'GET',
                 headers: {
+                    'Authorization':  `Bearer ${token}`,
                     'Content-Type': 'application/json',
                 }
             });
