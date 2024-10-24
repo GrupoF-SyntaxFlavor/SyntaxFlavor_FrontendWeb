@@ -15,12 +15,11 @@ const AuthProvider = ({ children }) => {
         try {
             const response = await authService.login(email, password);
             setAuthToken(response.access_token);
-            setIsAuthenticated(true);
+            await setIsAuthenticated(true);
+            return response;
         } catch (error) {
             console.error('Login failed:', error);
         }
-
-            
     };
 
     const logout = () => {

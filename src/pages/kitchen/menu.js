@@ -6,8 +6,9 @@ import { Button } from 'primereact/button';
 import { Card } from 'primereact/card';
 import { Toast } from 'primereact/toast';
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
+import withAuth from '@/components/misc/WithAuth';
 
-export default function MenuPage() {
+function MenuPage() {
     const [items, setItems] = useState([]); // Datos de los ítems
     const [selectedItem, setSelectedItem] = useState(null); // Ítem seleccionado
     const [first, setFirst] = useState(0); // Control de la paginación (inicio)
@@ -251,3 +252,4 @@ export default function MenuPage() {
     );
 }
 
+export default withAuth(MenuPage);

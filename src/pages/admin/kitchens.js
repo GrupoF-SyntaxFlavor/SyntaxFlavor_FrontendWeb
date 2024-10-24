@@ -8,6 +8,7 @@ import { Card } from 'primereact/card';
 import { InputText } from 'primereact/inputtext';
 import { Button } from 'primereact/button';
 import { useRouter } from 'next/router'; 
+import withAuth from "@/components/misc/WithAuth";
 
 
 const debouncedFetchUsers = debounce((searchTerm, setUsers) => {
@@ -21,7 +22,7 @@ const debouncedFetchUsers = debounce((searchTerm, setUsers) => {
     });
 }, 1500);
 
-export default function KitchenAccountsPage() {
+function KitchenAccountsPage() {
     const router = useRouter();  
     const [users, setUsers] = useState([]);
     const [nameSearch, setNameSearch] = useState("");
@@ -132,3 +133,5 @@ const styles = {
         height: "70vh",             // Ajusta el alto del contenedor para centrar verticalmente
     },
 };
+
+export default withAuth(KitchenAccountsPage);
