@@ -7,6 +7,8 @@ import { Card } from 'primereact/card';
 import { Toast } from 'primereact/toast';
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
 import withAuth from '@/components/misc/withAuth';
+import MenuService from '@/service/MenuService';
+import { Image } from 'primereact/image';
 
 function MenuPage() {
     const [items, setItems] = useState([]); // Datos de los ítems
@@ -15,6 +17,8 @@ function MenuPage() {
     const [rows, setRows] = useState(10); // Cantidad de filas por página
     const [totalRecords, setTotalRecords] = useState(0); // Total de registros para la paginación
     const toast = useRef(null);
+
+    const menuService = new MenuService();
 
     useEffect(() => {
         loadItems(first / rows); // Cargar ítems al cambiar la paginación
@@ -25,6 +29,7 @@ function MenuPage() {
             // Aquí se hace la llamada para obtener los ítems del menú
             // Ejemplo: const data = await menuService.getItems(pageNumber, rows);
             //FIXME: Basarse en order.js en loadOrders
+            //FIXME del FIXME: Utilizar un context:: context\MenuContext.js
             const data = { 
                 content: [
                     { id: 1, label: 'Pizza Margherita', description: 'Clásica pizza con queso y albahaca.', price: '10.99', image: 'https://mejoresrecetas.me/wp-content/uploads/2024/07/onigiri.webp', status: 'Deshabilitado', createdAt: '2023-10-01T12:00:00Z', updatedAt: '2023-10-01T12:00:00Z' },
@@ -120,7 +125,7 @@ function MenuPage() {
         );
     };
 
-    // Styles para el componente
+    // Styles para el componente // TODO: Mover a un archivo de estilos
     const styles = {
         container: {
             display: 'flex',
@@ -236,12 +241,19 @@ function MenuPage() {
                                 <Card title={`Detalles de ${selectedItem.label}`} style={styles.detailCard}></Card>
                                 <br />  
                                 <Card>
-                                    <img src={selectedItem.image} alt={selectedItem.label} style={styles.largeImage} />
+                                    <Image src={selectedItem.image} alt={selectedItem.label} style={styles.largeImage} />
                                     <p><strong>Descripción:</strong> {selectedItem.description}</p>
                                     <p><strong>Precio:</strong> ${selectedItem.price}</p>
                                     <p><strong>Estado:</strong> {selectedItem.status}</p>
                                     <p><strong>Fecha de creación:</strong> {new Date(selectedItem.createdAt).toLocaleDateString('es-ES', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</p>
                                     <p><strong>Última actualización:</strong> {new Date(selectedItem.updatedAt).toLocaleDateString('es-ES', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</p>
+                                    {/* TODO: I'll handle this later @AleCar
+                                    <Button 
+                                        label={selectedItem.status === 'Habilitado' ? 'Deshabilitar' : 'Habilitar'} 
+                                        icon={selectedItem.status === 'Habilitado' ? 'pi pi-times' : 'pi pi-check'} 
+                                        className={selectedItem.status === 'Habilitado' ? 'p-button-danger' : 'p-button-success'}
+                                        onClick={() => handleItemStatusChange(selectedItem)}
+                                    /> */}
                                 </Card>
                             </div>
                         )}
