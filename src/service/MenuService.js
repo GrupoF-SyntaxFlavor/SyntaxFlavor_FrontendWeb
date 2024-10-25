@@ -5,6 +5,24 @@ export default class MenuService {
     }
 
     // Métodos
+    async getMenuItems(minPrice, maxPrice, pageNumber, pageSize, sortAscending, token) {
+        try {
+            const response = await fetch(`${this.BASE_URL}/api/v1/menu/item?minPrice=${minPrice}&?maxPrice=${maxPrice}&pageNumber=${pageNumber}&pageSize=${pageSize}&sortAscending=${sortAscending}`, {
+            method: 'GET',
+            headers: {
+                'Authorization':  `Bearer ${token}`,
+                'Content-Type': 'application/json',
+            }
+            });
+            const data = await response.json();
+            console.log('Menu items:', data);
+            return data.payload;
+        } catch (error) {
+            console.error('Error get menu items:', error);
+            throw error;
+        }
+    }
+
     async enableMenuItem(menuItemId) {
         try {
             const response = await fetch(`${this.BASE_URL}/api/v1/menu/item/${menuItemId}/enable`, {
