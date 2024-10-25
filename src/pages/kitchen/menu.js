@@ -17,17 +17,13 @@ function MenuPage() {
     //contexts
     const { authToken } = useContext(AuthContext);
     const { menuItems, addMenuItem, setMenuItems } = useContext(MenuContext);
-    //se pueden borrar
     const [items, setItems] = useState([]); // Datos de los ítems
 
     const [selectedItem, setSelectedItem] = useState(null); // Ítem seleccionado
 
     const [first, setFirst] = useState(0); // Control de la paginación (inicio)
     const [rows, setRows] = useState(10); // Cantidad de filas por página
-
-
     const [totalRecords, setTotalRecords] = useState(0); // Total de registros para la paginación
-    const [isLastPage, setIsLastPage] = useState(false);  // Bandera para saber si estamos en la última página
     const [minPrice, setMinPrice] = useState(0);
     const [maxPrice, setMaxPrice] = useState(100);
     const [selectedItemSort, setSelectedItemSort] = useState('true');
@@ -54,11 +50,7 @@ function MenuPage() {
             data.content.forEach((item) => {
                 addMenuItem(item); // Usa la función del contexto para agregar ítems
             });
-            //mostrando el contenido de menuItems
-
             console.log("menuItems: " + menuItems );
-            //obteniendo datos importantes de pageable
-            data.last
             console.log("total elements: ",data.totalElements);
             setTotalRecords(data.totalElements);
             if(data.first){
@@ -300,9 +292,9 @@ function MenuPage() {
                                     <img src={selectedItem.image} alt={selectedItem.name} style={styles.largeImage} />
                                     <p><strong>Descripción:</strong> {selectedItem.description}</p>
                                     <p><strong>Precio:</strong> {selectedItem.price} Bs.</p>
-                                    <p><strong>Estado:</strong> {selectedItem.status}</p>
-                                    <p><strong>Fecha de creación:</strong> {new Date(selectedItem.createdAt).toLocaleDateString('es-ES', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</p>
-                                    <p><strong>Última actualización:</strong> {new Date(selectedItem.updatedAt).toLocaleDateString('es-ES', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</p>
+                                    <p><strong>Estado:</strong> {selectedItem.status?"Habilitado":"Deshabilitado"}</p>
+                                    {/* <p><strong>Fecha de creación:</strong> {new Date(selectedItem.createdAt).toLocaleDateString('es-ES', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</p>
+                                    <p><strong>Última actualización:</strong> {new Date(selectedItem.updatedAt).toLocaleDateString('es-ES', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</p> */}
                                 </Card>
                             </div>
                         )}
