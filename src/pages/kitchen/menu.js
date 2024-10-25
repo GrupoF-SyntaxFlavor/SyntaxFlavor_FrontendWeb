@@ -42,7 +42,7 @@ function MenuPage() {
 
     useEffect(() => {
         loadItems(pageNumber); // Cargar ítems al cambiar la paginación
-    }, [pageNumber]); // eslint-disable-line react-hooks/exhaustive-deps
+    }, [minPrice, maxPrice, pageNumber, selectedItemSort]);
     
     useEffect(() => {
         console.log("menuItems actualizado:", menuItems);
