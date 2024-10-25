@@ -72,7 +72,6 @@ function MenuPage() {
 
     const handlePageChange = (event) => {
         setFirst(event.first); // Actualizar la página
-        setMenuItems([]); // Limpiar los ítems//TODO cambiar esto
         setPageNumber(event.first/rows);
         setRows(event.rows);   // Actualizar la cantidad de filas
     };
