@@ -5,7 +5,7 @@ import React, { createContext, useState } from 'react';
 const AuthContext = createContext();
 
 const AuthProvider = ({ children }) => {
-    const [authToken, setAuthToken] = useState(null);
+    const [authToken, setAuthToken] = useState(null); // TODO: Maybe use cookies instead
     const [isAuthenticated, setIsAuthenticated] = useState(false);
 
     const authService = new AuthService();
