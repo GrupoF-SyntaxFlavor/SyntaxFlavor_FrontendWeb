@@ -261,7 +261,8 @@ function MenuPage() {
                                         </div>
 
                                         {/* Dropdown para selección de orden */}
-                                    <Dropdown className="flex align-items-center" value={selectedItemSort} onChange={(e) => setSelectedItem(e.value)} options={itemsSort} optionLabel="name" optionValue="code" placeholder="Ascendente" />
+                                        <label htmlFor="sort" className="mr-2">Ordenar por nombre:</label>
+                                        <Dropdown id="sort" className="flex align-items-center" value={selectedItemSort} onChange={(e) => setSelectedItemSort(e.value)} options={itemsSort} optionLabel="name" optionValue="code" placeholder="Ascendente por nombre" />
                                     </div>
 
                                     
