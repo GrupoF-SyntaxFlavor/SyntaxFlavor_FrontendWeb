@@ -19,7 +19,7 @@ const MenuProvider = ({ children }) => {
     const [menuItems, setMenuItems] = useState([]);
 
     const addMenuItem = (item) => {
-        setMenuItems([...menuItems, item]);
+        setMenuItems(prevItems => [...prevItems, item]);
     };
 
     const updateMenuItem = (id, updatedItem) => {
@@ -30,8 +30,12 @@ const MenuProvider = ({ children }) => {
         setMenuItems(menuItems.filter(item => item.id !== id));
     };
 
+    const removeAllMenuItems = () => {
+        setMenuItems([]);
+    };
+
     return (
-        <MenuContext.Provider value={{ menuItems, addMenuItem, updateMenuItem, removeMenuItem }}>
+        <MenuContext.Provider value={{ menuItems, addMenuItem, updateMenuItem, removeMenuItem, removeAllMenuItems, setMenuItems}}>
             {children}
         </MenuContext.Provider>
     );
