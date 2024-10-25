@@ -53,6 +53,7 @@ export default class OrderService {
     // PUT http://localhost:8080/api/v1/public/order/cancel?orderId=1
     async cancelOrder(orderId) {
         console.log('Canceling order in service:', orderId);
+        //FIXME: Cambiar elendpoint sin /public
         try {
             const response = await fetch(`${this.BASE_URL}/api/v1/public/order/cancel?orderId=${orderId}`, {
                 method: 'PUT',

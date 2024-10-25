@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import UserList from "@/components/admin/UserList";
 import Loader from "@/components/misc/Loader";
 import UserService from "@/service/UserService";
@@ -8,40 +8,72 @@ import { Card } from 'primereact/card';
 import { InputText } from 'primereact/inputtext';
 import { Button } from 'primereact/button';
 import { useRouter } from 'next/router'; 
-import withAuth from "@/components/misc/WithAuth";
+import withAuth from "@/components/misc/withAuth";
+import { AuthContext } from '../../../context/AuthContext';
 
 
-const debouncedFetchUsers = debounce((searchTerm, setUsers) => {
-    const userService = new UserService();
-    userService.getKitchenUsers({
-        pageNumber: 1,
-        pageSize: 10,
-        nameSearch: searchTerm,
-    }).then((users) => {
-        setUsers(users);
-    });
-}, 1500);
+// const debouncedFetchUsers = debounce((pageNumber, pageSize, setUsers, authToken) => {
+//     const userService = new UserService();
+//     console.log('parametros:', pageNumber, pageSize, authToken); // Verifica que los parámetros son correctos aquí
+//     userService.getKitchenUsers2({
+//         pageNumber, // Usa la variable, no el string '0'
+//         pageSize, // Usa la variable, no el string '10'
+//         sortBy: 'name',
+//         sortOrder: 'asc',
+//         authToken
+//     }).then(users => {
+//         setUsers(users);
+//     }).catch(error => {
+//         console.error('Failed to fetch users:', error);
+//     });
+// }, 1500);
+
 
 function KitchenAccountsPage() {
+    
+    const { authToken } = useContext(AuthContext);
+
     const router = useRouter();  
     const [users, setUsers] = useState([]);
     const [nameSearch, setNameSearch] = useState("");
     const [loading, setLoading] = useState(true);
-    const fetchUsers = React.useCallback(
-        (searchTerm) => {
-            setLoading(true);
-            debouncedFetchUsers(searchTerm, (users) => {
+    
+    const [page, setPage] = useState(0);
+    const [rows, setRows] = useState(10);
+    console.log('authToken:', authToken);
+
+    const fetchUsers = React.useCallback(() => {
+        const debouncedFetch = debounce((pageNumber, pageSize, setUsers, token) => {
+            const userService = new UserService();
+            console.log('parametros:', pageNumber, pageSize, authToken);
+            userService.getKitchenUsers2({
+                pageNumber,
+                pageSize,
+                sortBy: 'name',
+                sortOrder: 'asc',
+                authToken: token
+            }).then(users => {
                 setUsers(users);
-                setLoading(false);
+                console.log('setUsers1:', users);
+            }).catch(error => {
+                console.error('Failed to fetch users:', error);
             });
-        },
-        [] // No dependencies needed aquí
-    );
+        }, 1500);
+    
+        debouncedFetch(page, rows, setUsers, authToken);
+    }, [page, rows, authToken]); // authToken se incluye para que el useCallback se recalcule con el token actualizado
+    
 
     React.useEffect(() => {
         setLoading(true); // Mostrar loader mientras se buscan los datos
-        fetchUsers(nameSearch);
-    }, [nameSearch, fetchUsers]);
+        fetchUsers(page, rows); // Solo deberías pasar `page` y `rows`
+    }, [authToken, page, rows, fetchUsers]);
+    
+
+    const onPaginate = (event) => {
+        setPage(event.page);
+        setRows(event.rows);
+    };
 
     const handleSearchChange = (event) => {
         setNameSearch(event.target.value);
@@ -77,7 +109,9 @@ function KitchenAccountsPage() {
                         <Loader />
                     </div>
                 ) : (
-                    <UserList users={users} />
+                    // <UserList users={users} />
+                    <UserList users={users} onPaginate={onPaginate} page={page} rows={rows} loading={loading} />
+
                 )}
 
             </div>

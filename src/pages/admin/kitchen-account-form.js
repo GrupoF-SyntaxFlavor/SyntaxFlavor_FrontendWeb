@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState,useContext } from "react";
 import AdminSidebar from "@/components/admin/AdminSidebar";
 import { useRouter } from "next/router";
 import { Card } from 'primereact/card';
@@ -6,10 +6,12 @@ import { InputText } from "primereact/inputtext";
 import { Button } from "primereact/button";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
+import { AuthContext } from '../../../context/AuthContext';
 import withAuth from "@/components/misc/withAuth";
 import AdminService from "@/service/AdminService";
 
 function KitchenAccountForm() {
+    const { authToken } = useContext(AuthContext);
     const router = useRouter();
     const [email, setEmail] = useState("");
     const [name, setName] = useState("");
@@ -21,6 +23,8 @@ function KitchenAccountForm() {
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);  // Estado para mostrar/ocultar confirmación
     const [showConfirmationMessage, setShowConfirmationMessage] = useState(false);  // Estado para mostrar el mensaje de confirmación
 
+    console.log('authToken:', authToken);
+    
     const handleSubmit = async (event) => {
         event.preventDefault();
     
