@@ -23,10 +23,14 @@ export default class MenuService {
         }
     }
 
-    async enableMenuItem(menuItemId) {
+    async enableMenuItem(menuItemId, token) {
         try {
             const response = await fetch(`${this.BASE_URL}/api/v1/menu/item/${menuItemId}/enable`, {
-            method: 'PATCH',
+                method: 'PATCH',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                }
             });
             const data = await response.json();
             console.log('Menu item enabled:', data);
@@ -37,10 +41,14 @@ export default class MenuService {
         }
     }
 
-    async disableMenuItem(menuItemId) {
+    async disableMenuItem(menuItemId, token) {
         try {
             const response = await fetch(`${this.BASE_URL}/api/v1/menu/item/${menuItemId}/disable`, {
-            method: 'PATCH',
+                method: 'PATCH',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                }
             });
             const data = await response.json();
             console.log('Menu item disabled:', data);

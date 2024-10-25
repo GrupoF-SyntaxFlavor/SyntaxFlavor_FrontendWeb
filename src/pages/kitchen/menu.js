@@ -11,52 +11,47 @@ import MenuService from '@/service/MenuService';
 import { Image } from 'primereact/image';
 import { Dropdown } from 'primereact/dropdown';
 import { InputNumber } from 'primereact/inputnumber';
-import { AuthContext } from '../../../context/AuthContext';
 import { MenuContext } from '../../../context/MenuContext';
 
 function MenuPage() {
     //contexts
-    const { authToken } = useContext(AuthContext);
-    const { menuItems, addMenuItem, setMenuItems } = useContext(MenuContext);
-    const [items, setItems] = useState([]); // Datos de los ítems
+    const { 
+        menuItems, 
+        loadMenuItems, 
+        changeMenuItemStatus, 
+        minPrice,
+        setMinPrice, 
+        maxPrice,
+        setMaxPrice, 
+        selectedItemSort,
+        setSelectedItemSort, 
+        pageNumber, 
+        setPageNumber,
+        first,
+        setFirst,
+        rows,
+        setRows,
+        totalRecords,
+        setTotalRecords
+    } = useContext(MenuContext);
 
     const [selectedItem, setSelectedItem] = useState(null); // Ítem seleccionado
 
-    const [first, setFirst] = useState(0); // Control de la paginación (inicio)
-    const [rows, setRows] = useState(10); // Cantidad de filas por página
-    const [totalRecords, setTotalRecords] = useState(0); // Total de registros para la paginación
-    const [minPrice, setMinPrice] = useState(0);
-    const [maxPrice, setMaxPrice] = useState(100);
-    const [selectedItemSort, setSelectedItemSort] = useState('true');
-    const [pageNumber, setPageNumber] = useState(0);
     const toast = useRef(null);
     const itemsSort = [ {name: 'Ascendente', code: 'true'}, {name: 'Descendente', code: 'false'}];
 
-    const menuService = new MenuService();
-
     useEffect(() => {
         loadItems(pageNumber); // Cargar ítems al cambiar la paginación
-    }, [minPrice, maxPrice, pageNumber, selectedItemSort]);
+    }, [pageNumber]); // eslint-disable-line react-hooks/exhaustive-deps
     
     useEffect(() => {
         console.log("menuItems actualizado:", menuItems);
     }, [menuItems]); 
 
 
-    const loadItems = async (pageNumber) => {
+    const loadItems = async () => {
         try {
-            
-            const data= await menuService.getMenuItems(minPrice, maxPrice, pageNumber, rows, selectedItemSort, authToken);
-            setMenuItems([]);
-            data.content.forEach((item) => {
-                addMenuItem(item); // Usa la función del contexto para agregar ítems
-            });
-            console.log("menuItems: " + menuItems );
-            console.log("total elements: ",data.totalElements);
-            setTotalRecords(data.totalElements);
-            if(data.first){
-                setFirst(0);
-            }
+            await loadMenuItems();
         } catch (error) {
             console.error('Error loading items:', error);
             toast.current.show({ severity: 'error', summary: 'Error', detail: 'Error al cargar los ítems', life: 3000 });
@@ -74,33 +69,34 @@ function MenuPage() {
         message: `¿Estás seguro de que deseas ${newStatus.toLowerCase()} el ítem ${item.name}?`,
         header: 'Confirmar',
         icon: 'pi pi-exclamation-triangle',
-        accept: () => handleStatusChange(item, newStatus),
+        accept: async () => await handleStatusChange(item, newStatus),
         reject: () => {
             toast.current.show({ severity: 'warn', summary: 'Cancelado', detail: 'Has cancelado la operación', life: 2000 });
         }
         });
     };
 
-    const handleStatusChange = (item, newStatus) => {
+    const handleStatusChange = async (item, newStatus) => {
         let updatedStatus;
         if (newStatus === 'Habilitar') {
-            updatedStatus = 'Habilitado';
+            updatedStatus = true;
         } else if (newStatus === 'Deshabilitar') {
-            updatedStatus = 'Deshabilitado';
+            updatedStatus = false;
         } else {
-            updatedStatus = newStatus; // Default case if there are more states
+            updatedStatus = false; //fallback
         }
 
-        const updatedItems = menuItems.map((i) =>
-            i.id === item.id ? { ...i, status: updatedStatus } : i
-        );
-        setItems(updatedItems);//TODO: cambiar esto por setMenuItems
+        await changeMenuItemStatus(item.id, updatedStatus);
         toast.current.show({ severity: 'success', summary: newStatus, detail: `El ítem ${item.name} ha sido ${newStatus.toLowerCase()}`, life: 3000 });
     };
 
     const itemTemplate = (option) => {
+        //console.log("option: ", option);
         return (
-            <div className="p-ai-center p-jc-between" style={styles.item}>
+            <div 
+            className="p-ai-center p-jc-between" 
+            style={option.status ? styles.item : styles.disabledItem}
+            >
             <div className="p-ai-center" style={styles.itemContent}>
                 <img src={option.image} alt={option.name} style={styles.image} />
                 <div className="p-ml-3 p-4">
@@ -110,24 +106,25 @@ function MenuPage() {
                 </div>
             </div>
             <div style={styles.buttonPosition}>
+                {option.status ? (
                 <Button 
-                label="Habilitar" 
-                icon="pi pi-check" 
-                className="p-button-success"
-                size="small"     
-                style={{...styles.enableButton, marginRight: '0.5rem'}}
-                onClick={() => showConfirmStatusChange(option, 'Habilitar')}
-                disabled={option.status === 'Habilitado'} // Deshabilitado si ya está habilitado
+                    label="Deshabilitar" 
+                    icon="pi pi-times" 
+                    className="p-button-danger"
+                    size="small"     
+                    style={styles.enableButton}
+                    onClick={() => showConfirmStatusChange(option, 'Deshabilitar')}
                 />
+                ) : (
                 <Button 
-                label="Deshabilitar" 
-                icon="pi pi-times" 
-                className="p-button-danger"
-                size="small"     
-                style={styles.enableButton}
-                onClick={() => showConfirmStatusChange(option, 'Deshabilitar')}
-                disabled={option.status === 'Deshabilitado'} // Deshabilitado si ya está deshabilitado
+                    label="Habilitar" 
+                    icon="pi pi-check" 
+                    className="p-button-success"
+                    size="small"     
+                    style={{...styles.enableButton, marginRight: '0.5rem'}}
+                    onClick={() => showConfirmStatusChange(option, 'Habilitar')}
                 />
+                )}
             </div>
             </div>
         );
@@ -189,6 +186,11 @@ function MenuPage() {
             display: 'flex',
             //justifyContent: 'space-between',
             alignItems: 'center',
+        },
+        disabledItem: {
+            opacity: 0.5,
+            display: 'flex',
+            justifyContent: 'space-between',
         },
         itemContent: {
             display: 'flex',
