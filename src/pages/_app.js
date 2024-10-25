@@ -1,4 +1,5 @@
 import { AuthProvider } from "../../context/AuthContext";
+import { MenuProvider } from '../../context/MenuContext'; 
 
 import "@/styles/globals.css";
 import "@/styles/sidebar.css";
@@ -15,7 +16,9 @@ import "primeflex/primeflex.css";
 export default function App({ Component, pageProps }) {
   return (
     <AuthProvider>
+      <MenuProvider>
       <Component {...pageProps} />
+      </MenuProvider>
     </AuthProvider>
   );
 }
