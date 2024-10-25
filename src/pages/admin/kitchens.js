@@ -42,32 +42,38 @@ function KitchenAccountsPage() {
     const [rows, setRows] = useState(10);
     console.log('authToken:', authToken);
 
-    const fetchUsers = React.useCallback(() => {
-        const debouncedFetch = debounce((pageNumber, pageSize, setUsers, token) => {
+    const fetchUsers = React.useCallback(async () => {
+        setLoading(true);
+        try {
             const userService = new UserService();
-            console.log('parametros:', pageNumber, pageSize, authToken);
-            userService.getKitchenUsers2({
-                pageNumber,
-                pageSize,
+            const data = await userService.getKitchenUsers2({
+                pageNumber: page,
+                pageSize: rows,
                 sortBy: 'name',
                 sortOrder: 'asc',
-                authToken: token
-            }).then(users => {
-                setUsers(users);
-                console.log('setUsers1:', users);
-            }).catch(error => {
-                console.error('Failed to fetch users:', error);
+                authToken
             });
-        }, 1500);
+            console.log("Users fetched:", data);  // Verifica que los usuarios se reciben correctamente
+            // Evitar re-renderizar si no hay cambios en los datos
+            if (JSON.stringify(data.content) !== JSON.stringify(users)) {
+                setUsers(data.content);  // Solo actualizar si los datos son diferentes
+            }
+            setTotalRecords(data.totalElements);  // Total de registros para la paginación
     
-        debouncedFetch(page, rows, setUsers, authToken);
-    }, [page, rows, authToken]); // authToken se incluye para que el useCallback se recalcule con el token actualizado
+            // Verificar si estamos en la última página
+            const isLastPageCheck = page + rows >= data.totalElements;
+            setIsLastPage(isLastPageCheck);
+        } catch (error) {
+            console.error('Failed to fetch users:', error);
+            setError(error.message || "Failed to load data");
+        }
+        setLoading(false);
+    }, [page, rows, authToken]);
     
-
     React.useEffect(() => {
-        setLoading(true); // Mostrar loader mientras se buscan los datos
-        fetchUsers(page, rows); // Solo deberías pasar `page` y `rows`
-    }, [authToken, page, rows, fetchUsers]);
+        fetchUsers();
+    }, [fetchUsers]);
+    
     
 
     const onPaginate = (event) => {
@@ -110,7 +116,15 @@ function KitchenAccountsPage() {
                     </div>
                 ) : (
                     // <UserList users={users} />
-                    <UserList users={users} onPaginate={onPaginate} page={page} rows={rows} loading={loading} />
+                    // <UserList users={users} onPaginate={onPaginate} page={page} rows={rows} loading={loading} />
+                    <UserList 
+                        users={users} 
+                        onPaginate={onPaginate} 
+                        page={page} 
+                        rows={rows} 
+                        loading={loading}
+                        totalPages={totalPages}
+                    />
 
                 )}
 
