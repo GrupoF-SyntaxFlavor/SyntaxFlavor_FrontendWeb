@@ -339,7 +339,7 @@ const styles = {
         gap: '20px',  // Ensure sufficient space between radio buttons
     },
     calendar: {
-        marginLeft: '200px', 
+        marginLeft: '25px', 
     },
     ml2: {
         marginLeft: '8px',
