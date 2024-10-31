@@ -81,6 +81,7 @@ function OrdersPage() {
         }
     };
 
+    //FIXME: Agregar un util para el formato de fechas
     useEffect(() => {
         if (authToken) {
             const selectedDates = dates ? dates : getCurrentDayRange();  // Usa las fechas seleccionadas o el rango del día actual por defecto

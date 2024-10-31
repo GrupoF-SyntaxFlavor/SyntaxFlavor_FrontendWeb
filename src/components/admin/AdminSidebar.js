@@ -29,6 +29,7 @@ export default function AdminSidebar({ children }) {
             icon: 'pi pi-sign-out',
             command: () => {
                 router.push('/login');
+                //TODO:Cuando el token este en una cookie, se debería destruir el token 
             }
         },
     ];
