@@ -2,8 +2,8 @@ import React, { useState, useRef } from 'react';
 import { Menubar } from 'primereact/menubar';
 import { Button } from 'primereact/button';
 import { Menu } from 'primereact/menu';
-import 'primeicons/primeicons.css';
 import { useRouter } from "next/router";
+import 'primeicons/primeicons.css';
 
 export default function KitchenSidebar({ children }) {
     const [visible, setVisible] = useState(false);  // Controla la visibilidad del menú desplegable
@@ -24,6 +24,13 @@ export default function KitchenSidebar({ children }) {
             label: 'Control de cuentas',
             icon: 'pi pi-user-plus',
             command: () => { router.push('/admin/kitchens') }
+        },
+        {
+            label: 'Cerrar sesión',
+            icon: 'pi pi-sign-out',
+            command: () => {
+                router.push('/login');
+            }
         },
     ];
 
