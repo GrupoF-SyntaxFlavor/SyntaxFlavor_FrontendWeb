@@ -14,7 +14,6 @@ import { Dropdown } from 'primereact/dropdown';
 import OrderService from '@/service/OrderService';
 import withAuth from '@/components/misc/withAuth';
 import { AuthContext } from '../../../context/AuthContext';
-import { map, padStart } from 'lodash';
 
 function OrdersPage() {
     const { authToken } = useContext(AuthContext);
@@ -35,40 +34,6 @@ function OrdersPage() {
 
     const orderService = new OrderService(); 
     const toast = useRef(null);
-
-    const getCurrentDayRange = () => {
-        const today = new Date();
-        const startOfDay = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 0, 0, 0);
-        const endOfDay = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 23, 59, 59);
-        return [startOfDay, endOfDay];
-    };
-
-    const formatDate = (date, isStartDate = true) => {
-        const year = date.getFullYear();
-        const month = String(date.getMonth() + 1).padStart(2, '0');
-        const day = String(date.getDate()).padStart(2, '0');
-    
-        // Si es startDate, ponemos la hora en 00:00:00, si es endDate, en 23:59:59
-        const hours = isStartDate ? '00' : '23';
-        const minutes = isStartDate ? '00' : '59';
-        const seconds = isStartDate ? '00' : '59';
-        
-        return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
-    };
-    
-
-    useEffect(() => {
-        if (authToken) {
-            const selectedDates = dates ? dates : getCurrentDayRange();  // Usa las fechas seleccionadas o el rango del día actual por defecto
-            const formattedDates = [
-                formatDate(new Date(selectedDates[0]), true),  // Formatea el startDate (00:00:00)
-                formatDate(new Date(selectedDates[1]), false)  // Formatea el endDate (23:59:59)
-            ];
-    
-            console.log('Fechas a utilizar:', formattedDates);  // Debug para verificar el formato
-            loadOrders(authToken, first / rows, formattedDates);
-        }
-    }, [authToken, first, rows, status, dates, selectedItem]);
 
     useEffect(() => {
         // Si estamos en la última página, iniciamos el polling
@@ -96,7 +61,7 @@ function OrdersPage() {
     const loadOrders = async (authToken, pageNumber, formattedDates = []) => {
         setLoading(true);
         try {
-            const [startDate, endDate] = formattedDates; // Supone que tienes un rango de fechas (opcional)
+            const [startDate, endDate] = formattedDates;
             const data = await orderService.getOrdersByStatus(status, pageNumber, selectedItem, startDate, endDate, authToken); 
             // Evitar re-renderizar si no hay cambios en los datos
             if (JSON.stringify(data.content) !== JSON.stringify(orders)) {
@@ -114,9 +79,41 @@ function OrdersPage() {
         } finally {
             setLoading(false);  // Terminamos la carga
         }
-        //console.log('Orders loaded:', orders);
     };
 
+    useEffect(() => {
+        if (authToken) {
+            const selectedDates = dates ? dates : getCurrentDayRange();  // Usa las fechas seleccionadas o el rango del día actual por defecto
+            const formattedDates = [
+                formatDate(new Date(selectedDates[0]), true),  // Formatea el startDate (00:00:00)
+                formatDate(new Date(selectedDates[1]), false)  // Formatea el endDate (23:59:59)
+            ];
+    
+            console.log('Fechas a utilizar:', formattedDates);  // Debug para verificar el formato
+            loadOrders(authToken, first / rows, formattedDates);
+        }
+    }, [authToken, first, rows, status, dates, selectedItem]);
+
+    const getCurrentDayRange = () => {
+        const today = new Date();
+        const startOfDay = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 0, 0, 0);
+        const endOfDay = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 23, 59, 59);
+        return [startOfDay, endOfDay];
+    };
+
+    const formatDate = (date, isStartDate = true) => {
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+    
+        // Si es startDate, ponemos la hora en 00:00:00, si es endDate, en 23:59:59
+        const hours = isStartDate ? '00' : '23';
+        const minutes = isStartDate ? '00' : '59';
+        const seconds = isStartDate ? '00' : '59';
+        
+        return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
+    };
+     
     const handlePageChange = (event) => {
         setFirst(event.first);  // Actualizamos el primer registro visible
         setRows(event.rows);    // Actualizamos el número de registros visibles por página
@@ -125,12 +122,15 @@ function OrdersPage() {
     const handleCompleteOrder = async (orderId) => {
         setLoading(true);
         try {
-            const result = await orderService.completeOrder(orderId);
+            const result = await orderService.completeOrder(orderId, authToken);
             if (result.responseCode == 'ORD-003') {
-                // const updatedOrders = orders.filter(order => order.orderId !== orderId);
-                // setOrders(updatedOrders);  // Actualiza el estado removiendo la orden cancelada
-                const newFirst = (orders.length === 1 && first > 0) ? first - rows : first;  // Ajusta 'first' si la página quedará vacía
-                await loadOrders(newFirst / rows);  // Recarga las órdenes después de eliminar una
+                const newFirst = (orders.length === 1 && first > 0) ? first - rows : first; 
+                const selectedDates = dates ? dates : getCurrentDayRange();  // Usa las fechas seleccionadas o el rango del día actual por defecto
+                const formattedDates = [
+                    formatDate(new Date(selectedDates[0]), true),  // Formatea el startDate (00:00:00)
+                    formatDate(new Date(selectedDates[1]), false)  // Formatea el endDate (23:59:59)
+                ];
+                await loadOrders(authToken, newFirst / rows, formattedDates);
                 toast.current.show({ severity: 'success', summary: 'Éxito', detail: 'Orden completada exitosamente', life: 2000 });
             } else {
                 throw new Error(result.message);
@@ -160,14 +160,17 @@ function OrdersPage() {
     };
 
     const handleCancelOrder = async (orderId) => {
-        setLoading(true);
+        setLoading(true)
         try {
-            const result = await orderService.cancelOrder(orderId);
+            const result = await orderService.cancelOrder(orderId, authToken);
             if (result.responseCode == 'ORD-002') {
-                // const updatedOrders = orders.filter(order => order.orderId !== orderId);
-                // setOrders(updatedOrders);  // Actualiza el estado removiendo la orden cancelada
                 const newFirst = (orders.length === 1 && first > 0) ? first - rows : first;  // Ajusta 'first' si la página quedará vacía
-                await loadOrders(newFirst / rows);  // Recarga las órdenes después de eliminar una
+                const selectedDates = dates ? dates : getCurrentDayRange();  // Usa las fechas seleccionadas o el rango del día actual por defecto
+                const formattedDates = [
+                    formatDate(new Date(selectedDates[0]), true),  // Formatea el startDate (00:00:00)
+                    formatDate(new Date(selectedDates[1]), false)  // Formatea el endDate (23:59:59)
+                ];
+                await loadOrders(authToken, newFirst / rows, formattedDates);
                 toast.current.show({ severity: 'success', summary: 'Éxito', detail: 'Orden cancelada exitosamente', life: 2000 });
             } else {
                 throw new Error(result.message);
