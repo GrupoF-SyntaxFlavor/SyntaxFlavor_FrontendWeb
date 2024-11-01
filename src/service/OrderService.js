@@ -27,7 +27,6 @@ export default class OrderService {
         }
     }
     // Método para obtener las ordenes paginadas por estado
-    //http://localhost:8080/api/v1/public/order/status?status=Cancelado&pageNumber=0
     async getOrdersByStatus(status, pageNumber, asc, startDate, endDate, token) {
         try {
             const response = await fetch(`${this.BASE_URL}/api/v1/order?status=${status}&minDate=${startDate}&maxDate=${endDate}&pageNumber=${pageNumber}&sortAscending=${asc}`, {
@@ -49,14 +48,13 @@ export default class OrderService {
         }
     }
 
-    //metodo para cacelar una orden
-    // PUT http://localhost:8080/api/v1/public/order/cancel?orderId=1
-    async cancelOrder(orderId) {
-        console.log('Canceling order in service:', orderId);
+    //metodo para cancelar una orden
+    async cancelOrder(orderId, token) {
         try {
-            const response = await fetch(`${this.BASE_URL}/api/v1/public/order/cancel?orderId=${orderId}`, {
+            const response = await fetch(`${this.BASE_URL}/api/v1/order/cancel?orderId=${orderId}`, {
                 method: 'PUT',
                 headers: {
+                    'Authorization':  `Bearer ${token}`,
                     'Content-Type': 'application/json',
                 }
             });
@@ -75,13 +73,12 @@ export default class OrderService {
     }
 
     //metodo para completar una orden
-    // PUT http://localhost:8080/api/v1/public/order/deliver?orderId=413
-    async completeOrder(orderId) {
-        console.log('Canceling order in service:', orderId);
+    async completeOrder(orderId, token) {
         try {
-            const response = await fetch(`${this.BASE_URL}/api/v1/public/order/deliver?orderId=${orderId}`, {
+            const response = await fetch(`${this.BASE_URL}/api/v1/order/deliver?orderId=${orderId}`, {
                 method: 'PUT',
                 headers: {
+                    'Authorization':  `Bearer ${token}`,
                     'Content-Type': 'application/json',
                 }
             });
