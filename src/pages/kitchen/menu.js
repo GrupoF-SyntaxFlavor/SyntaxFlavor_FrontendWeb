@@ -6,11 +6,18 @@ import { Button } from 'primereact/button';
 import { Card } from 'primereact/card';
 import { Toast } from 'primereact/toast';
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
+import { Dialog } from 'primereact/dialog';
+import { InputText } from 'primereact/inputtext';
+import { InputNumber } from 'primereact/inputnumber';
+import { FloatLabel } from 'primereact/floatlabel';
+import { FileUpload } from 'primereact/fileupload';
+import { ProgressBar } from 'primereact/progressbar';
+import { Tag } from 'primereact/tag';
+import { Tooltip } from 'primereact/tooltip';
+import { Image } from 'primereact/image';
 import withAuth from '@/components/misc/withAuth';
 import MenuService from '@/service/MenuService';
-import { Image } from 'primereact/image';
 import { Dropdown } from 'primereact/dropdown';
-import { InputNumber } from 'primereact/inputnumber';
 import { MenuContext } from '../../../context/MenuContext';
 
 function MenuPage() {
@@ -36,7 +43,11 @@ function MenuPage() {
     } = useContext(MenuContext);
 
     const [selectedItem, setSelectedItem] = useState(null); // Ítem seleccionado
+    const [isDialogVisible, setDialogVisible] = useState(false);
+    const [isEditMode, setIsEditMode] = useState(false); // Para saber si es edición o agregar
+    const [formValues, setFormValues] = useState({ name: '', description: '', price: null, image_url: '' });
 
+    
     const toast = useRef(null);
     const itemsSort = [ {name: 'Ascendente', code: 'true'}, {name: 'Descendente', code: 'false'}];
 
@@ -56,6 +67,23 @@ function MenuPage() {
             console.error('Error loading items:', error);
             toast.current.show({ severity: 'error', summary: 'Error', detail: 'Error al cargar los ítems', life: 3000 });
         }
+    };
+
+    const openDialog = (item = null) => {
+        setIsEditMode(!!item); // Si item no es nulo, estamos en modo edición
+        setFormValues(item ? { ...item } : { name: '', description: '', price: null, image_url: '' });
+        setDialogVisible(true);
+    };
+
+    const handleSave = () => {
+        if (isEditMode) {
+            // Lógica para editar el producto
+            console.log("Editando producto:", formValues);
+        } else {
+            // Lógica para agregar el producto
+            console.log("Agregando producto:", formValues);
+        }
+        setDialogVisible(false); // Cerrar el modal después de guardar
     };
 
     const handlePageChange = (event) => {
@@ -90,23 +118,18 @@ function MenuPage() {
         toast.current.show({ severity: 'success', summary: newStatus, detail: `El ítem ${item.name} ha sido ${newStatus.toLowerCase()}`, life: 3000 });
     };
 
-    const itemTemplate = (option) => {
-        //console.log("option: ", option);
-        return (
-            <div 
-            className="p-ai-center p-jc-between" 
-            style={option.status ? styles.item : styles.disabledItem}
-            >
-            <div className="p-ai-center" style={styles.itemContent}>
-                <img src={option.image} alt={option.name} style={styles.image} />
-                <div className="p-ml-3 p-4">
-                <div style={styles.label}>{option.name}</div>
-                <div style={styles.description}>{option.description}</div>
-                <div style={styles.price}>Precio: Bs. {option.price}</div>
-                </div>
-            </div>
-            <div style={styles.buttonPosition}>
-                {option.status ? (
+    const actionButtonsTemplate = (option) => (
+        <div style={styles.buttonPosition}>
+            <Button 
+                label="Editar" 
+                icon="pi pi-pencil"
+                className="p-button-info"
+                size="small"     
+                style={styles.enableButton}
+                onClick={() => openDialog(option)} // Abre el modal en modo edición
+
+            />
+            {option.status ? (
                 <Button 
                     label="Deshabilitar" 
                     icon="pi pi-times" 
@@ -115,7 +138,7 @@ function MenuPage() {
                     style={styles.enableButton}
                     onClick={() => showConfirmStatusChange(option, 'Deshabilitar')}
                 />
-                ) : (
+            ) : (
                 <Button 
                     label="Habilitar" 
                     icon="pi pi-check" 
@@ -124,14 +147,32 @@ function MenuPage() {
                     style={{...styles.enableButton, marginRight: '0.5rem'}}
                     onClick={() => showConfirmStatusChange(option, 'Habilitar')}
                 />
-                )}
-            </div>
+            )}
+        </div>
+    );
+    
+    // Actualización de itemTemplate para utilizar actionButtonsTemplate
+    const itemTemplate = (option) => {
+        return (
+            <div 
+                className="p-ai-center p-jc-between" 
+                style={option.status ? styles.item : styles.disabledItem}
+            >
+                <div className="p-ai-center" style={styles.itemContent}>
+                    <img src={option.image} alt={option.name} style={styles.image} />
+                    <div className="p-ml-3 p-4">
+                        <div style={styles.label}>{option.name}</div>
+                        <div style={styles.description}>{option.description}</div>
+                        <div style={styles.price}>Precio: Bs. {option.price}</div>
+                    </div>
+                </div>
             </div>
         );
     };
+    
 
-
-    // Styles para el componente // TODO: Mover a un archivo de estilos
+    // Styles para el componente
+    // TODO: Mover a un archivo de estilos
     const styles = {
         container: {
             display: 'flex',
@@ -218,19 +259,148 @@ function MenuPage() {
             // fontSize: '0.9rem',
         },
         enableButton: {
+            width: '150px',
             marginLeft: 'auto',
+            marginRight: '2px',
+            marginBottom: '2px'
         },
         buttonPosition:{
             paddingTop: '3rem',
             paddingRight: '1rem',
+        },
+        plusButton:{
+            width: '150px',
         }
     };
 
+    const [totalSize, setTotalSize] = useState(0);
+    const fileUploadRef = useRef(null);
+    
+    const onTemplateSelect = (e) => {
+        let _totalSize = totalSize;
+        let files = e.files;
+
+        Object.keys(files).forEach((key) => {
+            _totalSize += files[key].size || 0;
+        });
+
+        setTotalSize(_totalSize);
+    };
+
+    const onTemplateUpload = (e) => {
+        let _totalSize = 0;
+
+        e.files.forEach((file) => {
+            _totalSize += file.size || 0;
+        });
+
+        setTotalSize(_totalSize);
+        toast.current.show({ severity: 'info', summary: 'Success', detail: 'File Uploaded' });
+    };
+
+    const onTemplateRemove = (file, callback) => {
+        setTotalSize(totalSize - file.size);
+        callback();
+    };
+
+    const onTemplateClear = () => {
+        setTotalSize(0);
+    };
+
+    const headerTemplate = (options) => {
+        const { className, chooseButton, uploadButton, cancelButton } = options;
+        const value = totalSize / 10000;
+        const formatedValue = fileUploadRef && fileUploadRef.current ? fileUploadRef.current.formatSize(totalSize) : '0 B';
+
+        return (
+            <div className={className} style={{ backgroundColor: 'transparent', display: 'flex', alignItems: 'center' }}>
+                {chooseButton}
+                {uploadButton}
+                {cancelButton}
+                <div className="flex align-items-center gap-3 ml-auto">
+                    <span>{formatedValue} / 1 MB</span>
+                    <ProgressBar value={value} showValue={false} style={{ width: '10rem', height: '12px' }}></ProgressBar>
+                </div>
+            </div>
+        );
+    };
+
+    const imageTemplate = (file, props) => {
+        return (
+            <div className="flex align-items-center flex-wrap">
+                <div className="flex align-items-center" style={{ width: '40%' }}>
+                    <img alt={file.name} role="presentation" src={file.objectURL} width={100} />
+                    <span className="flex flex-column text-left ml-3">
+                        {file.name}
+                        <small>{new Date().toLocaleDateString()}</small>
+                    </span>
+                </div>
+                <Tag value={props.formatSize} severity="warning" className="px-3 py-2" />
+                <Button type="button" icon="pi pi-times" className="p-button-outlined p-button-rounded p-button-danger ml-auto" onClick={() => onTemplateRemove(file, props.onRemove)} />
+            </div>
+        );
+    };
+
+    const emptyTemplate = () => {
+        return (
+            <div className="flex align-items-center flex-column">
+                <i className="pi pi-image mt-3 p-5" style={{ fontSize: '5em', borderRadius: '50%', backgroundColor: 'var(--surface-b)', color: 'var(--surface-d)' }}></i>
+                <span style={{ fontSize: '1.2em', color: 'var(--text-color-secondary)' }} className="my-5">
+                    Drag and Drop Image Here
+                </span>
+            </div>
+        );
+    };
+
+    const chooseOptions = { icon: 'pi pi-fw pi-images', iconOnly: true, className: 'custom-choose-btn p-button-rounded p-button-outlined' };
+    const uploadOptions = { icon: 'pi pi-fw pi-cloud-upload', iconOnly: true, className: 'custom-upload-btn p-button-success p-button-rounded p-button-outlined' };
+    const cancelOptions = { icon: 'pi pi-fw pi-times', iconOnly: true, className: 'custom-cancel-btn p-button-danger p-button-rounded p-button-outlined' };
 
     return (
         <KitchenSiderBar>
             <Toast ref={toast} />
             <ConfirmDialog />
+            {/* Modal para agregar/editar */}
+            <Dialog 
+                header={isEditMode ? "Editar Producto" : "Agregar Producto"} 
+                visible={isDialogVisible} 
+                style={{ width: 'auto' }} 
+                modal 
+                onHide={() => setDialogVisible(false)}
+                footer={
+                    <div>
+                        <Button label="Cancelar" icon="pi pi-times" onClick={() => setDialogVisible(false)} className="p-button-text" />
+                        <Button label="Guardar" icon="pi pi-check" onClick={handleSave} autoFocus />
+                    </div>
+                }
+            >
+                
+                <FloatLabel>
+                    <label htmlFor="name">Nombre</label>
+                    <InputText id="name" value={formValues.name} onChange={(e) => setFormValues({ ...formValues, name: e.target.value })} />
+                </FloatLabel>
+                <FloatLabel>
+                    <label htmlFor="description">Descripción</label>
+                    <InputText id="description" value={formValues.description} onChange={(e) => setFormValues({ ...formValues, description: e.target.value })} />
+                </FloatLabel>
+                <FloatLabel>
+                    <label htmlFor="price">Precio</label>
+                    <InputNumber id="price" value={formValues.price} onValueChange={(e) => setFormValues({ ...formValues, price: e.value })}/>
+                </FloatLabel>
+                <div>
+                    <Toast ref={toast}></Toast>
+
+                    <Tooltip target=".custom-choose-btn" content="Choose" position="bottom" />
+                    <Tooltip target=".custom-upload-btn" content="Upload" position="bottom" />
+                    <Tooltip target=".custom-cancel-btn" content="Clear" position="bottom" />
+
+                    <FileUpload ref={fileUploadRef} name="demo" maxFileSize={1000000}
+                        onUpload={onTemplateUpload} onSelect={onTemplateSelect} onError={onTemplateClear} onClear={onTemplateClear}
+                        headerTemplate={headerTemplate} itemTemplate={imageTemplate} emptyTemplate={emptyTemplate}
+                        chooseOptions={chooseOptions} uploadOptions={uploadOptions} cancelOptions={cancelOptions} />
+                </div>
+
+            </Dialog>
 
             <div>
                 <div style={styles.container}>
@@ -257,9 +427,8 @@ function MenuPage() {
                                         {/* Dropdown para selección de orden */}
                                         <label htmlFor="sort" className="mr-2">Ordenar por nombre:</label>
                                         <Dropdown id="sort" className="flex align-items-center" value={selectedItemSort} onChange={(e) => setSelectedItemSort(e.value)} options={itemsSort} optionLabel="name" optionValue="code" placeholder="Ascendente por nombre" />
-                                    </div>
 
-                                    
+                                    </div>     
                                 </div>
                             </Card>
                         </div>
@@ -280,6 +449,21 @@ function MenuPage() {
                         >
                             <Column header="#" body={(_, options) => options.rowIndex + 1} style={{ textAlign: 'center' }} />
                             <Column field="name" header="Nombre" body={itemTemplate} />
+                            <Column 
+                                header={
+                                    <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                                        <Button 
+                                            icon="pi pi-plus" 
+                                            className="p-button-success" 
+                                            label="Agregar"
+                                            onClick={() => openDialog()} 
+                                            style={styles.plusButton}
+                                        />
+                                    </div>
+                                } 
+                                body={(rowData) => actionButtonsTemplate(rowData)}
+                                style={{ textAlign: 'right', width: '100px' }} // Alineación a la derecha para toda la columna
+                            />
                         </DataTable>
                         <br />
                     </div>
