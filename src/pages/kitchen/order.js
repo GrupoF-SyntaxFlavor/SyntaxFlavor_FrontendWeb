@@ -295,7 +295,6 @@ function OrdersPage() {
                     {selectedOrder && (
                         // <OrderDetails order={selectedOrder} />
                         <OrderDetails order={selectedOrder} onConfirmComplete={showConfirmComplete} />
-
                     )}
                     {!selectedOrder && (    
                         <Card style={{ fontSize: '1rem', fontWeight: '700' }}>Seleccione una orden para ver sus platos</Card>
@@ -343,7 +342,7 @@ const styles = {
         gap: '20px',  // Ensure sufficient space between radio buttons
     },
     calendar: {
-        marginLeft: '185px', 
+        marginLeft: '10px', 
     },
     ml2: {
         marginLeft: '8px',

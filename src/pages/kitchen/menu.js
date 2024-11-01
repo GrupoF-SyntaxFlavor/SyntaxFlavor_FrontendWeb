@@ -46,7 +46,7 @@ function MenuPage() {
     const [isEditMode, setIsEditMode] = useState(false); // Para saber si es edición o agregar
     const [formValues, setFormValues] = useState({ name: '', description: '', price: null, image_url: '' });
     const [totalSize, setTotalSize] = useState(0);
-    const fileUploadRef = useRef(null);
+    const fileUploaded = useRef(null);
     
     const toast = useRef(null);
     const itemsSort = [ {name: 'Ascendente', code: 'true'}, {name: 'Descendente', code: 'false'}];
@@ -170,27 +170,31 @@ function MenuPage() {
         );
     };
     
-    
+    // Función para manejar la selección de un archivo y calcular su tamaño
     const onTemplateSelect = (e) => {
         let _totalSize = totalSize;
-        let files = e.files;
+        let file = e.files[0]; // Obtiene el único archivo seleccionado
+    
+        if (file) {
+            _totalSize += file.size || 0; // Suma el tamaño del archivo seleccionado al tamaño total
+        }
+    
+        setTotalSize(_totalSize); // Actualiza el estado del tamaño total con el nuevo valor
+        toast.current.show({ severity: 'info', summary: 'Éxito', detail: 'Archivo Subido' }); // Muestra una notificación de éxito
 
-        Object.keys(files).forEach((key) => {
-            _totalSize += files[key].size || 0;
-        });
-
-        setTotalSize(_totalSize);
     };
-
+    
+    // Función para manejar la carga del archivo y mostrar una notificación de éxito
     const onTemplateUpload = (e) => {
         let _totalSize = 0;
-
-        e.files.forEach((file) => {
-            _totalSize += file.size || 0;
-        });
-
+        let file = e.files[0]; // Obtiene el único archivo subido
+    
+        if (file) {
+            _totalSize = file.size || 0;// Asigna el tamaño del archivo al tamaño total
+        }
+    
         setTotalSize(_totalSize);
-        toast.current.show({ severity: 'info', summary: 'Success', detail: 'File Uploaded' });
+        toast.current.show({ severity: 'info', summary: 'Éxito', detail: 'Archivo Subido' }); // Muestra una notificación de éxito
     };
 
 
@@ -198,10 +202,11 @@ function MenuPage() {
         setTotalSize(0);
     };
 
+    //header del campo de las imágenes
     const headerTemplate = (options) => {
         const { className, chooseButton, cancelButton } = options;
         const value = totalSize / 10000;
-        const formatedValue = fileUploadRef && fileUploadRef.current ? fileUploadRef.current.formatSize(totalSize) : '0 B';
+        const formatedValue = fileUploaded && fileUploaded.current ? fileUploaded.current.formatSize(totalSize) : '0 B';
 
         return (
             <div className={className} style={{ backgroundColor: 'transparent', display: 'flex', alignItems: 'center' }}>
@@ -215,16 +220,15 @@ function MenuPage() {
         );
     };
 
-    const imageTemplate = (file, props) => {
+    //Campo que se muestra una vez se sube una imagen 
+    const imageTemplate = (file) => {
         return (
             <div className="flex align-items-center flex-wrap">
                 <div className="flex align-items-center" style={{ width: '100%' }}>
                     <img alt={file.name} role="presentation" src={file.objectURL} width={100} />
                     <span className="flex flex-column text-left ml-3">
                         {file.name}
-                        <small>{new Date().toLocaleDateString()}</small>
                     </span>
-                    <Tag value={props.formatSize} style={styles.formatSize} severity="warning" className="px-3 py-2" />
                 </div>
                 
                 
@@ -232,6 +236,7 @@ function MenuPage() {
         );
     };
 
+    //Campo que se muestra antes de subir una imagen
     const emptyTemplate = () => {
         return (
             <div className="flex align-items-center flex-column">
@@ -244,7 +249,6 @@ function MenuPage() {
     };
 
     const chooseOptions = { icon: 'pi pi-fw pi-images', iconOnly: true, className: 'custom-choose-btn p-button-rounded p-button-outlined' };
-    const uploadOptions = { icon: 'pi pi-fw pi-cloud-upload', iconOnly: true, className: 'custom-upload-btn p-button-success p-button-rounded p-button-outlined' };
     const cancelOptions = { icon: 'pi pi-fw pi-times', iconOnly: true, className: 'custom-cancel-btn p-button-danger p-button-rounded p-button-outlined' };
 
     return (
@@ -371,14 +375,12 @@ function MenuPage() {
                     <Tooltip target=".custom-choose-btn" content="Choose" position="bottom" />
                     <Tooltip target=".custom-cancel-btn" content="Clear" position="bottom" />
 
-                    <FileUpload ref={fileUploadRef} name="demo" maxFileSize={1000000}
+                    <FileUpload ref={fileUploaded} name="demo" accept=".jpg, .jpeg, .png, .webp, .bmp" maxFileSize={1000000}
                         onUpload={onTemplateUpload} onSelect={onTemplateSelect} onError={onTemplateClear} onClear={onTemplateClear}
                         headerTemplate={headerTemplate} itemTemplate={imageTemplate} emptyTemplate={emptyTemplate}
-                        chooseOptions={chooseOptions} uploadOptions={uploadOptions} cancelOptions={cancelOptions} />
+                        chooseOptions={chooseOptions} cancelOptions={cancelOptions} />
                 </div>
-
             </Dialog>
-
         </KitchenSiderBar>
     );
 }
