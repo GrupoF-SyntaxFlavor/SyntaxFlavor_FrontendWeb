@@ -53,7 +53,7 @@ export default class UserService {
     async getKitchenUsers2({pageNumber, pageSize, sortBy, sortOrder, token}){
         console.log("Fetching kitchen users");
         try {
-            const response = await fetch(`${this.BASE_URL}/api/v1/users-with-kitchen?page=${pageNumber}&size=${pageSize}&sortBy=${sortBy}&sortOrder=${sortOrder}`, {
+            const response = await fetch(`${this.BASE_URL}/api/v1/public/users-with-kitchen`, {
                 method: 'GET',
                 headers: {
                     'Authorization':  `Bearer ${token}`,

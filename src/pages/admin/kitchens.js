@@ -37,6 +37,10 @@ function KitchenAccountsPage() {
     const [users, setUsers] = useState([]);
     const [nameSearch, setNameSearch] = useState("");
     const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+    const [totalRecords, setTotalRecords] = useState(110);
+
+    const totalPages = Math.ceil(totalRecords / 10);
     
     const [page, setPage] = useState(0);
     const [rows, setRows] = useState(10);

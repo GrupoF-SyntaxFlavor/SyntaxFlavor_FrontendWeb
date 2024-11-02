@@ -8,6 +8,7 @@ import { Toast } from 'primereact/toast';
 import { InputText } from 'primereact/inputtext';
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
 import { useRouter } from 'next/router'; 
+import Loader from '@/components/misc/Loader';
 
 import UserService from "@/service/UserService";
 import withAuth from '@/components/misc/withAuth';
