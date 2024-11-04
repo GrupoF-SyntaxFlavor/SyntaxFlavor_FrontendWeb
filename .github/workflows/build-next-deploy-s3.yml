@@ -5,6 +5,7 @@ on:
     branches:
       - main
       - CarrascoAlejandro
+      - OscarCB
   schedule:
     - cron: '0 */6 * * *'
   workflow_dispatch:
