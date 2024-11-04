@@ -4,8 +4,7 @@ on:
   push:
     branches:
       - main
-      - CarrascoAlejandro
-      - OscarCB
+      - develop
   schedule:
     - cron: '0 */6 * * *'
   workflow_dispatch:
