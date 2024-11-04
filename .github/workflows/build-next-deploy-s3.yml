@@ -5,10 +5,13 @@ on:
     branches:
       - main
       - CarrascoAlejandro
+  schedule:
+    - cron: '0 */6 * * *'
   workflow_dispatch:
 
 jobs:
   build:
+    if: github.ref == 'refs/heads/develop' && github.event_name == 'schedule'
     runs-on: ubuntu-latest
 
     steps:
