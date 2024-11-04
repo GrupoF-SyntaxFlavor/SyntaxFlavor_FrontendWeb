@@ -24,6 +24,11 @@ export default function AdminSidebar({ children }) {
             icon: 'pi pi-external-link',
             command: () => { router.push('/kitchen/order') } // Redirige a la página de cocina
         },
+        {
+            label: 'Salir',
+            icon: 'pi pi-sign-out',
+            command: () => { router.push('/login') }
+        }
     ];
 
     const toggleMenu = (event) => {

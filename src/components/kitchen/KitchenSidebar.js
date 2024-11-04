@@ -25,6 +25,11 @@ export default function KitchenSidebar({ children }) {
             icon: 'pi pi-user-plus',
             command: () => { router.push('/admin/kitchens') }
         },
+        {
+            label: 'Salir',
+            icon: 'pi pi-sign-out',
+            command: () => { router.push('/login') }
+        }
     ];
 
     const toggleMenu = (event) => {
