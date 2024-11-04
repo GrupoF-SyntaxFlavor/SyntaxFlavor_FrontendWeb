@@ -46,7 +46,7 @@ function OrdersPage() {
                     formatDate(new Date(selectedDates[1]), false)  // Formatea el endDate (23:59:59)
                 ];
         
-                console.log('Fechas a utilizar:', formattedDates);                
+                //console.log('Fechas a utilizar:', formattedDates);                
                 loadOrders(authToken, first / rows, formattedDates);
             }, 10000);  // Polling cada 10 segundos
 
@@ -90,7 +90,7 @@ function OrdersPage() {
                 formatDate(new Date(selectedDates[1]), false)  // Formatea el endDate (23:59:59)
             ];
     
-            console.log('Fechas a utilizar:', formattedDates);  // Debug para verificar el formato
+            //console.log('Fechas a utilizar:', formattedDates);  // Debug para verificar el formato
             loadOrders(authToken, first / rows, formattedDates);
         }
     }, [authToken, first, rows, status, dates, selectedItem]);
@@ -295,7 +295,6 @@ function OrdersPage() {
                     {selectedOrder && (
                         // <OrderDetails order={selectedOrder} />
                         <OrderDetails order={selectedOrder} onConfirmComplete={showConfirmComplete} />
-
                     )}
                     {!selectedOrder && (    
                         <Card style={{ fontSize: '1rem', fontWeight: '700' }}>Seleccione una orden para ver sus platos</Card>
@@ -343,7 +342,7 @@ const styles = {
         gap: '20px',  // Ensure sufficient space between radio buttons
     },
     calendar: {
-        marginLeft: '185px', 
+        marginLeft: '10px', 
     },
     ml2: {
         marginLeft: '8px',

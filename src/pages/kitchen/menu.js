@@ -19,11 +19,13 @@ import withAuth from '@/components/misc/withAuth';
 import { Dropdown } from 'primereact/dropdown';
 import { MenuContext } from '../../../context/MenuContext';
 
+
 function MenuPage() {
     //contexts
     const { 
         menuItems, 
         loadMenuItems, 
+        addMenuItem, 
         changeMenuItemStatus, 
         minPrice,
         setMinPrice, 
@@ -44,9 +46,9 @@ function MenuPage() {
     const [selectedItem, setSelectedItem] = useState(null); // Ítem seleccionado
     const [isDialogVisible, setDialogVisible] = useState(false);
     const [isEditMode, setIsEditMode] = useState(false); // Para saber si es edición o agregar
-    const [formValues, setFormValues] = useState({ name: '', description: '', price: null, image_url: '' });
+    const [formValues, setFormValues] = useState({ name: '', description: '', price: null, image: '' });
     const [totalSize, setTotalSize] = useState(0);
-    const fileUploadRef = useRef(null);
+    const imageUploaded = useRef(null);
     
     const toast = useRef(null);
     const itemsSort = [ {name: 'Ascendente', code: 'true'}, {name: 'Descendente', code: 'false'}];
@@ -54,9 +56,9 @@ function MenuPage() {
     useEffect(() => {
         loadItems(pageNumber); // Cargar ítems al cambiar la paginación
     }, [minPrice, maxPrice, pageNumber, selectedItemSort]);
-    
+
     useEffect(() => {
-        console.log("menuItems actualizado:", menuItems);
+        //console.log("menuItems actualizado:", menuItems);
     }, [menuItems]); 
 
 
@@ -71,20 +73,29 @@ function MenuPage() {
 
     const openDialog = (item = null) => {
         setIsEditMode(!!item); // Si item no es nulo, estamos en modo edición
-        setFormValues(item ? { ...item } : { name: '', description: '', price: null, image_url: '' });
+        setFormValues(item ? { ...item } : { name: '', description: '', price: null, image: '' });
         setDialogVisible(true);
     };
 
-    const handleSave = () => {
-        if (isEditMode) {
-            // Lógica para editar el producto
-            console.log("Editando producto:", formValues);
-        } else {
-            // Lógica para agregar el producto
-            console.log("Agregando producto:", formValues);
+    const handleSave = async () => {
+    if (isEditMode) {
+        console.log("Editando producto:", formValues);
+        // Aquí se podría llamar a una función de edición si se necesita
+    } else {
+        try {
+            await addMenuItem(formValues);
+            console.log("Producto agregado exitosamente:", formValues);
+            toast.current.show({ severity: 'success', summary: 'Éxito', detail: 'Producto agregado', life: 3000 });
+
+            // Recargar la lista de ítems para reflejar el nuevo producto
+            await loadMenuItems();
+        } catch (error) {
+            console.error('Error adding item:', error);
+            toast.current.show({ severity: 'error', summary: 'Error', detail: 'No se pudo agregar el producto', life: 3000 });
         }
-        setDialogVisible(false); // Cerrar el modal después de guardar
-    };
+    }
+    setDialogVisible(false);
+};
 
     const handlePageChange = (event) => {
         setFirst(event.first); // Actualizar la página
@@ -115,7 +126,9 @@ function MenuPage() {
         }
 
         await changeMenuItemStatus(item.id, updatedStatus);
-        toast.current.show({ severity: 'success', summary: newStatus, detail: `El ítem ${item.name} ha sido ${newStatus.toLowerCase()}`, life: 3000 });
+        if (toast.current) {
+            toast.current.show({ severity: 'success', summary: newStatus, detail: `El ítem ${item.name} ha sido ${newStatus.toLowerCase()}`, life: 3000 });
+        }
     };
 
     const actionButtonsTemplate = (option) => (
@@ -144,7 +157,7 @@ function MenuPage() {
                     icon="pi pi-check" 
                     className="p-button-success"
                     size="small"     
-                    style={{...styles.enableButton, marginRight: '0.5rem'}}
+                    style={{...styles.enableButton}}
                     onClick={() => showConfirmStatusChange(option, 'Habilitar')}
                 />
             )}
@@ -170,38 +183,51 @@ function MenuPage() {
         );
     };
     
-    
+    // Función para manejar la selección de un archivo y calcular su tamaño
     const onTemplateSelect = (e) => {
         let _totalSize = totalSize;
-        let files = e.files;
+        const file = e.files[0]; // Obtiene el único archivo seleccionado
 
-        Object.keys(files).forEach((key) => {
-            _totalSize += files[key].size || 0;
-        });
+        if (file) {
+            _totalSize += file.size || 0; // Suma el tamaño del archivo seleccionado al tamaño total
+            setFormValues(prevFormValues => ({
+                ...prevFormValues,
+                image: file // Guarda el archivo de imagen en formValues
+            }));
+        }
 
-        setTotalSize(_totalSize);
+        setTotalSize(_totalSize); // Actualiza el estado del tamaño total con el nuevo valor
+        //toast.current.show({ severity: 'info', summary: 'Éxito', detail: 'Archivo Subido' }); // Muestra una notificación de éxito
+
     };
-
+    
+    // Función para manejar la carga del archivo y mostrar una notificación de éxito
     const onTemplateUpload = (e) => {
         let _totalSize = 0;
-
-        e.files.forEach((file) => {
-            _totalSize += file.size || 0;
-        });
-
+        let file = e.files[0]; // Obtiene el único archivo subido
+    
+        if (file) {
+            _totalSize = file.size || 0;// Asigna el tamaño del archivo al tamaño total
+        }
+    
         setTotalSize(_totalSize);
-        toast.current.show({ severity: 'info', summary: 'Success', detail: 'File Uploaded' });
+        toast.current.show({ severity: 'info', summary: 'Éxito', detail: 'Archivo Subido' }); // Muestra una notificación de éxito
     };
 
 
     const onTemplateClear = () => {
         setTotalSize(0);
+        setFormValues(prevFormValues => ({
+            ...prevFormValues,
+            image: '' // Elimina el archivo de imagen de formValues
+        }));
     };
 
+    //header del campo de las imágenes
     const headerTemplate = (options) => {
         const { className, chooseButton, cancelButton } = options;
         const value = totalSize / 10000;
-        const formatedValue = fileUploadRef && fileUploadRef.current ? fileUploadRef.current.formatSize(totalSize) : '0 B';
+        const formatedValue = imageUploaded && imageUploaded.current ? imageUploaded.current.formatSize(totalSize) : '0 B';
 
         return (
             <div className={className} style={{ backgroundColor: 'transparent', display: 'flex', alignItems: 'center' }}>
@@ -215,16 +241,15 @@ function MenuPage() {
         );
     };
 
-    const imageTemplate = (file, props) => {
+    //Campo que se muestra una vez se sube una imagen 
+    const imageTemplate = (file) => {
         return (
             <div className="flex align-items-center flex-wrap">
                 <div className="flex align-items-center" style={{ width: '100%' }}>
                     <img alt={file.name} role="presentation" src={file.objectURL} width={100} />
                     <span className="flex flex-column text-left ml-3">
                         {file.name}
-                        <small>{new Date().toLocaleDateString()}</small>
                     </span>
-                    <Tag value={props.formatSize} style={styles.formatSize} severity="warning" className="px-3 py-2" />
                 </div>
                 
                 
@@ -232,6 +257,7 @@ function MenuPage() {
         );
     };
 
+    //Campo que se muestra antes de subir una imagen
     const emptyTemplate = () => {
         return (
             <div className="flex align-items-center flex-column">
@@ -244,7 +270,6 @@ function MenuPage() {
     };
 
     const chooseOptions = { icon: 'pi pi-fw pi-images', iconOnly: true, className: 'custom-choose-btn p-button-rounded p-button-outlined' };
-    const uploadOptions = { icon: 'pi pi-fw pi-cloud-upload', iconOnly: true, className: 'custom-upload-btn p-button-success p-button-rounded p-button-outlined' };
     const cancelOptions = { icon: 'pi pi-fw pi-times', iconOnly: true, className: 'custom-cancel-btn p-button-danger p-button-rounded p-button-outlined' };
 
     return (
@@ -365,20 +390,18 @@ function MenuPage() {
 
                 <div >
                     {/* Img Input */}
-                    <label htmlFor="img" style={styles.labelText}>Subir Imagen</label>
+                    <label htmlFor="img" style={styles.labelText}>Subir Imagen (.jpg, .jpeg, .png{/* , .webp, .bmp */})</label>
                     <Toast ref={toast}></Toast>
 
                     <Tooltip target=".custom-choose-btn" content="Choose" position="bottom" />
                     <Tooltip target=".custom-cancel-btn" content="Clear" position="bottom" />
 
-                    <FileUpload ref={fileUploadRef} name="demo" maxFileSize={1000000}
+                    <FileUpload ref={imageUploaded} name="demo" accept=".jpg, .jpeg, .png" maxFileSize={1000000}
                         onUpload={onTemplateUpload} onSelect={onTemplateSelect} onError={onTemplateClear} onClear={onTemplateClear}
                         headerTemplate={headerTemplate} itemTemplate={imageTemplate} emptyTemplate={emptyTemplate}
-                        chooseOptions={chooseOptions} uploadOptions={uploadOptions} cancelOptions={cancelOptions} />
+                        chooseOptions={chooseOptions} cancelOptions={cancelOptions} />
                 </div>
-
             </Dialog>
-
         </KitchenSiderBar>
     );
 }

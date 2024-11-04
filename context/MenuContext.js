@@ -61,12 +61,21 @@ const MenuProvider = ({ children }) => {
             console.error('Error changing menu item status:', error);
         }
     };
-    
+
+    const addMenuItem = async (formValues) => {
+        try {
+            const newItem = await menuService.createMenuItem(formValues, authToken);
+            setMenuItems(prevItems => [...prevItems, newItem]);
+        } catch (error) {
+            console.error('Error adding menu item:', error);
+        }
+    };
 
     return (
         <MenuContext.Provider value={{ 
             menuItems,
             loadMenuItems,
+            addMenuItem,
             changeMenuItemStatus,
             first,
             setFirst,
