@@ -390,13 +390,13 @@ function MenuPage() {
 
                 <div >
                     {/* Img Input */}
-                    <label htmlFor="img" style={styles.labelText}>Subir Imagen (.jpg, .jpeg, .png, .webp, .bmp)</label>
+                    <label htmlFor="img" style={styles.labelText}>Subir Imagen (.jpg, .jpeg, .png{/* , .webp, .bmp */})</label>
                     <Toast ref={toast}></Toast>
 
                     <Tooltip target=".custom-choose-btn" content="Choose" position="bottom" />
                     <Tooltip target=".custom-cancel-btn" content="Clear" position="bottom" />
 
-                    <FileUpload ref={imageUploaded} name="demo" accept=".jpg, .jpeg, .png, .webp, .bmp" maxFileSize={1000000}
+                    <FileUpload ref={imageUploaded} name="demo" accept=".jpg, .jpeg, .png" maxFileSize={1000000}
                         onUpload={onTemplateUpload} onSelect={onTemplateSelect} onError={onTemplateClear} onClear={onTemplateClear}
                         headerTemplate={headerTemplate} itemTemplate={imageTemplate} emptyTemplate={emptyTemplate}
                         chooseOptions={chooseOptions} cancelOptions={cancelOptions} />
