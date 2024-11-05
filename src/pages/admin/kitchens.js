@@ -9,7 +9,6 @@ import { InputText } from 'primereact/inputtext';
 import { Button } from 'primereact/button';
 import { useRouter } from 'next/router'; 
 import withAuth from "@/components/misc/withAuth";
-import { AuthContext } from '../../../context/AuthContext';
 
 
 // const debouncedFetchUsers = debounce((pageNumber, pageSize, setUsers, authToken) => {
@@ -102,7 +101,7 @@ function KitchenAccountsPage() {
                     <InputText
                         value={nameSearch}
                         onChange={handleSearchChange}
-                        placeholder="Buscar por nombre111"
+                        placeholder="Buscar por nombre..."
                         className="w-full"
                         // style={styles.searchBar}
                     />
