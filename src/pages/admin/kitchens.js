@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import UserList from "@/components/admin/UserList";
 import Loader from "@/components/misc/Loader";
 import UserService from "@/service/UserService";
@@ -11,37 +11,78 @@ import { useRouter } from 'next/router';
 import withAuth from "@/components/misc/withAuth";
 
 
-const debouncedFetchUsers = debounce((searchTerm, setUsers) => {
-    const userService = new UserService();
-    userService.getKitchenUsers({
-        pageNumber: 1,
-        pageSize: 10,
-        nameSearch: searchTerm,
-    }).then((users) => {
-        setUsers(users);
-    });
-}, 1500);
+// const debouncedFetchUsers = debounce((pageNumber, pageSize, setUsers, authToken) => {
+//     const userService = new UserService();
+//     console.log('parametros:', pageNumber, pageSize, authToken); // Verifica que los parámetros son correctos aquí
+//     userService.getKitchenUsers2({
+//         pageNumber, // Usa la variable, no el string '0'
+//         pageSize, // Usa la variable, no el string '10'
+//         sortBy: 'name',
+//         sortOrder: 'asc',
+//         authToken
+//     }).then(users => {
+//         setUsers(users);
+//     }).catch(error => {
+//         console.error('Failed to fetch users:', error);
+//     });
+// }, 1500);
+
 
 function KitchenAccountsPage() {
+    
+    const { authToken } = useContext(AuthContext);
+
     const router = useRouter();  
     const [users, setUsers] = useState([]);
     const [nameSearch, setNameSearch] = useState("");
     const [loading, setLoading] = useState(true);
-    const fetchUsers = React.useCallback(
-        (searchTerm) => {
-            setLoading(true);
-            debouncedFetchUsers(searchTerm, (users) => {
-                setUsers(users);
-                setLoading(false);
-            });
-        },
-        [] // No dependencies needed aquí
-    );
+    const [error, setError] = useState(null);
+    const [totalRecords, setTotalRecords] = useState(110);
 
+    const totalPages = Math.ceil(totalRecords / 10);
+    
+    const [page, setPage] = useState(0);
+    const [rows, setRows] = useState(10);
+    console.log('authToken:', authToken);
+
+    const fetchUsers = React.useCallback(async () => {
+        setLoading(true);
+        try {
+            const userService = new UserService();
+            const data = await userService.getKitchenUsers2({
+                pageNumber: page,
+                pageSize: rows,
+                sortBy: 'name',
+                sortOrder: 'asc',
+                authToken
+            });
+            console.log("Users fetched:", data);  // Verifica que los usuarios se reciben correctamente
+            // Evitar re-renderizar si no hay cambios en los datos
+            if (JSON.stringify(data.content) !== JSON.stringify(users)) {
+                setUsers(data.content);  // Solo actualizar si los datos son diferentes
+            }
+            setTotalRecords(data.totalElements);  // Total de registros para la paginación
+    
+            // Verificar si estamos en la última página
+            const isLastPageCheck = page + rows >= data.totalElements;
+            setIsLastPage(isLastPageCheck);
+        } catch (error) {
+            console.error('Failed to fetch users:', error);
+            setError(error.message || "Failed to load data");
+        }
+        setLoading(false);
+    }, [page, rows, authToken]);
+    
     React.useEffect(() => {
-        setLoading(true); // Mostrar loader mientras se buscan los datos
-        fetchUsers(nameSearch);
-    }, [nameSearch, fetchUsers]);
+        fetchUsers();
+    }, [fetchUsers]);
+    
+    
+
+    const onPaginate = (event) => {
+        setPage(event.page);
+        setRows(event.rows);
+    };
 
     const handleSearchChange = (event) => {
         setNameSearch(event.target.value);
@@ -77,7 +118,17 @@ function KitchenAccountsPage() {
                         <Loader />
                     </div>
                 ) : (
-                    <UserList users={users} />
+                    // <UserList users={users} />
+                    // <UserList users={users} onPaginate={onPaginate} page={page} rows={rows} loading={loading} />
+                    <UserList 
+                        users={users} 
+                        onPaginate={onPaginate} 
+                        page={page} 
+                        rows={rows} 
+                        loading={loading}
+                        totalPages={totalPages}
+                    />
+
                 )}
 
             </div>
