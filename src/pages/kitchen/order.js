@@ -35,6 +35,8 @@ function OrdersPage() {
     const orderService = new OrderService(); 
     const toast = useRef(null);
 
+    console.log("Token:", authToken);  
+
     useEffect(() => {
         // Si estamos en la última página, iniciamos el polling
         if (isLastPage) {
