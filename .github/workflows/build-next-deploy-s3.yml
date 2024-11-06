@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - CarrascoAlejandro
       - develop
   schedule:
     - cron: '0 */6 * * *'
