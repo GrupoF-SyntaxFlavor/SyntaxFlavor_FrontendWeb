@@ -9,6 +9,10 @@ on:
     - cron: '0 */6 * * *'
   workflow_dispatch:
 
+env:
+  NEXT_PUBLIC_BACKEND_URL: http://146.190.141.101:8080
+  NEXT_PUBLIC_MINIO_URL: http://146.190.141.101:8080
+
 jobs:
   build:
     if: github.ref == 'refs/heads/develop' && github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || github.event_name == 'push'
@@ -29,6 +33,11 @@ jobs:
 
       - name: Install dependencies
         run: pnpm install --no-frozen-lockfile
+
+      - name: write env file
+        run: |
+          echo "NEXT_PUBLIC_BACKEND_URL=$NEXT_PUBLIC_BACKEND_URL" >> .env.local
+          echo "NEXT_PUBLIC_MINIO_URL=$NEXT_PUBLIC_MINIO_URL" >> .env.local
 
       - name: Build project
         run: pnpm build
