@@ -7,7 +7,7 @@ on:
       - CarrascoAlejandro
       - develop
   schedule:
-    - cron: '0 */6 * * *'
+    - cron: '30 3/6 * * *'
   workflow_dispatch:
 
 env:
@@ -16,7 +16,6 @@ env:
 
 jobs:
   build:
-    if: github.ref == 'refs/heads/develop' && github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || github.event_name == 'push'
     runs-on: ubuntu-latest
 
     steps:
