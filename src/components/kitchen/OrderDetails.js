@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Button } from 'primereact/button';
 import { Card } from 'primereact/card';
+import style from 'styled-jsx/style';
 
 const imageMapping = {
   'Onigiris de Atún': 'https://images.pond5.com/pixel-sushi-vector-illustration-isolated-illustration-155825087_iconm.jpeg',
@@ -12,26 +13,28 @@ const imageMapping = {
   'Pastel de Chocolate': 'https://i.pinimg.com/736x/42/36/b1/4236b10d070cb898106d84a6f2fa4a2c.jpg',
 };
 
-export default function OrderDetails({ order }) {
+export default function OrderDetails({ order, onConfirmComplete }) {
+
+  const [showDetails, setShowDetails] = useState(true);
+
+  const handleConfirmCompleteOrder = () => {
+    onConfirmComplete(order.orderId, () => setShowDetails(false));
+  };
+
   return (
     <div>
       <Card title={`Platos de la orden: ORD-${order.orderId}`} />
       <br />
-      {order.orderItems && order.orderItems.length > 0 ? (
+      {showDetails && order.orderItems && order.orderItems.length > 0 ? (
         order.orderItems.map((item, index) => (
           
           <Card title={item.menuItemName}
             key={index} style={styles.itemBox}>
               <p><strong>Precio:</strong> Bs. {item.price}</p>
               <p><strong>Cantidad:</strong> {item.quantity}</p>
-            {/* <div style={styles.itemDescription}>
-              <p>{item.description}</p>
-              
-            </div> */}
             <div style={styles.itemImage}>
-              {/* <img src={item.image} alt={item.menuItemName} style={styles.image} /> */}
               <img 
-                src={imageMapping[item.menuItemName]} 
+                src={item.image}
                 alt={item.menuItemName} 
                 style={styles.image} 
               />
@@ -39,14 +42,19 @@ export default function OrderDetails({ order }) {
           </Card>
         ))
       ) : (
-        <p>No hay platos en este pedido.</p>
+        !showDetails ? <p>La orden ha sido completada.</p> : <p>No hay platos en este pedido.</p>
       )}
 
-      <div style={styles.statusContainer}>
-        <Button severity='success'>
-          <strong>Marcar orden como completada</strong>
-        </Button>
-      </div>
+      {showDetails && order.orderItems && order.orderItems.length > 0 && order.orderStatus === 'Pendiente' && (
+        <div style={styles.statusContainer}>
+          <Button
+            onClick={handleConfirmCompleteOrder}
+            className="p-button-success"
+          >
+            <strong>Marcar orden como completada</strong>
+          </Button>
+        </div>
+      )}
     </div>
   );
 }

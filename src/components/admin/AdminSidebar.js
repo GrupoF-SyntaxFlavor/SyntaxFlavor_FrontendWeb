@@ -1,29 +1,28 @@
-import React, { useState, useRef } from 'react';
+import React, { useRef } from 'react';
 import { Menubar } from 'primereact/menubar';
 import { Button } from 'primereact/button';
 import { Menu } from 'primereact/menu';
-import { useRouter } from "next/router";
 import 'primeicons/primeicons.css';
-
-export default function KitchenSidebar({ children }) {
-    const [visible, setVisible] = useState(false);  // Controla la visibilidad del menú desplegable
+import { useRouter } from 'next/router';
+// FIXME: We should have just one side bar, with props to change the sidebar items based on the role
+export default function AdminSidebar({ children }) {
     const router = useRouter();
-    const menu = useRef(null); // Usamos useRef para el popup del menú
+    const menu = useRef(null); // Usamos useRef para controlar el menú desplegable
 
     const start = (
         <div className="navbar-left">
             <div className="logo-container">
                 <img alt="logo" src='https://images.pond5.com/pixel-sushi-vector-illustration-isolated-illustration-155825087_iconm.jpeg' className="logo" />
             </div>
-            <span className="navbar-title">Gestión de la Cocina</span>
+            <span className="navbar-title">Gestión del Restaurante</span>
         </div>
     );
 
     const items = [
         {
-            label: 'Control de cuentas',
-            icon: 'pi pi-user-plus',
-            command: () => { router.push('/admin/kitchens') }
+            label: 'Redirigir a cocina',
+            icon: 'pi pi-external-link',
+            command: () => { router.push('/kitchen/order') } // Redirige a la página de cocina
         },
         {
             label: 'Cerrar sesión',
@@ -41,37 +40,43 @@ export default function KitchenSidebar({ children }) {
 
     const end = (
         <div className="navbar-right">
-            <i className="pi pi-search p-mr-4"></i>
-            <i className="pi pi-bell p-mr-4"></i>
+            <i className="pi pi-search p-mr-4"></i> {/* Ícono de búsqueda */}
+            <i className="pi pi-bell p-mr-4"></i>   {/* Ícono de notificaciones */}
             <div className="user-profile" onClick={toggleMenu} style={{ cursor: 'pointer' }}>
                 <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRvrftcp5FwziJftgD1TlYJSl8WcOza-5iX5ZzgBk6gU0YEvN6UwYMa0mfROJOHwm6fBRk&usqp=CAU" alt="user" className="profile-pic" />
-                <span>Kitchen Master</span>
-                <i className="pi pi-angle-down p-ml-2"></i> 
+                <span>Admin Master</span>  {/* Nombre del usuario */}
+                <i className="pi pi-angle-down p-ml-2"></i>  {/* Ícono de menú desplegable */}
             </div>
-            <Menu model={items} popup ref={menu} id="popup_menu"/>
+            <Menu model={items} popup ref={menu} id="popup_menu" />
         </div>
     );
 
     return (
         <div>
             <Menubar start={start} end={end} className="navbar" />
+
             <div>
-                <div className="sidebar">
+                {/* Sidebar */}
+                <div className="sidebar"> 
                     <div className="sidebar-items">
-                        <div className="sidebar-item">
+                        {/* <div className="sidebar-item">
                             <Button icon="pi pi-home" className="p-button-text p-button-plain p-button-lg" />
                             <span>Dashboards</span>
                         </div>
 
-                        <div className="sidebar-item" onClick={() => router.push('/kitchen/order')}>
+                        <div className="sidebar-item">
                             <Button icon="pi pi-th-large" className="p-button-text p-button-plain p-button-lg" />
                             <span>Ordenes</span>
                         </div>
 
-                        <div className="sidebar-item" onClick={() => router.push('/kitchen/menu')}>
+                        <div className="sidebar-item">
                             <Button icon="pi pi-wallet" className="p-button-text p-button-plain p-button-lg" />
                             <span>Menú</span>
-                        </div>
+                        </div> */}
+                        <div className="sidebar-item mt-2" onClick={() => router.push('/admin/kitchens')}>
+                            <Button icon="pi pi-users" className="p-button-text p-button-plain p-button-lg" />
+                            <span>Cuentas de Cocina</span>
+                        </div>      
                     </div>
                 </div>
 
