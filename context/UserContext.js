@@ -21,7 +21,8 @@ const UserProvider = ({ children }) => {
 
     const loadKitchenUsers = async () => {
         try {
-            const response = await userService.getKitchenUsers2(pageNumber, rows, sortBy, sortOrder, authToken);//FIXME
+            const response = await userService.getKitchenUsers2(page, rows, sortBy, sortOrder, authToken);
+            console.log("response, UserContext: ", response)
             setKitchenUsers(response.content);
             setTotalPages(response.totalElements);
             if(response.first) {
