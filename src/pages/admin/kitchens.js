@@ -9,6 +9,7 @@ import { InputText } from 'primereact/inputtext';
 import { Button } from 'primereact/button';
 import { useRouter } from 'next/router'; 
 import withAuth from "@/components/misc/withAuth";
+import { UserContext } from '../../../context/UserContext';
 
 
 // const debouncedFetchUsers = debounce((pageNumber, pageSize, setUsers, authToken) => {
@@ -29,8 +30,23 @@ import withAuth from "@/components/misc/withAuth";
 
 
 function KitchenAccountsPage() {
-    
-    const { authToken } = useContext(AuthContext);
+    //contexts
+    const {
+        kitchenUsers, 
+        loadKitchenUsers, 
+        first,
+        setFirst,
+        rows,
+        setRows, 
+        totalPages, 
+        setTotalPages,
+        page,
+        setPage,
+        sortBy,
+        setSortBy,
+        sortOrder, 
+        setSortOrder,
+    } = useContext(UserContext)
 
     const router = useRouter();  
     const [users, setUsers] = useState([]);
@@ -39,11 +55,11 @@ function KitchenAccountsPage() {
     const [error, setError] = useState(null);
     const [totalRecords, setTotalRecords] = useState(110);
 
-    const totalPages = Math.ceil(totalRecords / 10);
+    // const totalPages = Math.ceil(totalRecords / 10);
     
-    const [page, setPage] = useState(0);
-    const [rows, setRows] = useState(10);
-    console.log('authToken:', authToken);
+    // const [page, setPage] = useState(0);
+    // const [rows, setRows] = useState(10);
+    // console.log('authToken:', authToken);
 
     const fetchUsers = React.useCallback(async () => {
         setLoading(true);
