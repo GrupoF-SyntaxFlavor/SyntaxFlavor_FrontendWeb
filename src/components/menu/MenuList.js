@@ -5,6 +5,7 @@ import { Column } from 'primereact/column';
 import { Button } from 'primereact/button';
 import { Toast } from 'primereact/toast';
 import { ConfirmDialog } from 'primereact/confirmdialog';
+import { formatImageUrl } from '../../../util/formatImageUtils';
 
 const MenuList = ({
     menuItems,
@@ -54,7 +55,7 @@ const MenuList = ({
     const itemTemplate = (option) => (
         <div className="p-ai-center p-jc-between" style={option.status ? styles.item : styles.disabledItem}>
             <div className="p-ai-center" style={styles.itemContent}>
-                <img src={option.image} alt={option.name} style={styles.image} />
+                <img src={formatImageUrl(option.image)} alt={option.name} style={styles.image} />
                 <div className="p-ml-3 p-4">
                     <div style={styles.label}>{option.name}</div>
                     <div style={styles.description}>{option.description}</div>
