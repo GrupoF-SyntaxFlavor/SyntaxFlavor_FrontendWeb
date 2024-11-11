@@ -68,8 +68,9 @@ export default class UserService {
             }
 
             const data = await response.json();
+            console.log("data kitchen users: ", data);
             return data.payload;  // Retornamos el contenido del payload
-            console.log("data", data);
+            
         } catch (error) {
             console.error("Error fetching orders", error);
             throw error;  // Lanzamos el error para que pueda ser manejado en el front
