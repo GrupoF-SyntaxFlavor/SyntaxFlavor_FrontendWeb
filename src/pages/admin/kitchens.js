@@ -1,14 +1,15 @@
 import React, { useState, useContext, useEffect } from "react";
 import UserList from "@/components/admin/UserList";
 import Loader from "@/components/misc/Loader";
-import UserService from "@/service/UserService";
+// import UserService from "@/service/UserService";
 import AdminSidebar from "@/components/admin/AdminSidebar";
-import { debounce } from "lodash";
+// import { debounce } from "lodash";
 import { Card } from 'primereact/card';
 import { InputText } from 'primereact/inputtext';
 import { Button } from 'primereact/button';
 import { useRouter } from 'next/router'; 
 import withAuth from "@/components/misc/withAuth";
+import { AuthContext } from '../../../context/AuthContext';
 import { UserContext } from '../../../context/UserContext';
 
 
@@ -51,15 +52,16 @@ function KitchenAccountsPage() {
     const router = useRouter();  
     const [users, setUsers] = useState([]);
     const [nameSearch, setNameSearch] = useState("");
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
+    const { authToken } = useContext(AuthContext);
     // const [totalRecords, setTotalRecords] = useState(110);
 
     // const totalPages = Math.ceil(totalRecords / 10);
     
     // const [page, setPage] = useState(0);
     // const [rows, setRows] = useState(10);
-    // console.log('authToken:', authToken);
+    console.log('authToken:', authToken);
     
 
     useEffect(()=> {

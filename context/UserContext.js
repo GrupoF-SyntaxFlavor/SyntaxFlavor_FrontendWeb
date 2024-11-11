@@ -12,16 +12,19 @@ const UserProvider = ({ children }) => {
     const [totalPages, setTotalPages] = useState(10); // TODO: This value must be set from the service
     const [first, setFirst] = useState(0);
     const [rows, setRows] = useState(10); // Cantidad de filas por página
-    const [sortBy, setSortBy] = useState('name');
-    const [sortOrder, setSortOrder] = useState('asc');
+    const [sortBy, setSortBy] = useState('id');
+    const [sortOrder, setSortOrder] = useState('desc');
 
     const { authToken } = useContext(AuthContext);
 
     const userService = new UserService();
 
+    console.log("authToken in userContext: ", authToken);
+
     const loadKitchenUsers = async () => {
         try {
-            const response = await userService.getKitchenUsers2(page, rows, sortBy, sortOrder, authToken);
+            console.log("solicitud: ", page, rows, sortBy, sortOrder, authToken)
+            const response = await userService.getKitchenUsers(page, rows, sortBy, sortOrder, authToken);
             console.log("response, UserContext: ", response)
             setKitchenUsers(response.content);
             setTotalPages(response.totalElements);
