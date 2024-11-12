@@ -5,9 +5,8 @@ on:
     branches:
       - main
       - develop
-      - CarrascoAlejandro
   schedule:
-    - cron: '30 3/6 * * *'
+    - cron: '0 3/6 * * *'
   workflow_dispatch:
 
 env:
