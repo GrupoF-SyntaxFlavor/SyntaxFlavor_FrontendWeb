@@ -21,11 +21,6 @@ export default function KitchenSidebar({ children }) {
 
     const items = [
         {
-            label: 'Control de cuentas',
-            icon: 'pi pi-user-plus',
-            command: () => { router.push('/admin/kitchens') }
-        },
-        {
             label: 'Cerrar sesión',
             icon: 'pi pi-sign-out',
             command: () => {
@@ -58,18 +53,14 @@ export default function KitchenSidebar({ children }) {
             <div>
                 <div className="sidebar">
                     <div className="sidebar-items">
-                        <div className="sidebar-item">
-                            <Button icon="pi pi-home" className="p-button-text p-button-plain p-button-lg" />
-                            <span>Dashboards</span>
-                        </div>
 
                         <div className="sidebar-item" onClick={() => router.push('/kitchen/order')}>
-                            <Button icon="pi pi-th-large" className="p-button-text p-button-plain p-button-lg" />
+                            <Button icon="pi pi-inbox" className="p-button-text p-button-plain p-button-lg" />
                             <span>Ordenes</span>
                         </div>
 
                         <div className="sidebar-item" onClick={() => router.push('/kitchen/menu')}>
-                            <Button icon="pi pi-wallet" className="p-button-text p-button-plain p-button-lg" />
+                            <Button icon="pi pi-book" className="p-button-text p-button-plain p-button-lg" />
                             <span>Menú</span>
                         </div>
                     </div>

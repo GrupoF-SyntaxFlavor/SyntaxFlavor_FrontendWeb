@@ -15,15 +15,11 @@ export default function AdminSidebar({ children }) {
                 <img alt="logo" src='https://images.pond5.com/pixel-sushi-vector-illustration-isolated-illustration-155825087_iconm.jpeg' className="logo" />
             </div>
             <span className="navbar-title">Gestión del Restaurante</span>
+            
         </div>
     );
 
     const items = [
-        {
-            label: 'Redirigir a cocina',
-            icon: 'pi pi-external-link',
-            command: () => { router.push('/kitchen/order') } // Redirige a la página de cocina
-        },
         {
             label: 'Cerrar sesión',
             icon: 'pi pi-sign-out',
@@ -59,20 +55,14 @@ export default function AdminSidebar({ children }) {
                 {/* Sidebar */}
                 <div className="sidebar"> 
                     <div className="sidebar-items">
-                        {/* <div className="sidebar-item">
-                            <Button icon="pi pi-home" className="p-button-text p-button-plain p-button-lg" />
+                        <div className="sidebar-item">
+                            <Button icon="pi pi-chart-bar" className="p-button-text p-button-plain p-button-lg" />
                             <span>Dashboards</span>
                         </div>
-
                         <div className="sidebar-item">
-                            <Button icon="pi pi-th-large" className="p-button-text p-button-plain p-button-lg" />
-                            <span>Ordenes</span>
-                        </div>
-
-                        <div className="sidebar-item">
-                            <Button icon="pi pi-wallet" className="p-button-text p-button-plain p-button-lg" />
+                            <Button icon="pi pi-book" className="p-button-text p-button-plain p-button-lg" />
                             <span>Menú</span>
-                        </div> */}
+                        </div> 
                         <div className="sidebar-item mt-2" onClick={() => router.push('/admin/kitchens')}>
                             <Button icon="pi pi-users" className="p-button-text p-button-plain p-button-lg" />
                             <span>Cuentas de Cocina</span>
