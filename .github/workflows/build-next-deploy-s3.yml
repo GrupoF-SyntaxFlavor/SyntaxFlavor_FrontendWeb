@@ -97,7 +97,7 @@ jobs:
       # Step 4 Push to DockerHub
       - name: Push to DockerHub
         run: |
-          docker login -u ${{ secrets.DO_USERNAME }} -p ${{ secrets.DO_PASSWORD }}
+          docker login -u "${{ secrets.DO_USERNAME }}" -p "${{ secrets.DO_PASSWORD }}"
           docker push ${{ secrets.DOCKERHUB_USERNAME }}/$DH_REPOSITORY:$IMAGE_TAG
 
       # Step 5: Set up SSH agent and deploy
