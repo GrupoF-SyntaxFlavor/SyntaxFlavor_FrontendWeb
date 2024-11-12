@@ -36,7 +36,8 @@ const UserList = ({
                 lazy={true}
                 // loading={loading}
             >
-                <Column field="index" header="#" bodyStyle={styles.tableRow} headerStyle={styles.tableHeader}/>
+                <Column field="index" header="#" bodyStyle={styles.tableRow} headerStyle={styles.tableHeader}
+                body={(_, options) => options.rowIndex + 1} style={{ textAlign: 'center' }}/>
                 <Column field="name" header="Nombre de usuario" bodyStyle={styles.tableRow} headerStyle={styles.tableHeader}/>
                 <Column field="email" header="Correo electrónico" bodyStyle={styles.tableRow} headerStyle={styles.tableHeader}/>
             </DataTable>
