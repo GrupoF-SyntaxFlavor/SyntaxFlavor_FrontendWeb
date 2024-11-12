@@ -81,6 +81,9 @@ jobs:
           echo "NEXT_PUBLIC_BACKEND_URL=$NEXT_PUBLIC_BACKEND_URL" >> .env.local
           echo "NEXT_PUBLIC_MINIO_URL=$NEXT_PUBLIC_MINIO_URL" >> .env.local
 
+      - name: build the static project
+        run: pnpm build
+
       # Step 2: Build Docker image
       - name: Build Docker image
         run: |
