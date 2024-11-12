@@ -1,28 +1,38 @@
+import { createContext, useContext, useEffect, useState } from 'react';
 import AuthService from '@/service/AuthService';
-
-import React, { createContext, useState } from 'react';
 
 const AuthContext = createContext();
 
 const AuthProvider = ({ children }) => {
-    const [authToken, setAuthToken] = useState(null); // TODO: Maybe use cookies instead
     const [isAuthenticated, setIsAuthenticated] = useState(false);
-
+    const [authToken, setAuthToken] = useState(null);
     const authService = new AuthService();
 
+    useEffect(() => {
+        // Intenta obtener el token almacenado en localStorage al cargar el componente
+        const token = localStorage.getItem('authToken');
+        console.log("authtoken", token)
+        if (token) {
+            setAuthToken(token);
+            setIsAuthenticated(true);
+        }
+    }, []);
+
     const login = async (email, password) => {
-        //console.log('Context::Logging in with:', email);
         try {
             const response = await authService.login(email, password);
+            localStorage.setItem('authToken', response.access_token); // Guardar en localStorage
             setAuthToken(response.access_token);
-            await setIsAuthenticated(true);
+            setIsAuthenticated(true);
             return response;
         } catch (error) {
             console.error('Login failed:', error);
+            setIsAuthenticated(false);
         }
     };
 
     const logout = () => {
+        localStorage.removeItem('authToken'); // Limpiar localStorage
         setAuthToken(null);
         setIsAuthenticated(false);
     };
@@ -34,4 +44,5 @@ const AuthProvider = ({ children }) => {
     );
 };
 
+export const useAuth = () => useContext(AuthContext);
 export { AuthContext, AuthProvider };
