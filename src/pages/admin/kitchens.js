@@ -39,10 +39,10 @@ function KitchenAccountsPage() {
         setFirst,
         rows,
         setRows, 
-        totalPages, 
-        // setTotalPages,
+        totalRecords, 
+        // settotalRecords,
         page,
-        // setPage,
+        setPage,
         sortBy,
         // setSortBy,
         sortOrder, 
@@ -57,7 +57,7 @@ function KitchenAccountsPage() {
     const { authToken } = useContext(AuthContext);
     // const [totalRecords, setTotalRecords] = useState(110);
 
-    // const totalPages = Math.ceil(totalRecords / 10);
+    // const totalRecords = Math.ceil(totalRecords / 10);
     
     // const [page, setPage] = useState(0);
     // const [rows, setRows] = useState(10);
@@ -170,7 +170,7 @@ function KitchenAccountsPage() {
                         page={page} 
                         rows={rows}
                         first={first}
-                        totalRecords={totalPages}
+                        totalRecords={totalRecords}
                         // loading 
                         handlePageChange={handlePageChange}
 
@@ -179,7 +179,7 @@ function KitchenAccountsPage() {
                         // page={page} 
                         // rows={rows} 
                         // loading={loading}
-                        // totalPages={totalPages}
+                        // totalRecords={totalRecords}
                     />
 
                 )}

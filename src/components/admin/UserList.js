@@ -6,7 +6,7 @@ import { pad } from 'lodash';
 const UserList = ({ 
     kitchenUsers, 
     // onPaginate, 
-    page, 
+    // page, 
     rows, 
     first,
     totalRecords,
@@ -15,7 +15,7 @@ const UserList = ({
 }) => {
     console.log('kitchenUsers:', kitchenUsers);
     // console.log('onPaginate:', onPaginate);
-    console.log('page:', page);
+    // console.log('page:', page);
     console.log('rows:', rows);
     // console.log('loading:', loading);
 

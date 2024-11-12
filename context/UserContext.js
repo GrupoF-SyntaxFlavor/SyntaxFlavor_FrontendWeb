@@ -9,7 +9,7 @@ const UserContext = createContext();
 const UserProvider = ({ children }) => {
     const [kitchenUsers, setKitchenUsers] = useState([]);
     const [page, setPage] = useState(0);
-    const [totalPages, setTotalPages] = useState(10); // TODO: This value must be set from the service
+    const [totalRecords, settotalRecords] = useState(0);
     const [first, setFirst] = useState(0);
     const [rows, setRows] = useState(10); // Cantidad de filas por página
     const [sortBy, setSortBy] = useState('id');
@@ -27,7 +27,7 @@ const UserProvider = ({ children }) => {
             const response = await userService.getKitchenUsers(page, rows, sortBy, sortOrder, authToken);
             console.log("response, UserContext: ", response)
             setKitchenUsers(response.content);
-            setTotalPages(response.totalElements);
+            settotalRecords(response.totalElements);
             if(response.first) {
                 setFirst(0);
             }
@@ -51,8 +51,8 @@ const UserProvider = ({ children }) => {
             setFirst,
             rows,
             setRows, 
-            totalPages, 
-            setTotalPages,
+            totalRecords, 
+            settotalRecords,
             page,
             setPage,
             sortBy,
