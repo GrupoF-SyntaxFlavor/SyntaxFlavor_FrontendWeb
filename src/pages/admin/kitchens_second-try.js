@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useContext } from 'react';
-import AdminSidebar from "@/components/admin/AdminSidebar.js";
+import RoleBasedSidebar from '@/components/RoleBasedSidebar';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { Button } from 'primereact/button';
@@ -103,7 +103,7 @@ function KitchenAccountsPage() {
     };
 
     return (
-        <AdminSidebar>
+        <RoleBasedSidebar>
             <Toast ref={toast} />
             <ConfirmDialog />
             <div style={styles.container}>
@@ -152,7 +152,7 @@ function KitchenAccountsPage() {
                         </DataTable>
                 )}
             </div>
-        </AdminSidebar>
+        </RoleBasedSidebar>
     );
 }
 

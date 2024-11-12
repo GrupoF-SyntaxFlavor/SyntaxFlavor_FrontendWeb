@@ -2,7 +2,7 @@ import React, { useState, useContext } from "react";
 import UserList from "@/components/admin/UserList";
 import Loader from "@/components/misc/Loader";
 import UserService from "@/service/UserService";
-import AdminSidebar from "@/components/admin/AdminSidebar";
+import RoleBasedSidebar from '@/components/RoleBasedSidebar';
 import { debounce } from "lodash";
 import { Card } from 'primereact/card';
 import { InputText } from 'primereact/inputtext';
@@ -95,7 +95,7 @@ function KitchenAccountsPage() {
     };
 
     return (
-        <AdminSidebar>
+        <RoleBasedSidebar>
             <div style={styles.container}>
                 <Card title="Usuarios"></Card>
                 <div style={styles.searchAndButtonContainer} className="flex align-items-center gap-2 mb-3">
@@ -133,7 +133,7 @@ function KitchenAccountsPage() {
                 )}
 
             </div>
-        </AdminSidebar>
+        </RoleBasedSidebar>
     );
 }
 

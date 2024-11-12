@@ -1,5 +1,5 @@
 import React, { useState,useContext } from "react";
-import AdminSidebar from "@/components/admin/AdminSidebar";
+import RoleBasedSidebar from '@/components/RoleBasedSidebar';
 import { useRouter } from "next/router";
 import { Card } from 'primereact/card';
 import { InputText } from "primereact/inputtext";
@@ -57,7 +57,7 @@ function KitchenAccountForm() {
     };
 
     return (
-        <AdminSidebar>
+        <RoleBasedSidebar>
             <div style={styles.container}>
                 <Card header={<h2 style={styles.cardTitle}>Crear Cuenta de Cocina</h2>} style={styles.card}>
                     {error && <p style={styles.error}>{error}</p>}
@@ -154,7 +154,7 @@ function KitchenAccountForm() {
                     
                 </Card>
             </div>
-        </AdminSidebar>
+        </RoleBasedSidebar>
     );
 }
 
