@@ -1,25 +1,11 @@
-# Use the official Node.js image as the base image
-FROM node:18-alpine
+# Use the official nginx image as the base image
+FROM nginx:alpine
 
-# Set the working directory
-WORKDIR /app
+# Copy the contents of the out/ folder to the nginx html directory
+COPY ./out/ /usr/share/nginx/html
 
-# Copy package.json and package-lock.json (or pnpm-lock.yaml) to the working directory
-COPY package.json pnpm-lock.yaml ./
+# Expose port 80 to the outside world
+EXPOSE 80
 
-# Install dependencies
-RUN npm install -g pnpm && pnpm install
-
-# Copy the rest of the application code to the working directory
-COPY . .
-
-COPY .env.local .env.local
-
-# Build the Next.js application
-RUN pnpm run build
-
-# Expose the port the app runs on
-EXPOSE 3000
-
-# Start the Next.js application
-CMD ["pnpm", "start"]
+# Start nginx when the container launches
+CMD ["nginx", "-g", "daemon off;"]
