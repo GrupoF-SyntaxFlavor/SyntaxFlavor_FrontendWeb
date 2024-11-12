@@ -6,7 +6,6 @@ import KitchenSidebar from '@/components/kitchen/KitchenSidebar';
 
 const RoleBasedSidebar = ({ children }) => {
     const { userRoles } = useContext(AuthContext);
-    // Verifica los roles para determinar qué Sidebar mostrar
     const isAdmin = userRoles.includes('administrator');
     const isKitchenUser = userRoles.includes('kitchen'); // Asumiendo que 'kitchen' es el rol para usuarios de cocina
 

@@ -1,14 +1,16 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useContext} from 'react';
 import { Menubar } from 'primereact/menubar';
 import { Button } from 'primereact/button';
 import { Menu } from 'primereact/menu';
 import { useRouter } from "next/router";
+import { AuthContext } from '../../../context/AuthContext';
 import 'primeicons/primeicons.css';
 
 export default function KitchenSidebar({ children }) {
     const [visible, setVisible] = useState(false);  // Controla la visibilidad del menú desplegable
     const router = useRouter();
     const menu = useRef(null); // Usamos useRef para el popup del menú
+    const { logout } = useContext(AuthContext); // Obtiene la función logout desde AuthContext
 
     const start = (
         <div className="navbar-left">
@@ -24,8 +26,8 @@ export default function KitchenSidebar({ children }) {
             label: 'Cerrar sesión',
             icon: 'pi pi-sign-out',
             command: () => {
-                router.push('/login');
-                //TODO:Cuando el token este en una cookie, se debería destruir el token 
+                logout(); // Llama a logout para cerrar sesión
+                router.push('/login'); // Redirige al usuario al login
             }
         },
     ];

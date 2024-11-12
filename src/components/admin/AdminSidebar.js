@@ -1,13 +1,17 @@
-import React, { useRef } from 'react';
+import React, { useRef, useContext } from 'react';
 import { Menubar } from 'primereact/menubar';
 import { Button } from 'primereact/button';
 import { Menu } from 'primereact/menu';
-import 'primeicons/primeicons.css';
 import { useRouter } from 'next/router';
-// FIXME: We should have just one side bar, with props to change the sidebar items based on the role
+import { AuthContext } from '../../../context/AuthContext';
+import 'primeicons/primeicons.css';
+
+
 export default function AdminSidebar({ children }) {
     const router = useRouter();
     const menu = useRef(null); // Usamos useRef para controlar el menú desplegable
+    const { logout } = useContext(AuthContext); // Obtiene la función logout desde AuthContext
+
 
     const start = (
         <div className="navbar-left">
@@ -24,8 +28,8 @@ export default function AdminSidebar({ children }) {
             label: 'Cerrar sesión',
             icon: 'pi pi-sign-out',
             command: () => {
-                router.push('/login');
-                //TODO:Cuando el token este en una cookie, se debería destruir el token 
+                logout(); // Llama a logout para cerrar sesión
+                router.push('/login'); // Redirige al usuario al login
             }
         },
     ];
@@ -59,7 +63,7 @@ export default function AdminSidebar({ children }) {
                             <Button icon="pi pi-chart-bar" className="p-button-text p-button-plain p-button-lg" />
                             <span>Dashboards</span>
                         </div>
-                        <div className="sidebar-item">
+                        <div className="sidebar-item mt-2" onClick={() => router.push('/kitchen/menu')}>
                             <Button icon="pi pi-book" className="p-button-text p-button-plain p-button-lg" />
                             <span>Menú</span>
                         </div> 
