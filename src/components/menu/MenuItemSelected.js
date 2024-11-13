@@ -6,6 +6,7 @@ import { MenuContext } from '../../../context/MenuContext';
 import { Toast } from 'primereact/toast';
 import { Button } from 'primereact/button';
 import { ConfirmDialog } from 'primereact/confirmdialog';
+import { formatImageUrl } from '../../../util/formatImageUtils';
 
 const MenuItemSelected = ({ selectedItem }) => {
     const { userRoles } = useContext(AuthContext); // Accede a los roles del usuario desde el contexto
@@ -66,7 +67,7 @@ const MenuItemSelected = ({ selectedItem }) => {
             <br />  
             <Card>
                 {imageUrl ? (
-                    <img src={imageUrl} alt={selectedItem.name} style={styles.largeImage} onError={(e) => e.target.style.display = 'none'} />
+                    <img src={formatImageUrl(imageUrl)} alt={selectedItem.name} style={styles.largeImage} onError={(e) => e.target.style.display = 'none'} />
                 ) : (
                     <p>Cargando imagen...</p>
                 )}
