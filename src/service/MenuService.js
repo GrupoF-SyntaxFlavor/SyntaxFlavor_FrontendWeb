@@ -118,4 +118,23 @@ export default class MenuService {
             throw error;
         }
     }
+
+    async deleteMenuItem(menuItemId, token) {
+        try {
+            const response = await fetch(`${this.BASE_URL}/api/v1/menu/item/${menuItemId}`, {
+                method: 'DELETE',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                }
+            });
+            const data = await response.json();
+            console.log('Menu item deleted:', data);
+            return data;
+        } catch (error) {
+            console.error('Error deleting menu item:', error);
+            throw error;
+        }
+    }
 }
