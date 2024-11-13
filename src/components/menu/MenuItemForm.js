@@ -11,7 +11,7 @@ import { Toast } from 'primereact/toast';
 import { Tooltip } from 'primereact/tooltip';
 import { ProgressBar } from 'primereact/progressbar';
 
-const MenuItemForm = ({ isVisible, onHide, isEditMode, formValues, setFormValues, addMenuItem, loadMenuItems}) => {
+const MenuItemForm = ({ isVisible, onHide, isEditMode, formValues, setFormValues, addMenuItem, updateMenuItem,loadMenuItems}) => {
     const toast = useRef(null);
     const imageUploaded = useRef(null);
     const [totalSize, setTotalSize] = useState(0);
@@ -19,23 +19,23 @@ const MenuItemForm = ({ isVisible, onHide, isEditMode, formValues, setFormValues
     const cancelOptions = { icon: 'pi pi-fw pi-times', iconOnly: true, className: 'custom-cancel-btn p-button-danger p-button-rounded p-button-outlined' };
 
     const handleSave = async () => {
-        if (isEditMode) {
-            console.log("Editando producto:", formValues);
-            // Aquí se podría llamar a una función de edición si se necesita
-        } else {    
-            try {
-                await addMenuItem(formValues);
-                console.log("Producto agregado exitosamente:", formValues);
-                toast.current.show({ severity: 'success', summary: 'Éxito', detail: 'Producto agregado', life: 3000 });
-    
-                // Recargar la lista de ítems para reflejar el nuevo producto
+        try {
+            if (isEditMode && formValues.id) { // Asegúrate de que el ID esté presente
+                await updateMenuItem(formValues.id, formValues); // Pasa el ID directamente desde formValues
+                console.log("Producto actualizado exitosamente");
+                toast.current.show({ severity: 'success', summary: 'Éxito', detail: 'Producto actualizado', life: 3000 });
                 await loadMenuItems();
-                setTotalSize(0);
-                onHide(); // Cierra el modal después de guardar exitosamente
-            } catch (error) {
-                console.error('Error adding item:', error);
-                toast.current.show({ severity: 'error', summary: 'Error', detail: 'No se pudo agregar el producto', life: 3000 });
+            } else {
+                await addMenuItem(formValues);
+                console.log("Producto agregado exitosamente");
+                toast.current.show({ severity: 'success', summary: 'Éxito', detail: 'Producto agregado', life: 3000 });
+                await loadMenuItems();
             }
+            setTotalSize(0);
+            onHide(); // Cierra el modal después de guardar exitosamente
+        } catch (error) {
+            console.error('Error guardando item:', error);
+            toast.current.show({ severity: 'error', summary: 'Error', detail: 'No se pudo guardar el producto', life: 3000 });
         }
     };
 
