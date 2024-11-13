@@ -54,7 +54,7 @@ const LoginForm = () => {
             >
                 <div className="text-center mb-5">
                     <Image src="/sushi.png" alt="hyper" height={150} className="mb-3" />
-                    <div className="text-900 text-4xl font-medium mb-3">Bienvenido a SyntaxFlavor!</div>
+                    <div className="text-900 text-4xl font-medium mb-3">¡Bienvenido a SyntaxFlavor!</div>
                     <span className="text-600 font-medium line-height-3">Inicia tu sesión</span>
                 </div>
                 <div>

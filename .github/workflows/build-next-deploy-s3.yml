@@ -12,7 +12,7 @@ on:
 
 env:
   NEXT_PUBLIC_BACKEND_URL: http://syntaxflavor_backend:8080
-  NEXT_PUBLIC_MINIO_URL: http://syntaxflavor_backend:9000
+  NEXT_PUBLIC_MINIO_URL: http://minio:9000
   DH_REPOSITORY: syntaxflavor-frontend-web
   IMAGE_TAG: latest
 
