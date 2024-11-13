@@ -1,14 +1,14 @@
 import React, { useState, useEffect, useRef, useContext } from 'react';
-import KitchenSiderBar from "@/components/kitchen/KitchenSidebar.js";
 import { Card } from 'primereact/card';
 import { Toast } from 'primereact/toast';
 import { confirmDialog } from 'primereact/confirmdialog';
-import withAuth from '@/components/misc/withAuth';
 import { MenuContext } from '../../../context/MenuContext';
 import MenuItemForm from '@/components/menu/MenuItemForm';
 import MenuList from '@/components/menu/MenuList';
 import MenuFilter from '@/components/menu/MenuFilter';
 import MenuItemSelected from '@/components/menu/MenuItemSelected';
+import RoleBasedSidebar from '@/components/RoleBasedSidebar';
+import withAuth from '@/components/misc/withAuth';
 
 function MenuPage() {
     //contexts
@@ -99,7 +99,7 @@ function MenuPage() {
     };
 
     return (
-        <KitchenSiderBar>
+        <RoleBasedSidebar>
             <Toast ref={toast} />
             <div>
                 <div style={styles.container}>
@@ -147,7 +147,7 @@ function MenuPage() {
                 addMenuItem={addMenuItem} // Pasar addMenuItem como prop
                 loadMenuItems={loadMenuItems} 
             />
-        </KitchenSiderBar>
+        </RoleBasedSidebar>
     );
 }
 const styles = {

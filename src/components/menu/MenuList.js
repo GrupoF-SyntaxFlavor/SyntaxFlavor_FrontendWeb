@@ -1,11 +1,12 @@
 // MenuList.js
-import React, { useRef } from 'react';
+import React, { useRef, useContext } from 'react';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { Button } from 'primereact/button';
 import { Toast } from 'primereact/toast';
 import { ConfirmDialog } from 'primereact/confirmdialog';
 import { formatImageUrl } from '../../../util/formatImageUtils';
+import { AuthContext } from '../../../context/AuthContext'; // Importa el contexto de autenticación
 
 const MenuList = ({
     menuItems,
@@ -16,21 +17,26 @@ const MenuList = ({
     totalRecords,
     handlePageChange,
     openDialog,
-    showConfirmStatusChange
+    showConfirmStatusChange,
 }) => {
     const toast = useRef(null);
+    const { userRoles } = useContext(AuthContext); // Accede a los roles del usuario desde el contexto
 
     const actionButtonsTemplate = (option) => (
         <div style={styles.buttonPosition}>
-            <Button
-                label="Editar"
-                icon="pi pi-pencil"
-                className="p-button-info"
-                size="small"
-                style={styles.enableButton}
-                onClick={() => openDialog(option)} // Abre el modal en modo edición
-            />
-            {option.status ? (
+            {userRoles.includes('administrator') && (
+                <>
+                    <Button
+                        label="Editar"
+                        icon="pi pi-pencil"
+                        className="p-button-info"
+                        size="small"
+                        style={styles.enableButton}
+                        onClick={() => openDialog(option)}
+                    />
+                </>
+            )}
+            {userRoles.includes('kitchen') && (
                 <Button
                     label="Deshabilitar"
                     icon="pi pi-times"
@@ -38,15 +44,6 @@ const MenuList = ({
                     size="small"
                     style={styles.enableButton}
                     onClick={() => showConfirmStatusChange(option, 'Deshabilitar')}
-                />
-            ) : (
-                <Button
-                    label="Habilitar"
-                    icon="pi pi-check"
-                    className="p-button-success"
-                    size="small"
-                    style={{ ...styles.enableButton }}
-                    onClick={() => showConfirmStatusChange(option, 'Habilitar')}
                 />
             )}
         </div>
@@ -86,19 +83,21 @@ const MenuList = ({
                 <Column field="name" header="Nombre" body={itemTemplate} />
                 <Column
                     header={
-                        <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-                            <Button
-                                icon="pi pi-plus"
-                                className="p-button-success"
-                                label="Agregar"
-                                onClick={() => openDialog()}
-                                style={styles.addButton}
-                            />
-                        </div>
+                        userRoles.includes('administrator') ? (
+                            <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                                <Button
+                                    icon="pi pi-plus"
+                                    className="p-button-success"
+                                    label="Agregar"
+                                    onClick={() => openDialog()}
+                                    style={styles.addButton}
+                                />
+                            </div>
+                        ) : null
                     }
                     body={(rowData) => actionButtonsTemplate(rowData)}
                     style={{ textAlign: 'right', width: '100px' }}
-                />
+                /> 
             </DataTable>
         </>
     );

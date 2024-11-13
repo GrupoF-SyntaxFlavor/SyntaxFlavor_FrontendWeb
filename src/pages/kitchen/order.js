@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef, useContext } from 'react';
 import OrderDetails from '@/components/kitchen/OrderDetails.js';
-import KitchenSiderBar from "@/components/kitchen/KitchenSidebar.js";
+import RoleBasedSidebar from '@/components/RoleBasedSidebar';
+
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { Button } from 'primereact/button';
@@ -235,7 +236,7 @@ function OrdersPage() {
     };
 
     return (
-        <KitchenSiderBar>
+        <RoleBasedSidebar>
             <Toast ref={toast} />
             <ConfirmDialog />
             <div>
@@ -304,7 +305,7 @@ function OrdersPage() {
                     </div>
                 </div>
             </div>
-        </KitchenSiderBar>
+        </RoleBasedSidebar>
     );
 }
 

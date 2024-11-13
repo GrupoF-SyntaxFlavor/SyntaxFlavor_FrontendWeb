@@ -10,7 +10,7 @@ const LoginForm = () => {
     const router = useRouter();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const { isAuthenticated, login } = useContext(AuthContext);
+    const { isAuthenticated, login, userRoles } = useContext(AuthContext); // Asegúrate de obtener userRoles del contexto
     const toast = useRef(null); // Referencia para mostrar los mensajes emergentes
 
     // Validación de correo
@@ -33,11 +33,17 @@ const LoginForm = () => {
         // Si las validaciones pasan
         console.log('Signing in with:', email)
         try {
-            const r = await login(email, password);
-            console.log('isAuthenticated:', r);
-            //console.log('authToken:', authToken);
-            if (r !== undefined && r !== null) { //FIXME: debe haber una mejor forma de hacer esto, pero ahora no hay tiempo
-                router.push('/kitchen/order'); // Redirigimos al home
+            const response = await login(email, password);
+            if (response) {
+                // Verificar si el usuario tiene el rol de "administrator" o "kitchen"
+                if (userRoles.includes("administrator")) {
+                    router.push('/admin/kitchens');
+                } else if (userRoles.includes("kitchen")) {
+                    router.push('/kitchen/order'); // Redirigir a cocina
+                } else {
+                    // Si el rol no es "administrator" ni "kitchen", muestra un mensaje de error
+                    toast.current.show({ severity: 'error', summary: 'Error', detail: 'No tienes permisos para acceder', life: 3000 });
+                }
             } else {
                 toast.current.show({ severity: 'error', summary: 'Error', detail: 'Nombre de usuario o contraseña incorrectos', life: 3000 });
             }
