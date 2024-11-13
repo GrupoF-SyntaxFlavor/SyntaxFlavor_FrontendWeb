@@ -11,6 +11,16 @@ const AuthProvider = ({ children }) => {
 
     const authService = new AuthService();
 
+    useEffect(() => {
+        // Intenta obtener el token almacenado en localStorage al cargar el componente
+        const token = localStorage.getItem('authToken');
+        console.log("authtoken", token)
+        if (token) {
+            setAuthToken(token);
+            setIsAuthenticated(true);
+        }
+    }, []);
+
     const login = async (email, password) => {
         try {
             const response = await authService.login(email, password);
@@ -25,6 +35,7 @@ const AuthProvider = ({ children }) => {
             return response;
         } catch (error) {
             console.error('Login failed:', error);
+            setIsAuthenticated(false);
         }
     };
 
@@ -46,6 +57,7 @@ const AuthProvider = ({ children }) => {
     };
 
     const logout = () => {
+        localStorage.removeItem('authToken'); // Limpiar localStorage
         setAuthToken(null);
         setIsAuthenticated(false);
         setUserRoles([]);
@@ -70,4 +82,5 @@ const AuthProvider = ({ children }) => {
     );
 };
 
+export const useAuth = () => useContext(AuthContext);
 export { AuthContext, AuthProvider };

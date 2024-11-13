@@ -11,7 +11,7 @@
   "dependencies": {
     "@fortawesome/free-solid-svg-icons": "^6.6.0",
     "@fortawesome/react-fontawesome": "^0.2.2",
-    "jwt-decode": "^4.0.0",
+    "cookies-next": "^4.3.0",
     "lodash": "^4.17.21",
     "next": "14.2.8",
     "primeflex": "^3.3.1",

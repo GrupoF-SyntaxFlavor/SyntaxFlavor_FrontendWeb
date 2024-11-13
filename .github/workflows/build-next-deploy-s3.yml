@@ -6,12 +6,14 @@ on:
       - main
       - develop
   schedule:
-    - cron: '30 3/6 * * *'
+    - cron: '0 3/6 * * *'
   workflow_dispatch:
 
 env:
-  NEXT_PUBLIC_BACKEND_URL: http://146.190.141.101:8080
-  NEXT_PUBLIC_MINIO_URL: http://146.190.141.101:9000
+  NEXT_PUBLIC_BACKEND_URL: http://${{ secrets.DO_DROPLET_IP }}:8080
+  NEXT_PUBLIC_MINIO_URL: http://${{ secrets.DO_DROPLET_IP }}:9000
+  DH_REPOSITORY: syntaxflavor-frontend-web
+  IMAGE_TAG: latest
 
 jobs:
   build:
@@ -53,3 +55,65 @@ jobs:
 
       - name: Invalidate CloudFront cache
         run: aws cloudfront create-invalidation --distribution-id ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }} --paths "/*"
+
+  deploy-do:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20.17'
+          cache: 'npm'
+
+      - name: Install pnpm
+        run: npm install -g pnpm
+
+      - name: Install dependencies
+        run: pnpm install --no-frozen-lockfile
+
+      - name: write env file
+        run: |
+          echo "NEXT_PUBLIC_BACKEND_URL=$NEXT_PUBLIC_BACKEND_URL" >> .env.local
+          echo "NEXT_PUBLIC_MINIO_URL=$NEXT_PUBLIC_MINIO_URL" >> .env.local
+
+      - name: build the static project
+        run: pnpm build
+
+      # Step 2: Build Docker image
+      - name: Build Docker image
+        run: |
+          docker build -t $DH_REPOSITORY:$IMAGE_TAG .
+
+      # Step 3: Tag Docker image
+      - name: Tag Docker image
+        run: |
+          docker tag $DH_REPOSITORY:$IMAGE_TAG ${{ secrets.DOCKERHUB_USERNAME }}/$DH_REPOSITORY:$IMAGE_TAG
+
+      # Step 4 Push to DockerHub
+      - name: Push to DockerHub
+        run: |
+          docker login -u "${{ secrets.DO_USERNAME }}" -p "${{ secrets.DO_PASSWORD }}"
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/$DH_REPOSITORY:$IMAGE_TAG
+
+      # Step 5: Set up SSH agent and deploy
+      - name: Set up SSH agent and deploy
+        uses: webfactory/ssh-agent@v0.5.3
+        with:
+          ssh-private-key: ${{ secrets.DO_DROPLET_KEY }}
+
+      # Step 6: Install SSH key
+      - name: Install SSH key
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan ${{ secrets.DO_DROPLET_IP}} >> ~/.ssh/known_hosts
+
+       # Step 7: Deploy via SSH
+      - name: Deploy via SSH
+        env:
+          HOST: root@${{ secrets.DO_DROPLET_IP}}
+        run: |
+          ssh $HOST 'docker login -u "${{ secrets.DO_USERNAME }}" -p "${{ secrets.DO_PASSWORD }}" &&cd ~/SyntaxFlavor_Backend/digital_ocean && docker compose stop syntaxflavor_frontend && docker compose rm -f syntaxflavor_frontend && docker compose up -d --force-recreate syntaxflavor_frontend'
