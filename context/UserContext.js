@@ -19,7 +19,7 @@ const UserProvider = ({ children }) => {
 
     const userService = new UserService();
 
-    console.log("authToken in userContext: ", authToken);
+    //console.log("authToken in userContext: ", authToken);
 
     const loadKitchenUsers = async () => {
         try {
@@ -34,13 +34,6 @@ const UserProvider = ({ children }) => {
         } catch (error) {
             console.error('Error loading menu items:', error);
         }
-        // try {
-        //     console.log('Fetching kitchen users with token', authToken);
-        //     const response = await userService.getKitchenUsers2(pageNumber, rows, sortBy, sortOrder, authToken);
-        //     setKitchenUsers(response.data);
-        // } catch (error) {
-        //     console.error('Failed to load kitchen users', error);
-        // }
     };
 
     return (

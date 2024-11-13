@@ -9,6 +9,9 @@ const RoleBasedSidebar = ({ children }) => {
     const isAdmin = userRoles.includes('administrator');
     const isKitchenUser = userRoles.includes('kitchen'); // Asumiendo que 'kitchen' es el rol para usuarios de cocina
 
+    console.log('isAdmin:', isAdmin);
+    console.log('isKitchenUser:', isKitchenUser);
+
     if (isAdmin) {
         return <AdminSidebar>{children}</AdminSidebar>;
     } else if (isKitchenUser) {
