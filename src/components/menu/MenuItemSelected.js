@@ -17,7 +17,7 @@ const MenuItemSelected = ({ selectedItem }) => {
 
     useEffect(() => {
         if (selectedItem && selectedItem.image) {
-            setImageUrl(selectedItem.image); // Establece la URL de la imagen
+            setImageUrl(formatImageUrl(selectedItem.image)); // Establece la URL de la imagen
             console.log("Selected Item:", selectedItem);
         }
     }, [selectedItem]); // Vuelve a ejecutar cuando `selectedItem` cambia
