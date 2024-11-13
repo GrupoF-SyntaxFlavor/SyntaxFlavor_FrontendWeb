@@ -71,6 +71,21 @@ const MenuProvider = ({ children }) => {
         }
     };
 
+    const updateMenuItem = async (menuItemId, formValues) => {
+        try {
+            const updatedItem = await menuService.updateMenuItem(menuItemId, formValues, authToken);
+            const updatedMenuItems = menuItems.map(item => {
+                if (item.id === updatedItem.id) {
+                    item = updatedItem;
+                }
+                return item;
+            });
+            setMenuItems(updatedMenuItems);
+        } catch (error) {
+            console.error('Error updating menu item:', error);
+        }
+    };
+
     const deleteMenuItem = async (menuItemId) => {
         try {
             const response = await menuService.deleteMenuItem(menuItemId, authToken);
@@ -96,6 +111,7 @@ const MenuProvider = ({ children }) => {
             menuItems,
             loadMenuItems,
             addMenuItem,
+            updateMenuItem,
             changeMenuItemStatus,
             deleteMenuItem,
             first,

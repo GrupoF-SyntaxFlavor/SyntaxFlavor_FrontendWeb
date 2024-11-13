@@ -16,6 +16,7 @@ function MenuPage() {
         menuItems, 
         loadMenuItems, 
         addMenuItem, 
+        updateMenuItem,
         changeMenuItemStatus, 
         minPrice,
         setMinPrice, 
@@ -35,7 +36,7 @@ function MenuPage() {
     const [selectedItem, setSelectedItem] = useState(null); // Ítem seleccionado
     const [isDialogVisible, setDialogVisible] = useState(false);
     const [isEditMode, setIsEditMode] = useState(false); // Para saber si es edición o agregar
-    const [formValues, setFormValues] = useState({ name: '', description: '', price: null, image: '' });
+    const [formValues, setFormValues] = useState({ id: null, name: '', description: '', price: null, image: '' });
     
     const toast = useRef(null);
     const itemsSort = [ {name: 'Ascendente', code: 'true'}, {name: 'Descendente', code: 'false'}];
@@ -50,8 +51,8 @@ function MenuPage() {
 
 
     const openDialog = (item = null) => {
-        setIsEditMode(!!item); // Si item no es nulo, estamos en modo edición
-        setFormValues(item ? { ...item } : { name: '', description: '', price: null, image: '' });
+        setIsEditMode(!!item); 
+        setFormValues(item ? { ...item } : { id: null, name: '', description: '', price: null, image: '' });
         setDialogVisible(true);
     };
     
@@ -145,6 +146,7 @@ function MenuPage() {
                 formValues={formValues}
                 setFormValues={setFormValues} // Asegúrate de pasar setFormValues como prop
                 addMenuItem={addMenuItem} // Pasar addMenuItem como prop
+                updateMenuItem={updateMenuItem} // Pasar updateMenuItem como prop
                 loadMenuItems={loadMenuItems} 
             />
         </RoleBasedSidebar>

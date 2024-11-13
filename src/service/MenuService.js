@@ -63,8 +63,6 @@ export default class MenuService {
         try{
             const { name, description, price, image } = formValues;
             const requestBody = { name, description, price };
-            console.log('imagen en service:',image )
-
             const response = await fetch(`${this.BASE_URL}/api/v1/menu/item`,{
                 method: 'POST',
                 headers: {
@@ -79,7 +77,6 @@ export default class MenuService {
             }
             const data = await response.json();
             console.log('Menu item created:', data);
-            console.log('imagen:',image )
             
             const newItemId = data.payload.id; // Suponiendo que el ID del nuevo ítem se encuentra en `data.payload.id`
             // Luego, si hay una imagen, actualiza la imagen del nuevo ítem
@@ -91,6 +88,38 @@ export default class MenuService {
             return data.payload;
         } catch (error){
             console.error('Error creating menu item:', error);
+            throw error;
+        }
+    }
+
+    async updateMenuItem(menuItemId, formValues, token) {
+        try {
+            
+            const { name, description, price, image } = formValues;
+            const requestBody = { name, description, price };
+            const response = await fetch(`${this.BASE_URL}/api/v1/menu/item/${menuItemId}`, {
+                method: 'PUT',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(requestBody)
+            });
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            const data = await response.json();
+            console.log('Menu item updated:', data);
+            // Luego, si hay una imagen, actualiza la imagen del ítem
+            if (image) {
+                await this.updateMenuItemImage(menuItemId, image);
+                console.log('Imagen del menú actualizada para el item:', menuItemId);
+            }
+
+            return data.payload;
+        }
+        catch (error) {
+            console.error('Error updating menu item:', error);
             throw error;
         }
     }
