@@ -117,4 +117,4 @@ jobs:
         env:
           HOST: root@${{ secrets.DO_DROPLET_IP}}
         run: |
-          ssh $HOST 'docker login -u "${{ secrets.DO_USERNAME }}" -p "${{ secrets.DO_PASSWORD }}" &&cd ~/SyntaxFlavor_Backend/digital_ocean && docker compose stop syntaxflavor_frontend && docker compose rm -f syntaxflavor_frontend && docker compose up -d --force-recreate syntaxflavor_frontend'
+          ssh $HOST 'docker login -u "${{ secrets.DO_USERNAME }}" -p "${{ secrets.DO_PASSWORD }}" && cd ~/SyntaxFlavor_Backend/digital_ocean && docker compose pull syntaxflavor_frontend && docker compose stop syntaxflavor_frontend && docker compose rm -f syntaxflavor_frontend && docker compose up -d --force-recreate syntaxflavor_frontend'
