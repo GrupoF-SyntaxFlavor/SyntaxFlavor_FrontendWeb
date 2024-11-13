@@ -10,8 +10,8 @@ on:
   workflow_dispatch:
 
 env:
-  NEXT_PUBLIC_BACKEND_URL: http://${{ secrets.DO_DROPLET_IP }}:8080
-  NEXT_PUBLIC_MINIO_URL: http://${{ secrets.DO_DROPLET_IP }}:9000
+  NEXT_PUBLIC_BACKEND_URL: http://syntaxflavor_backend:8080
+  NEXT_PUBLIC_MINIO_URL: http://syntaxflavor_backend:9000
   DH_REPOSITORY: syntaxflavor-frontend-web
   IMAGE_TAG: latest
 
