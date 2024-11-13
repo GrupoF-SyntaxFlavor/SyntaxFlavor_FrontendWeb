@@ -37,14 +37,25 @@ const MenuList = ({
                 </>
             )}
             {userRoles.includes('kitchen') && (
-                <Button
-                    label="Deshabilitar"
-                    icon="pi pi-times"
-                    className="p-button-danger"
-                    size="small"
-                    style={styles.enableButton}
-                    onClick={() => showConfirmStatusChange(option, 'Deshabilitar')}
-                />
+                option.status ? (
+                    <Button
+                        label="Deshabilitar"
+                        icon="pi pi-times"
+                        className="p-button-danger"
+                        size="small"
+                        style={styles.enableButton}
+                        onClick={() => showConfirmStatusChange(option, 'Deshabilitar')}
+                    />
+                ) : (
+                    <Button
+                        label="Habilitar"
+                        icon="pi pi-check"
+                        className="p-button-success"
+                        size="small"
+                        style={{ ...styles.enableButton }}
+                        onClick={() => showConfirmStatusChange(option, 'Habilitar')}
+                    />
+                )
             )}
         </div>
     );

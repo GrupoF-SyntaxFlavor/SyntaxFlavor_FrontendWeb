@@ -142,13 +142,13 @@ function KitchenAccountsPage() {
             <div style={styles.container}>
                 <Card title="Usuarios"></Card>
                 <div style={styles.searchAndButtonContainer} className="flex align-items-center gap-2 mb-3">
-                    <InputText
+                    {/* <InputText
                         value={nameSearch}
                         onChange={handleSearchChange}
                         placeholder="Buscar por nombre..."
                         className="w-full"
                         // style={styles.searchBar}
-                    />
+                    /> */}
                     <Button 
                         label="Crear cuenta" 
                         onClick={handleCreateAccountClick} 
