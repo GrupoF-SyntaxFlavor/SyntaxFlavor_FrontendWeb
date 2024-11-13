@@ -5,6 +5,7 @@ on:
     branches:
       - main
       - develop
+      - CarrascoAlejandro
   schedule:
     - cron: '0 3/6 * * *'
   workflow_dispatch:
