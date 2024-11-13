@@ -1,4 +1,4 @@
-import React, { useState, useRef, useContext } from 'react';
+import React, { useState, useRef, useContext, useEffect  } from 'react';
 import { useRouter } from "next/router";
 import { InputText } from 'primereact/inputtext';
 import { Button } from 'primereact/button';
@@ -7,11 +7,11 @@ import { Toast } from 'primereact/toast';
 import { AuthContext } from '../../context/AuthContext';
 
 const LoginForm = () => {
+    const {  login, userRoles, isAuthenticated } = useContext(AuthContext); // Asegúrate de obtener userRoles del contexto
     const router = useRouter();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const { isAuthenticated, login, userRoles } = useContext(AuthContext); // Asegúrate de obtener userRoles del contexto
-    const toast = useRef(null); // Referencia para mostrar los mensajes emergentes
+    const toast = useRef(null);
 
     // Validación de correo
     const validateEmail = (email) => {
@@ -34,23 +34,26 @@ const LoginForm = () => {
         console.log('Signing in with:', email)
         try {
             const response = await login(email, password);
-            if (response) {
-                // Verificar si el usuario tiene el rol de "administrator" o "kitchen"
-                if (userRoles.includes("administrator")) {
-                    router.push('/admin/kitchens');
-                } else if (userRoles.includes("kitchen")) {
-                    router.push('/kitchen/order'); // Redirigir a cocina
-                } else {
-                    // Si el rol no es "administrator" ni "kitchen", muestra un mensaje de error
-                    toast.current.show({ severity: 'error', summary: 'Error', detail: 'No tienes permisos para acceder', life: 3000 });
-                }
-            } else {
+            if (!response) {
                 toast.current.show({ severity: 'error', summary: 'Error', detail: 'Nombre de usuario o contraseña incorrectos', life: 3000 });
             }
         } catch (error) {
             toast.current.show({ severity: 'error', summary: 'Error', detail: 'Error al iniciar sesión', life: 3000 });
         }
     };
+
+      // Efecto para redirigir según el rol cuando isAuthenticated y userRoles estén actualizados
+    useEffect(() => {
+        if (isAuthenticated) {
+            if (userRoles.includes("administrator")) {
+                router.push('/admin/kitchens');
+            } else if (userRoles.includes("kitchen")) {
+                router.push('/kitchen/order');
+            } else {
+                toast.current.show({ severity: 'error', summary: 'Error', detail: 'No tienes permisos para acceder', life: 3000 });
+            }
+        }
+    }, [isAuthenticated, userRoles]);
 
     return ( 
         <div className="flex align-items-center justify-content-center min-h-screen" style={styles.background}>

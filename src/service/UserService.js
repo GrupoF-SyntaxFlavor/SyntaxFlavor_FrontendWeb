@@ -8,7 +8,7 @@ export default class UserService {
         "email": "AlAwja@syntax.flavor"*/
         
     async getKitchenUsers(pageNumber, pageSize, sortBy, sortOrder, token){
-        console.log("Fetching kitchen users");
+        //console.log("Fetching kitchen users");
         try {
             const response = await fetch(`${this.BASE_URL}/api/v1/users-with-kitchen?page=${pageNumber}&size=${pageSize}&sortBy=${sortBy}&sortOrder=${sortOrder}`, {
                 method: 'GET',
@@ -17,16 +17,16 @@ export default class UserService {
                     'Content-Type': 'application/json',
                 }
             });
-            console.log("url: GET http://localhost:8080/api/v1/users-with-kitchen?page=0&size=5&sortBy=id&sortOrder=desc")
-            console.log("url", `${this.BASE_URL}/api/v1/users-with-kitchen?page=${pageNumber}&size=${pageSize}&sortBy=${sortBy}&sortOrder=${sortOrder}`);
-            console.log("token", token);
-            console.log("response", response);
+            //console.log("url: GET http://localhost:8080/api/v1/users-with-kitchen?page=0&size=5&sortBy=id&sortOrder=desc")
+            //console.log("url", `${this.BASE_URL}/api/v1/users-with-kitchen?page=${pageNumber}&size=${pageSize}&sortBy=${sortBy}&sortOrder=${sortOrder}`);
+            //console.log("token", token);
+            //console.log("response", response);
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
 
             const data = await response.json();
-            console.log("data kitchen users: ", data);
+            //console.log("data kitchen users: ", data);
             return data.payload;  // Retornamos el contenido del payload
             
         } catch (error) {

@@ -26,7 +26,7 @@ export default function KitchenSidebar({ children }) {
             label: 'Cerrar sesión',
             icon: 'pi pi-sign-out',
             command: () => {
-                logout(); // Llama a logout para cerrar sesión
+                logout(); 
                 router.push('/login'); // Redirige al usuario al login
             }
         },

@@ -13,10 +13,10 @@ const UserList = ({
     handlePageChange,
     // loading 
 }) => {
-    console.log('kitchenUsers:', kitchenUsers);
+    //console.log('kitchenUsers:', kitchenUsers);
     // console.log('onPaginate:', onPaginate);
     // console.log('page:', page);
-    console.log('rows:', rows);
+    //console.log('rows:', rows);
     // console.log('loading:', loading);
 
     // const addIndexToUsers = kitchenUsers.map((user, index) => ({ ...user, index: index + 1 }));
@@ -27,7 +27,7 @@ const UserList = ({
                 value={kitchenUsers}
                 // paginator
                 // paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink RowsPerPageDropdown"
-                dataKey="id" //TODO:
+                //dataKey="id" //TODO:
                 paginator={true}
                 rows={rows}
                 first={first}

@@ -12,14 +12,21 @@ const AuthProvider = ({ children }) => {
     const authService = new AuthService();
 
     useEffect(() => {
-        // Intenta obtener el token almacenado en localStorage al cargar el componente
         const token = localStorage.getItem('authToken');
-        console.log("authtoken", token)
+        //console.log("authtoken", token)
         if (token) {
             setAuthToken(token);
             setIsAuthenticated(true);
+            decodeToken(token);
         }
     }, []);
+
+    /* useEffect(() => {
+        console.log("authToken changed:", authToken);
+        console.log("isAuthenticated changed:", isAuthenticated);
+        console.log("userRoles changed:", userRoles);
+        console.log("userInfo changed:", userInfo);
+    }, [authToken, isAuthenticated, userRoles, userInfo]); */
 
     const login = async (email, password) => {
         try {
@@ -28,8 +35,8 @@ const AuthProvider = ({ children }) => {
 
             if (token) {
                 setAuthToken(token);
-                setIsAuthenticated(true);
                 decodeToken(token);
+                setIsAuthenticated(true);
                 localStorage.setItem("authToken", token); // Guarda el token en localStorage
             }
             return response;
@@ -47,8 +54,6 @@ const AuthProvider = ({ children }) => {
             const roles = decodedPayload.resource_access?.syntaxflavor?.roles || [];
             const { preferred_username, email, name } = decodedPayload;
 
-            console.log("Roles:", roles);
-            console.log("User info:", { preferred_username, email, name });
             setUserRoles(roles);
             setUserInfo({ preferred_username, email, name });
         } catch (error) {
@@ -57,23 +62,12 @@ const AuthProvider = ({ children }) => {
     };
 
     const logout = () => {
-        localStorage.removeItem('authToken'); // Limpiar localStorage
         setAuthToken(null);
         setIsAuthenticated(false);
         setUserRoles([]);
         setUserInfo({});
-        localStorage.removeItem("authToken"); // Elimina el token de localStorage al cerrar sesión
+        localStorage.removeItem("authToken"); 
     };
-
-    useEffect(() => {
-        // Carga el token desde localStorage al iniciar la aplicación
-        const storedToken = localStorage.getItem("authToken");
-        if (storedToken) {
-            setAuthToken(storedToken);
-            setIsAuthenticated(true);
-            decodeToken(storedToken);
-        }
-    }, []);
 
     return (
         <AuthContext.Provider value={{ authToken, isAuthenticated, userRoles, userInfo, login, logout }}>
