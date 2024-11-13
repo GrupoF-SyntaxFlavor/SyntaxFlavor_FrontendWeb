@@ -71,12 +71,33 @@ const MenuProvider = ({ children }) => {
         }
     };
 
+    const deleteMenuItem = async (menuItemId) => {
+        try {
+            const response = await menuService.deleteMenuItem(menuItemId, authToken);
+
+            if (response.responseCode === 'MEN-005') {
+                // Eliminar el elemento del estado solo si la respuesta es exitosa
+                setMenuItems(prevItems => prevItems.filter(item => item.id !== menuItemId));
+                console.log('Menu item deleted successfully.');
+                return 200; // Indica éxito
+            } else if (response.responseCode === 'MEN-409') {
+                // Muestra el mensaje de error si hay un conflicto
+                console.error(`Error: ${response.errorMessage}`);
+                return 409; // Indica conflicto
+            }
+        } catch (error) {
+            console.error('Error deleting menu item:', error);
+            return 500; // Indica error del servidor
+        }
+    };
+
     return (
         <MenuContext.Provider value={{ 
             menuItems,
             loadMenuItems,
             addMenuItem,
             changeMenuItemStatus,
+            deleteMenuItem,
             first,
             setFirst,
             rows,
