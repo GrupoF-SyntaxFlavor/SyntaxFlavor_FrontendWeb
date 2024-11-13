@@ -54,7 +54,6 @@ const AuthProvider = ({ children }) => {
             const roles = decodedPayload.resource_access?.syntaxflavor?.roles || [];
             const { preferred_username, email, name } = decodedPayload;
 
-            console.log("Roles:", roles);
             setUserRoles(roles);
             setUserInfo({ preferred_username, email, name });
         } catch (error) {

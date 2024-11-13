@@ -61,7 +61,7 @@ function KitchenAccountsPage() {
     
     // const [page, setPage] = useState(0);
     // const [rows, setRows] = useState(10);
-    console.log('authToken:', authToken);
+    //console.log('authToken:', authToken);
     
 
     useEffect(()=> {

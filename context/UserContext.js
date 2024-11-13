@@ -23,9 +23,9 @@ const UserProvider = ({ children }) => {
 
     const loadKitchenUsers = async () => {
         try {
-            console.log("solicitud: ", page, rows, sortBy, sortOrder, authToken)
+            //console.log("solicitud: ", page, rows, sortBy, sortOrder, authToken)
             const response = await userService.getKitchenUsers(page, rows, sortBy, sortOrder, authToken);
-            console.log("response, UserContext: ", response)
+            //console.log("response, UserContext: ", response)
             setKitchenUsers(response.content);
             settotalRecords(response.totalElements);
             if(response.first) {
