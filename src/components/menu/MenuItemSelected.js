@@ -6,12 +6,21 @@ import { MenuContext } from '../../../context/MenuContext';
 import { Toast } from 'primereact/toast';
 import { Button } from 'primereact/button';
 import { ConfirmDialog } from 'primereact/confirmdialog';
+import { formatImageUrl } from '../../../util/formatImageUtils';
 
 const MenuItemSelected = ({ selectedItem }) => {
     const { userRoles } = useContext(AuthContext); // Accede a los roles del usuario desde el contexto
     const { deleteMenuItem } = useContext(MenuContext);
     const toast = useRef(null);
     const [visible, setVisible] = useState(false);
+    const [imageUrl, setImageUrl] = useState(null);
+
+    useEffect(() => {
+        if (selectedItem && selectedItem.image) {
+            setImageUrl(formatImageUrl(selectedItem.image)); // Establece la URL de la imagen
+            console.log("Selected Item:", selectedItem);
+        }
+    }, [selectedItem]); // Vuelve a ejecutar cuando `selectedItem` cambia
 
     if (!selectedItem) return null;
 
@@ -57,7 +66,12 @@ const MenuItemSelected = ({ selectedItem }) => {
             <Card title={`Detalles de ${selectedItem.name}`} style={styles.detailCard}></Card>
             <br />  
             <Card>
-                <img src={selectedItem.image} alt={selectedItem.name} style={styles.largeImage} />
+                {imageUrl ? (
+                    <img src={formatImageUrl(imageUrl)} alt={selectedItem.name} style={styles.largeImage} onError={(e) => e.target.style.display = 'none'} />
+                ) : (
+                    <p>Cargando imagen...</p>
+                )}
+                {/* <img src={selectedItem.image} alt={selectedItem.name} style={styles.largeImage} /> */}
                 <p><strong>Descripción:</strong> {selectedItem.description}</p>
                 <p><strong>Precio:</strong> {selectedItem.price} Bs.</p>
                 <p><strong>Estado:</strong> {selectedItem.status ? "Habilitado" : "Deshabilitado"}</p>

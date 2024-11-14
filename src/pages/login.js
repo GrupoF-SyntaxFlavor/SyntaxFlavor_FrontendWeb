@@ -31,11 +31,11 @@ const LoginForm = () => {
             return;
         }
         // Si las validaciones pasan
-        console.log('Signing in with:', email)
+        console.log('Signing in with :', email)
         try {
             const response = await login(email, password);
             if (!response) {
-                toast.current.show({ severity: 'error', summary: 'Error', detail: 'Nombre de usuario o contraseña incorrectos', life: 3000 });
+                toast.current.show({ severity: 'error', summary: 'Error', detail: 'Nombre de usuario o contraseña incorrectos actualizado', life: 3000 });
             }
         } catch (error) {
             toast.current.show({ severity: 'error', summary: 'Error', detail: 'Error al iniciar sesión', life: 3000 });
