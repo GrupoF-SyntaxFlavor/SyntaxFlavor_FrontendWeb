@@ -8,12 +8,12 @@ export default class ReportService {
 
     // Método para obtener el KPI de órdenes
     async getOrdersKPI(
+        token,
         startDate = get30DaysAgoDate(),
-        endDate = new Date(),
-        token
+        endDate = new Date()
     ) {
         try {
-            const response = await fetch(`${this.BASE_URL}/api/v1/report/order-kpi?startDate=${startDate}&endDate=${endDate}`, {
+            const response = await fetch(`${this.BASE_URL}/api/v1/report/order-kpi?startDate=${startDate.toISOString().slice(0, 19)}&endDate=${endDate.toISOString().slice(0, 19)}`, {
                 method: 'GET',
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -25,8 +25,8 @@ export default class ReportService {
                 throw new Error(`HTTP error! status: ${response.status}`);
             } 
 
-            const data = await response.payload.json();
-            return data;  // Retornamos el contenido del payload
+            const data = await response.json();
+            return data.payload;  // Retornamos el contenido del payload
         } catch (error) {
             console.error("Error fetching orders KPI", error);
             throw error;
@@ -40,7 +40,7 @@ export default class ReportService {
      */
     async getWeeklySalesReport(token) {
         try {
-            const response = await fetch(`${this.BASE_URL}/api/v1/bill/report/weekly-sales`, {
+            const response = await fetch(`${this.BASE_URL}/api/v1/report/weekly-sales`, {
                 method: 'GET',
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -78,7 +78,7 @@ export default class ReportService {
         top = 10
     ) {
         try {
-            const response = await fetch(`${this.BASE_URL}/api/v1/report/menu/most-sold?startDate=${startDate}&endDate=${endDate}&top=${top}`, {
+            const response = await fetch(`${this.BASE_URL}/api/v1/report/menu/most-sold?startDate=${startDate.toISOString().slice(0, 19)}&endDate=${endDate.toISOString().slice(0, 19)}&top=${top}`, {
                 method: 'GET',
                 headers: {
                     'Authorization': `Bearer ${token}`,
