@@ -58,7 +58,7 @@ export default function AdminSidebar({ children }) {
             <div>
                 {/* Sidebar */}
                 <div className="sidebar"> 
-                    <div className="sidebar-items">
+                    <div className="sidebar-items " onClick={() => router.push('/admin/reportDashboard')}>
                         <div className="sidebar-item">
                             <Button icon="pi pi-chart-bar" className="p-button-text p-button-plain p-button-lg" />
                             <span>Dashboards</span>
