@@ -8,12 +8,12 @@ const withAuth = (WrappedComponent) => {
         const router = useRouter();
         // FIXME: We should create a admin-role in keycloak :)
         useEffect(() => {
-            if (!isAuthenticated && !router.pathname.startsWith('/admin')) {
+            if (!isAuthenticated ) {
                 router.push('/login');
             }
         }, [isAuthenticated, router]);
 
-        if (!isAuthenticated && !router.pathname.startsWith('/admin')) {
+        if (!isAuthenticated) {
             return null;
         }
 

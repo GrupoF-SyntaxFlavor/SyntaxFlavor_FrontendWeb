@@ -1,5 +1,6 @@
 import { AuthProvider } from "../../context/AuthContext";
 import { MenuProvider } from '../../context/MenuContext'; 
+import { UserProvider } from "../../context/UserContext";
 
 import "@/styles/globals.css";
 import "@/styles/sidebar.css";
@@ -17,7 +18,9 @@ export default function App({ Component, pageProps }) {
   return (
     <AuthProvider>
       <MenuProvider>
-      <Component {...pageProps} />
+        <UserProvider>
+          <Component {...pageProps} />
+        </UserProvider>
       </MenuProvider>
     </AuthProvider>
   );

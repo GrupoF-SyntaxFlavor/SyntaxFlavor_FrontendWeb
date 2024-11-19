@@ -1,4 +1,4 @@
-import React, { useState, useRef, useContext } from 'react';
+import React, { useState, useRef, useContext, useEffect  } from 'react';
 import { useRouter } from "next/router";
 import { InputText } from 'primereact/inputtext';
 import { Button } from 'primereact/button';
@@ -7,11 +7,11 @@ import { Toast } from 'primereact/toast';
 import { AuthContext } from '../../context/AuthContext';
 
 const LoginForm = () => {
+    const {  login, userRoles, isAuthenticated } = useContext(AuthContext); // Asegúrate de obtener userRoles del contexto
     const router = useRouter();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const { isAuthenticated, login } = useContext(AuthContext);
-    const toast = useRef(null); // Referencia para mostrar los mensajes emergentes
+    const toast = useRef(null);
 
     // Validación de correo
     const validateEmail = (email) => {
@@ -31,20 +31,29 @@ const LoginForm = () => {
             return;
         }
         // Si las validaciones pasan
-        console.log('Signing in with:', email)
+        console.log('Signing in with :', email)
         try {
-            const r = await login(email, password);
-            console.log('isAuthenticated:', r);
-            //console.log('authToken:', authToken);
-            if (r !== undefined && r !== null) { //FIXME: debe haber una mejor forma de hacer esto, pero ahora no hay tiempo
-                router.push('/kitchen/order'); // Redirigimos al home
-            } else {
-                toast.current.show({ severity: 'error', summary: 'Error', detail: 'Nombre de usuario o contraseña incorrectos', life: 3000 });
+            const response = await login(email, password);
+            if (!response) {
+                toast.current.show({ severity: 'error', summary: 'Error', detail: 'Nombre de usuario o contraseña incorrectos actualizado', life: 3000 });
             }
         } catch (error) {
             toast.current.show({ severity: 'error', summary: 'Error', detail: 'Error al iniciar sesión', life: 3000 });
         }
     };
+
+      // Efecto para redirigir según el rol cuando isAuthenticated y userRoles estén actualizados
+    useEffect(() => {
+        if (isAuthenticated) {
+            if (userRoles.includes("administrator")) {
+                router.push('/admin/kitchens');
+            } else if (userRoles.includes("kitchen")) {
+                router.push('/kitchen/order');
+            } else {
+                toast.current.show({ severity: 'error', summary: 'Error', detail: 'No tienes permisos para acceder', life: 3000 });
+            }
+        }
+    }, [isAuthenticated, userRoles]);
 
     return ( 
         <div className="flex align-items-center justify-content-center min-h-screen" style={styles.background}>
@@ -54,8 +63,8 @@ const LoginForm = () => {
             >
                 <div className="text-center mb-5">
                     <Image src="/sushi.png" alt="hyper" height={150} className="mb-3" />
-                    <div className="text-900 text-4xl font-medium mb-3">Bienvenido a SyntaxFlavor</div>
-                    <span className="text-600 font-medium line-height-3">Inicia tu sesión!</span>
+                    <div className="text-900 text-4xl font-medium mb-3">Bienvenido a SyntaxFlavor!</div>
+                    <span className="text-600 font-medium line-height-3">Inicia tu sesión</span>
                 </div>
                 <div>
                     <label htmlFor="email" className="block text-900 text-xl font-medium mb-2">Correo electrónico</label>

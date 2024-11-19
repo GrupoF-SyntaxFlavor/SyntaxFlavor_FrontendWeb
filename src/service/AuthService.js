@@ -6,8 +6,6 @@ export default class AuthService {
     //Método de login
     async login(email, password){
         try{
-            //console.log("Logging in with email and password", email, password); // erase later
-            console.log("sending to", `${this.BASE_URL}/api/v1/public/login`); // erase later
             const response = await fetch(`${this.BASE_URL}/api/v1/public/login`, {
                 method: 'POST',
                 headers: {

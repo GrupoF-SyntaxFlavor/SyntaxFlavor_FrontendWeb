@@ -61,13 +61,59 @@ const MenuProvider = ({ children }) => {
             console.error('Error changing menu item status:', error);
         }
     };
-    
+
+    const addMenuItem = async (formValues) => {
+        try {
+            const newItem = await menuService.createMenuItem(formValues, authToken);
+            setMenuItems(prevItems => [...prevItems, newItem]);
+        } catch (error) {
+            console.error('Error adding menu item:', error);
+        }
+    };
+
+    const updateMenuItem = async (menuItemId, formValues) => {
+        try {
+            const updatedItem = await menuService.updateMenuItem(menuItemId, formValues, authToken);
+            const updatedMenuItems = menuItems.map(item => {
+                if (item.id === updatedItem.id) {
+                    item = updatedItem;
+                }
+                return item;
+            });
+            setMenuItems(updatedMenuItems);
+        } catch (error) {
+            console.error('Error updating menu item:', error);
+        }
+    };
+
+    const deleteMenuItem = async (menuItemId) => {
+        try {
+            const response = await menuService.deleteMenuItem(menuItemId, authToken);
+
+            if (response.responseCode === 'MEN-005') {
+                // Eliminar el elemento del estado solo si la respuesta es exitosa
+                setMenuItems(prevItems => prevItems.filter(item => item.id !== menuItemId));
+                console.log('Menu item deleted successfully.');
+                return 200; // Indica éxito
+            } else if (response.responseCode === 'MEN-409') {
+                // Muestra el mensaje de error si hay un conflicto
+                console.error(`Error: ${response.errorMessage}`);
+                return 409; // Indica conflicto
+            }
+        } catch (error) {
+            console.error('Error deleting menu item:', error);
+            return 500; // Indica error del servidor
+        }
+    };
 
     return (
         <MenuContext.Provider value={{ 
             menuItems,
             loadMenuItems,
+            addMenuItem,
+            updateMenuItem,
             changeMenuItemStatus,
+            deleteMenuItem,
             first,
             setFirst,
             rows,

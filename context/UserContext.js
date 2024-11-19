@@ -8,28 +8,51 @@ const UserContext = createContext();
 // Create a provider component
 const UserProvider = ({ children }) => {
     const [kitchenUsers, setKitchenUsers] = useState([]);
-    const [pageNumber, setPageNumber] = useState(0);
-    const [totalPages, setTotalPages] = useState(10); // TODO: This value must be set from the service
+    const [page, setPage] = useState(0);
+    const [totalRecords, settotalRecords] = useState(0);
+    const [first, setFirst] = useState(0);
     const [rows, setRows] = useState(10); // Cantidad de filas por página
-    const [sortBy, setSortBy] = useState('name');
-    const [sortOrder, setSortOrder] = useState('asc');
+    const [sortBy, setSortBy] = useState('id');
+    const [sortOrder, setSortOrder] = useState('desc');
 
     const { authToken } = useContext(AuthContext);
 
     const userService = new UserService();
 
+    //console.log("authToken in userContext: ", authToken);
+
     const loadKitchenUsers = async () => {
         try {
-            console.log('Fetching kitchen users with token', authToken);
-            const response = await userService.getKitchenUsers(pageNumber, rows, sortBy, sortOrder, authToken);
-            setKitchenUsers(response.data);
+            //console.log("solicitud: ", page, rows, sortBy, sortOrder, authToken)
+            const response = await userService.getKitchenUsers(page, rows, sortBy, sortOrder, authToken);
+            //console.log("response, UserContext: ", response)
+            setKitchenUsers(response.content);
+            settotalRecords(response.totalElements);
+            if(response.first) {
+                setFirst(0);
+            }
         } catch (error) {
-            console.error('Failed to load kitchen users', error);
+            console.error('Error loading menu items:', error);
         }
     };
 
     return (
-        <UserContext.Provider value={{ kitchenUsers, loadKitchenUsers, setPageNumber, setRows, setSortBy, setSortOrder, totalPages }}>
+        <UserContext.Provider value={{ 
+            kitchenUsers, 
+            loadKitchenUsers, 
+            first,
+            setFirst,
+            rows,
+            setRows, 
+            totalRecords, 
+            settotalRecords,
+            page,
+            setPage,
+            sortBy,
+            setSortBy,
+            sortOrder, 
+            setSortOrder,
+            }}>
             {children}
         </UserContext.Provider>
     );
