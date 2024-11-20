@@ -5,7 +5,7 @@ export function getFirstDayOfCurrentMonth() {
 
 export function get30DaysAgoDate() {
   const now = new Date();
-  return new Date(now.setDate(now.getDate() - 30));
+  return new Date(now.setDate(now.getDate() - 100));
 }
 
 // Función para formatear una fecha en formato ISO con hora de inicio o fin del día

@@ -9,11 +9,10 @@ import { AuthContext } from "../../../context/AuthContext";
 const ReportDashboard = () => {
     const [ordersKPI, setOrdersKPI] = useState({});
     const [orderKPIChartOptions, setOrderKPIChartOptions] = useState({});
+
     const [weeklySales, setWeeklySales] = useState({});
     const [mostSoldItem, setMostSoldItem] = useState({});
-    const [totalOrders, setTotalOrders] = useState({});
-    const [acceptedOrders, setAcceptedOrders] = useState({});
-    const [cancelledOrders, setCancelledOrders] = useState({});
+
 
     const { authToken } = useContext(AuthContext);
 
@@ -24,9 +23,9 @@ const ReportDashboard = () => {
             .then(data => {
                 setOrdersKPI(data);
                 console.log(ordersKPI);
-                setAcceptedOrders(ordersKPI.totalAcceptedOrders);
-                setCancelledOrders(ordersKPI.totalCancelledOrders);
-                setTotalOrders(ordersKPI.totalOrders);
+                const acceptedOrders = data.totalAcceptedOrders || 0;
+                const cancelledOrders = data.totalCancelledOrders || 0;
+                const totalOrders = acceptedOrders + cancelledOrders;
 
                 setOrderKPIChartOptions({
                     chart: {
@@ -157,7 +156,6 @@ const ReportDashboard = () => {
                         ) : (
                             <div>Cargando datos...</div>
                         )}
-                        {JSON.stringify(ordersKPI)}
                     </div>
                 </div>
             </div>
