@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext } from "react";
 import Highcharts from "highcharts";
 import HighchartsReact from "highcharts-react-official";
 import ReportService from "@/service/ReportService";
+import RoleBasedSidebar from '@/components/RoleBasedSidebar';
 import { AuthContext } from "../../../context/AuthContext";
 
 const ReportDashboard = () => {
@@ -55,7 +56,7 @@ const ReportDashboard = () => {
         yAxis: {
             min: 0,
             title: {
-                text: "Sales (USD)",
+                text: "Sales (Bs.)",
             },
         },
         series: [
@@ -70,33 +71,35 @@ const ReportDashboard = () => {
     };
 
     return (
-        <div className="report-dashboard">
-            <div className="column">
-                <h2>Weekly Sales</h2>
-                {Object.keys(weeklySales).length > 0 ? (
-                    <HighchartsReact
-                        highcharts={Highcharts}
-                        options={weeklySalesChartOptions}
-                    />
-                ) : (
-                    <div>Loading Weekly Sales Data...</div>
-                )}
-            </div>
-            <div className="column">
-                <h2>Most Sold Item</h2>
-                <div className="data-placeholder">Grafico de barras horizontal</div>
-                <div className="data-placeholder">
-                    {JSON.stringify(mostSoldItem)}
+        <RoleBasedSidebar>
+            <div className="report-dashboard">
+                <div className="column">
+                    <h2>Weekly Sales</h2>
+                    {Object.keys(weeklySales).length > 0 ? (
+                        <HighchartsReact
+                            highcharts={Highcharts}
+                            options={weeklySalesChartOptions}
+                        />
+                    ) : (
+                        <div>Loading Weekly Sales Data...</div>
+                    )}
+                </div>
+                <div className="column">
+                    <h2>Most Sold Item</h2>
+                    <div className="data-placeholder">Grafico de barras horizontal</div>
+                    <div className="data-placeholder">
+                        {JSON.stringify(mostSoldItem)}
+                    </div>
+                </div>
+                <div className="column">
+                    <h2>Completed Orders</h2>
+                    <div className="data-placeholder">Grafico de torta</div>
+                    <div className="data-placeholder">
+                        {JSON.stringify(ordersKPI)}
+                    </div>
                 </div>
             </div>
-            <div className="column">
-                <h2>Completed Orders</h2>
-                <div className="data-placeholder">Grafico de torta</div>
-                <div className="data-placeholder">
-                    {JSON.stringify(ordersKPI)}
-                </div>
-            </div>
-        </div>
+        </RoleBasedSidebar>
     );
 };
 
