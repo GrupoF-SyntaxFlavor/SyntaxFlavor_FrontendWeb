@@ -26,6 +26,7 @@ export default class ReportService {
             } 
 
             const data = await response.json();
+            console.log("mis ordenesss: ",data);
             return data.payload;  // Retornamos el contenido del payload
         } catch (error) {
             console.error("Error fetching orders KPI", error);

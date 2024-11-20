@@ -8,8 +8,11 @@ import { AuthContext } from "../../../context/AuthContext";
 
 const ReportDashboard = () => {
     const [ordersKPI, setOrdersKPI] = useState({});
+    const [orderKPIChartOptions, setOrderKPIChartOptions] = useState({});
+
     const [weeklySales, setWeeklySales] = useState({});
     const [mostSoldItems, setMostSoldItems] = useState([]);
+
 
     const { authToken } = useContext(AuthContext);
 
@@ -19,6 +22,54 @@ const ReportDashboard = () => {
         reportService.getOrdersKPI(authToken)
             .then(data => {
                 setOrdersKPI(data);
+                console.log(ordersKPI);
+                const acceptedOrders = data.totalAcceptedOrders || 0;
+                const cancelledOrders = data.totalCancelledOrders || 0;
+                const totalOrders = data.totalOrders || 0;
+                const pendingOrders = totalOrders-acceptedOrders-cancelledOrders;
+
+                setOrderKPIChartOptions({
+                    chart: {
+                        plotBackgroundColor: null,
+                        plotBorderWidth: null,
+                        plotShadow: false,
+                        type: 'pie'
+                    },
+                    title: {
+                        text: 'Reporte de Órdenes Aceptadas y Canceladas',
+                        align: 'center'
+                    },
+                    tooltip: {
+                        pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+                    },
+                    accessibility: {
+                        point: {
+                            valueSuffix: '%'
+                        }
+                    },
+                    plotOptions: {
+                        pie: {
+                            allowPointSelect: true,
+                            cursor: 'pointer',
+                            borderRadius: 5,
+                            dataLabels: {
+                                enabled: true,
+                                format: '<b>{point.name}</b>: {point.y} ({point.percentage:.1f}%)',
+                                distance: -50
+                            }
+                        }
+                    },
+                    series: [
+                        {
+                            name: "Porcentaje de órdenes",
+                            data: [
+                                { name: "Aceptadas", y: acceptedOrders },
+                                { name: "Canceladas", y: cancelledOrders },
+                                { name: "Pendientes", y: pendingOrders }
+                            ],
+                        }
+                    ]
+                });
             })
             .catch(error => {
                 console.error("Failed to fetch orders KPI:", error);
@@ -208,10 +259,16 @@ const ReportDashboard = () => {
                 )}
                 </div> */}
                 <div className="column">
-                    <h2>Completed Orders</h2>
-                    <div className="data-placeholder">Grafico de torta</div>
+                    <h2>Órdenes</h2>
                     <div className="data-placeholder">
-                        {JSON.stringify(ordersKPI)}
+                        { Object.keys(ordersKPI).length > 0 ? (
+                            <HighchartsReact
+                                highcharts={Highcharts}
+                                options={orderKPIChartOptions}
+                            />
+                        ) : (
+                            <div>Cargando datos...</div>
+                        )}
                     </div>
                 </div>
             </div>
