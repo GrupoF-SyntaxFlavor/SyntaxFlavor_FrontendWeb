@@ -1,5 +1,6 @@
 import React, { createContext, useState, useEffect } from 'react';
 import AuthService from '@/service/AuthService';
+import { setCookie, getCookie, removeCookie } from 'cookies-next';
 
 const AuthContext = createContext();
 
@@ -12,8 +13,9 @@ const AuthProvider = ({ children }) => {
     const authService = new AuthService();
 
     useEffect(() => {
-        const token = localStorage.getItem('authToken');
-        //console.log("authtoken", token)
+        // const token = localStorage.getItem('authToken');
+        const token = getCookie('authToken');
+        console.log("authtoken", token)
         if (token) {
             setAuthToken(token);
             setIsAuthenticated(true);
@@ -32,6 +34,14 @@ const AuthProvider = ({ children }) => {
         try {
             const response = await authService.login(email, password);
             const token = response.access_token;
+
+            console.log("response",response);	            
+            // localStorage.setItem('authToken', response.access_token); // Guardar en localStorage
+            setCookie('authToken', response.access_token, { httpOnly: true, secure: false });	            setAuthToken(response.access_token);
+            // console.log("authToken",response.access_token);	
+            // setAuthToken(response.access_token); 	
+            // console.log("setAuthToken",response.access_token);	
+            // setIsAuthenticated(true);
 
             if (token) {
                 setAuthToken(token);
@@ -67,6 +77,7 @@ const AuthProvider = ({ children }) => {
         setUserRoles([]);
         setUserInfo({});
         localStorage.removeItem("authToken"); 
+        removeCookie('authToken');
     };
 
     return (
