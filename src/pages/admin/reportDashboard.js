@@ -25,7 +25,8 @@ const ReportDashboard = () => {
                 console.log(ordersKPI);
                 const acceptedOrders = data.totalAcceptedOrders || 0;
                 const cancelledOrders = data.totalCancelledOrders || 0;
-                const totalOrders = acceptedOrders + cancelledOrders;
+                const totalOrders = data.totalOrders || 0;
+                const pendingOrders = totalOrders-acceptedOrders-cancelledOrders;
 
                 setOrderKPIChartOptions({
                     chart: {
@@ -63,7 +64,8 @@ const ReportDashboard = () => {
                             name: "Porcentaje de órdenes",
                             data: [
                                 { name: "Aceptadas", y: acceptedOrders },
-                                { name: "Canceladas", y: cancelledOrders }
+                                { name: "Canceladas", y: cancelledOrders },
+                                { name: "Pendientes", y: pendingOrders }
                             ],
                         }
                     ]
