@@ -1,10 +1,12 @@
 import React, { useState, useEffect, useContext } from "react";
+import Highcharts from "highcharts";
+import HighchartsReact from "highcharts-react-official";
 import ReportService from "@/service/ReportService";
 import { AuthContext } from "../../../context/AuthContext";
 
 const ReportDashboard = () => {
     const [ordersKPI, setOrdersKPI] = useState({});
-    const [weeklySales, setWeeklySales] = useState([]);
+    const [weeklySales, setWeeklySales] = useState({});
     const [mostSoldItem, setMostSoldItem] = useState({});
 
     const { authToken } = useContext(AuthContext);
@@ -35,17 +37,50 @@ const ReportDashboard = () => {
             .catch(error => {
                 console.error("Failed to fetch most sold item:", error);
             });
-    }, []);
+    }, [authToken]);
 
+    const weeklySalesChartOptions = {
+        chart: {
+            type: "column",
+        },
+        title: {
+            text: "Weekly Sales Report",
+        },
+        xAxis: {
+            categories: Object.keys(weeklySales), // Semanas
+            title: {
+                text: "Weeks",
+            },
+        },
+        yAxis: {
+            min: 0,
+            title: {
+                text: "Sales (USD)",
+            },
+        },
+        series: [
+            {
+                name: "Sales",
+                data: Object.values(weeklySales), // Ventas
+            },
+        ],
+        credits: {
+            enabled: false,
+        },
+    };
 
     return (
         <div className="report-dashboard">
             <div className="column">
                 <h2>Weekly Sales</h2>
-                <div className="data-placeholder">Gráfico de Barras</div>
-                <div className="data-placeholder">
-                    {JSON.stringify(weeklySales)}
-                </div>
+                {Object.keys(weeklySales).length > 0 ? (
+                    <HighchartsReact
+                        highcharts={Highcharts}
+                        options={weeklySalesChartOptions}
+                    />
+                ) : (
+                    <div>Loading Weekly Sales Data...</div>
+                )}
             </div>
             <div className="column">
                 <h2>Most Sold Item</h2>
