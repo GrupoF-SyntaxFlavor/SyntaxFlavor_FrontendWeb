@@ -45,23 +45,23 @@ const ReportDashboard = () => {
             type: "column",
         },
         title: {
-            text: "Weekly Sales Report",
+            text: "Reporte de Ventas Semanales (7 semanas)",
         },
         xAxis: {
             categories: Object.keys(weeklySales), // Semanas
             title: {
-                text: "Weeks",
+                text: "Semanas",
             },
         },
         yAxis: {
             min: 0,
             title: {
-                text: "Sales (Bs.)",
+                text: "Ventas (Bs.)",
             },
         },
         series: [
             {
-                name: "Sales",
+                name: "Ventas",
                 data: Object.values(weeklySales), // Ventas
             },
         ],
