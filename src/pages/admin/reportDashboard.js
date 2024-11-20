@@ -3,6 +3,7 @@ import Highcharts from "highcharts";
 import HighchartsReact from "highcharts-react-official";
 import ReportService from "@/service/ReportService";
 import RoleBasedSidebar from '@/components/RoleBasedSidebar';
+import { Card } from 'primereact/card';
 import { AuthContext } from "../../../context/AuthContext";
 
 const ReportDashboard = () => {
@@ -73,8 +74,12 @@ const ReportDashboard = () => {
     return (
         <RoleBasedSidebar>
             <div className="report-dashboard">
+
+            <Card title="Reportes del Restaurante"></Card>
                 <div className="column">
-                    <h2>Weekly Sales</h2>
+                    <h2 className="p-1">Ventas Semanales</h2>
+                    {/* <Card title="Ventas Semanales"></Card>
+                    <br/> */}
                     {Object.keys(weeklySales).length > 0 ? (
                         <HighchartsReact
                             highcharts={Highcharts}
