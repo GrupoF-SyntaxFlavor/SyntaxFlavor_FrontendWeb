@@ -9,7 +9,7 @@ import { AuthContext } from "../../../context/AuthContext";
 const ReportDashboard = () => {
     const [ordersKPI, setOrdersKPI] = useState({});
     const [weeklySales, setWeeklySales] = useState({});
-    const [mostSoldItem, setMostSoldItem] = useState({});
+    const [mostSoldItems, setMostSoldItems] = useState([]);
 
     const { authToken } = useContext(AuthContext);
 
@@ -34,7 +34,7 @@ const ReportDashboard = () => {
 
         reportService.getMostSoldItems(authToken)
             .then(data => {
-                setMostSoldItem(data);
+                setMostSoldItems(data);
             })
             .catch(error => {
                 console.error("Failed to fetch most sold item:", error);
@@ -71,6 +71,90 @@ const ReportDashboard = () => {
         },
     };
 
+    const barChartOptionsQuantity = {
+        chart: {
+          type: "bar",
+        },
+        title: {
+          text: "Platillos Más Vendidos (Cantidad)",
+        },
+        xAxis: {
+          categories: mostSoldItems.map((item) => item.menuItemName), // Nombres de los platillos
+          title: {
+            text: null,
+          },
+        },
+        yAxis: {
+          min: 0,
+          title: {
+            text: "Cantidad Vendida",
+            align: "high",
+          },
+        },
+        series: [
+          {
+            name: "Cantidad",
+            data: mostSoldItems.map((item) => item.totalQuantity), // Cantidades
+          },
+        ],
+        credits: {
+          enabled: false,
+        },
+      };
+    
+      const barChartOptionsRevenue = {
+        chart: {
+          type: "bar",
+        },
+        title: {
+          text: "Platillos Más Vendidos (Ingresos)",
+        },
+        xAxis: {
+          categories: mostSoldItems.map((item) => item.menuItemName), // Nombres de los platillos
+          title: {
+            text: null,
+          },
+        },
+        yAxis: {
+          min: 0,
+          title: {
+            text: "Ingresos (Bs.)",
+            align: "high",
+          },
+        },
+        series: [
+          {
+            name: "Ingresos",
+            data: mostSoldItems.map((item) => item.totalPrice), // TotalPrice
+          },
+        ],
+        credits: {
+          enabled: false,
+        },
+      };
+    
+      /* const pieChartOptions = {
+        chart: {
+          type: "pie",
+        },
+        title: {
+          text: "Distribución de Ventas por Platillo",
+        },
+        series: [
+          {
+            name: "Porcentaje",
+            colorByPoint: true,
+            data: mostSoldItems.map((item) => ({
+              name: item.menuItemName,
+              y: item.percentage * 100, // Convertimos el porcentaje a un valor entre 0 y 100
+            })),
+          },
+        ],
+        credits: {
+          enabled: false,
+        },
+      };
+ */
     return (
         <RoleBasedSidebar>
             <div className="report-dashboard">
@@ -89,13 +173,40 @@ const ReportDashboard = () => {
                         <div>Loading Weekly Sales Data...</div>
                     )}
                 </div>
+                <Card title="Reportes del Restaurante"></Card>
                 <div className="column">
-                    <h2>Most Sold Item</h2>
-                    <div className="data-placeholder">Grafico de barras horizontal</div>
-                    <div className="data-placeholder">
-                        {JSON.stringify(mostSoldItem)}
-                    </div>
+                <h2>Platillos Más Vendidos (Cantidad)</h2>
+                {mostSoldItems.length > 0 ? (
+                    <HighchartsReact
+                    highcharts={Highcharts}
+                    options={barChartOptionsQuantity}
+                    />
+                ) : (
+                    <div>Cargando datos...</div>
+                )}
                 </div>
+                <div className="column">
+                <h2>Platillos Más Vendidos (Ingresos)</h2>
+                {mostSoldItems.length > 0 ? (
+                    <HighchartsReact
+                    highcharts={Highcharts}
+                    options={barChartOptionsRevenue}
+                    />
+                ) : (
+                    <div>Cargando datos...</div>
+                )}
+                </div>
+                {/* <div className="column">
+                <h2>Distribución de Ventas</h2>
+                {mostSoldItems.length > 0 ? (
+                    <HighchartsReact
+                    highcharts={Highcharts}
+                    options={pieChartOptions}
+                    />
+                ) : (
+                    <div>Cargando datos...</div>
+                )}
+                </div> */}
                 <div className="column">
                     <h2>Completed Orders</h2>
                     <div className="data-placeholder">Grafico de torta</div>
