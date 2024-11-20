@@ -15,6 +15,7 @@ import { Dropdown } from 'primereact/dropdown';
 import OrderService from '@/service/OrderService';
 import withAuth from '@/components/misc/withAuth';
 import { AuthContext } from '../../../context/AuthContext';
+import { formatDate, getCurrentDayRange } from "../../../util/dateUtils";
 
 function OrdersPage() {
     const { authToken } = useContext(AuthContext);
@@ -82,16 +83,13 @@ function OrdersPage() {
         }
     };
 
-    //FIXME: Agregar un util para el formato de fechas
     useEffect(() => {
         if (authToken) {
-            const selectedDates = dates ? dates : getCurrentDayRange();  // Usa las fechas seleccionadas o el rango del día actual por defecto
+            const selectedDates = dates ? dates : getCurrentDayRange();
             const formattedDates = [
-                formatDate(new Date(selectedDates[0]), true),  // Formatea el startDate (00:00:00)
-                formatDate(new Date(selectedDates[1]), false)  // Formatea el endDate (23:59:59)
+                formatDate(new Date(selectedDates[0]), true),
+                formatDate(new Date(selectedDates[1]), false)
             ];
-    
-            //console.log('Fechas a utilizar:', formattedDates);  // Debug para verificar el formato
             loadOrders(authToken, first / rows, formattedDates);
         }
     }, [authToken, first, rows, status, dates, selectedItem]);
@@ -102,19 +100,6 @@ function OrdersPage() {
         const endOfDay = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 23, 59, 59);
         return [startOfDay, endOfDay];
     };
-
-    const formatDate = (date, isStartDate = true) => {
-        const year = date.getFullYear();
-        const month = String(date.getMonth() + 1).padStart(2, '0');
-        const day = String(date.getDate()).padStart(2, '0');
-    
-        // Si es startDate, ponemos la hora en 00:00:00, si es endDate, en 23:59:59
-        const hours = isStartDate ? '00' : '23';
-        const minutes = isStartDate ? '00' : '59';
-        const seconds = isStartDate ? '00' : '59';
-        
-        return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
-    };
      
     const handlePageChange = (event) => {
         setFirst(event.first);  // Actualizamos el primer registro visible
@@ -122,29 +107,42 @@ function OrdersPage() {
     };
 
     const handleCompleteOrder = async (orderId) => {
-        setLoading(true);
+        setLoading(true); // Activa el estado de carga
         try {
             const result = await orderService.completeOrder(orderId, authToken);
-            if (result.responseCode == 'ORD-003') {
-                const newFirst = (orders.length === 1 && first > 0) ? first - rows : first; 
-                const selectedDates = dates ? dates : getCurrentDayRange();  // Usa las fechas seleccionadas o el rango del día actual por defecto
+            
+            if (result.responseCode === 'ORD-003') {
+                // Ajusta `first` si la página queda vacía después de completar una orden
+                const newFirst = (orders.length === 1 && first > 0) ? first - rows : first;
+    
+                // Usa el rango de fechas seleccionado o el rango del día actual
+                const selectedDates = dates || getCurrentDayRange();
+                
+                // Formatea las fechas para enviarlas al servicio
                 const formattedDates = [
-                    formatDate(new Date(selectedDates[0]), true),  // Formatea el startDate (00:00:00)
-                    formatDate(new Date(selectedDates[1]), false)  // Formatea el endDate (23:59:59)
+                    formatDate(new Date(selectedDates[0]), true),  // Inicio del día
+                    formatDate(new Date(selectedDates[1]), false) // Fin del día
                 ];
+    
+                // Recarga las órdenes después de completar la actual
                 await loadOrders(authToken, newFirst / rows, formattedDates);
+    
+                // Muestra un mensaje de éxito
                 toast.current.show({ severity: 'success', summary: 'Éxito', detail: 'Orden completada exitosamente', life: 2000 });
             } else {
+                // Lanza un error si la respuesta del servicio no es exitosa
                 throw new Error(result.message);
             }
         } catch (error) {
-            console.error('Error canceling the order:', error);
+            // Maneja errores y muestra un mensaje correspondiente
+            console.error('Error completing the order:', error);
             setError('Error al completar la orden: ' + error.message);
             toast.current.show({ severity: 'error', summary: 'Error', detail: error.message || 'Error completando la orden', life: 5000 });
         } finally {
-            setLoading(false);
+            setLoading(false); // Desactiva el estado de carga
         }
     };
+
     const showConfirmComplete = (orderId) => {
         confirmDialog({
             message: '¿Marcar orden como completada?',
