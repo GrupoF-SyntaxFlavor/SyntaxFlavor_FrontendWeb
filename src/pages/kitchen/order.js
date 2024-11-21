@@ -343,8 +343,5 @@ const styles = {
     calendar: {
         marginLeft: '10px', 
     },
-    ml2: {
-        marginLeft: '8px',
-    }
 };
 export default withAuth(OrdersPage);

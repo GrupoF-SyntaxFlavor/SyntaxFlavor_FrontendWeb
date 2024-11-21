@@ -1,5 +1,3 @@
-import { get30DaysAgoDate } from "../../util/dateUtils";
-
 export default class ReportService {
     constructor() {
         this.BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
@@ -9,11 +7,11 @@ export default class ReportService {
     // Método para obtener el KPI de órdenes
     async getOrdersKPI(
         token,
-        startDate = get30DaysAgoDate(),
-        endDate = new Date()
+        startDate,
+        endDate
     ) {
         try {
-            const response = await fetch(`${this.BASE_URL}/api/v1/report/order-kpi?startDate=${startDate.toISOString().slice(0, 19)}&endDate=${endDate.toISOString().slice(0, 19)}`, {
+            const response = await fetch(`${this.BASE_URL}/api/v1/report/order-kpi?startDate=${startDate}&endDate=${endDate}`, {
                 method: 'GET',
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -26,7 +24,7 @@ export default class ReportService {
             } 
 
             const data = await response.json();
-            console.log("mis ordenesss: ",data);
+            console.log("Reporte de Ordenes: ",data);
             return data.payload;  // Retornamos el contenido del payload
         } catch (error) {
             console.error("Error fetching orders KPI", error);
@@ -74,12 +72,12 @@ export default class ReportService {
      */
     async getMostSoldItems(
         token,
-        startDate = get30DaysAgoDate(),
-        endDate = new Date(),
+        startDate,
+        endDate,
         top = 10
     ) {
         try {
-            const response = await fetch(`${this.BASE_URL}/api/v1/report/menu/most-sold?startDate=${startDate.toISOString().slice(0, 19)}&endDate=${endDate.toISOString().slice(0, 19)}&top=${top}`, {
+            const response = await fetch(`${this.BASE_URL}/api/v1/report/menu/most-sold?startDate=${startDate}&endDate=${endDate}&top=${top}`, {
                 method: 'GET',
                 headers: {
                     'Authorization': `Bearer ${token}`,
