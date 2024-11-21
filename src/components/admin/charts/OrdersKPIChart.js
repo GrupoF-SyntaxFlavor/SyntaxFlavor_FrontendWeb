@@ -1,8 +1,13 @@
 import React from "react";
 import Highcharts from "highcharts";
 import HighchartsReact from "highcharts-react-official";
+import Loader from "../../../components/misc/Loader";
 
 const OrdersKPIChart = ({ ordersKPI }) => {
+    if (!ordersKPI) {
+        return <Loader />;
+    }
+
     const acceptedOrders = ordersKPI.totalAcceptedOrders || 0;
     const cancelledOrders = ordersKPI.totalCancelledOrders || 0;
     const totalOrders = ordersKPI.totalOrders || 0;
@@ -13,28 +18,28 @@ const OrdersKPIChart = ({ ordersKPI }) => {
             plotBackgroundColor: null,
             plotBorderWidth: null,
             plotShadow: false,
-            type: 'pie',
+            type: "pie",
         },
         title: {
-            text: 'Reporte de Órdenes Aceptadas y Canceladas',
-            align: 'center',
+            text: "Reporte de Órdenes Aceptadas y Canceladas",
+            align: "center",
         },
         tooltip: {
-            pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>',
+            pointFormat: "{series.name}: <b>{point.percentage:.1f}%</b>",
         },
         accessibility: {
             point: {
-                valueSuffix: '%',
+                valueSuffix: "%",
             },
         },
         plotOptions: {
             pie: {
                 allowPointSelect: true,
-                cursor: 'pointer',
+                cursor: "pointer",
                 borderRadius: 5,
                 dataLabels: {
                     enabled: true,
-                    format: '<b>{point.name}</b>: {point.y} ({point.percentage:.1f}%)',
+                    format: "<b>{point.name}</b>: {point.y} ({point.percentage:.1f}%)",
                     distance: -50,
                 },
             },
@@ -52,13 +57,7 @@ const OrdersKPIChart = ({ ordersKPI }) => {
     };
 
     return (
-        <div>
-            {Object.keys(ordersKPI).length > 0 ? (
-                <HighchartsReact highcharts={Highcharts} options={chartOptions} />
-            ) : (
-                <div>Cargando datos...</div>
-            )}
-        </div>
+        <HighchartsReact highcharts={Highcharts} options={chartOptions} />
     );
 };
 
