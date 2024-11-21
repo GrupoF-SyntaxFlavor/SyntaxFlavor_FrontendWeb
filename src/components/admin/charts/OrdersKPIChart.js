@@ -13,6 +13,9 @@ const OrdersKPIChart = ({ ordersKPI }) => {
     const totalOrders = ordersKPI.totalOrders || 0;
     const pendingOrders = totalOrders - acceptedOrders - cancelledOrders;
 
+    // Array de colores
+    const colorsArray = ["#03A64A", "#FF5F5D", "#DBF227"]; // Aceptadas, Canceladas, Pendientes
+
     const chartOptions = {
         chart: {
             plotBackgroundColor: null,
@@ -40,7 +43,11 @@ const OrdersKPIChart = ({ ordersKPI }) => {
                 dataLabels: {
                     enabled: true,
                     format: "<b>{point.name}</b>: {point.y} ({point.percentage:.1f}%)",
-                    distance: -50,
+                    distance: 10,
+                    style: {
+                        fontSize: "14px", // Cambia el tamaño de la letra aquí
+                        fontWeight: "light",
+                    },
                 },
             },
         },
@@ -48,12 +55,15 @@ const OrdersKPIChart = ({ ordersKPI }) => {
             {
                 name: "Porcentaje de órdenes",
                 data: [
-                    { name: "Aceptadas", y: acceptedOrders },
-                    { name: "Canceladas", y: cancelledOrders },
-                    { name: "Pendientes", y: pendingOrders },
+                    { name: "Aceptadas", y: acceptedOrders, color: colorsArray[0] },
+                    { name: "Canceladas", y: cancelledOrders, color: colorsArray[1] },
+                    { name: "Pendientes", y: pendingOrders, color: colorsArray[2] },
                 ],
             },
         ],
+        credits: {
+            enabled: false,
+        },
     };
 
     return (

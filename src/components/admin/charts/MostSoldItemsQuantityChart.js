@@ -3,6 +3,8 @@ import Highcharts from "highcharts";
 import HighchartsReact from "highcharts-react-official";
 
 const MostSoldItemsQuantityChart = ({ mostSoldItems }) => {
+    const colorsArray = ["#015958", "#04BF8A", "#008F8C", "#023535",  "#03A64A"]; // Array de colores
+
     const barChartOptionsQuantity = {
         chart: {
             type: "bar",
@@ -15,6 +17,11 @@ const MostSoldItemsQuantityChart = ({ mostSoldItems }) => {
             title: {
                 text: null,
             },
+            labels: {
+                style: {
+                    fontSize: "15px", 
+                },
+            },
         },
         yAxis: {
             min: 0,
@@ -26,11 +33,17 @@ const MostSoldItemsQuantityChart = ({ mostSoldItems }) => {
         series: [
             {
                 name: "Cantidad",
-                data: mostSoldItems.map((item) => item.totalQuantity), // Cantidades
+                data: mostSoldItems.map((item, index) => ({
+                    y: item.totalQuantity,
+                    color: colorsArray[index % colorsArray.length], // Asignar color cíclico
+                })),
             },
         ],
         credits: {
             enabled: false,
+        },
+        legend: {
+            enabled: false, // Oculta la leyenda
         },
     };
 

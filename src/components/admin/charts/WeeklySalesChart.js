@@ -3,6 +3,9 @@ import Highcharts from "highcharts";
 import HighchartsReact from "highcharts-react-official";
 
 const WeeklySalesChart = ({ weeklySales }) => {
+    // Array de colores para las 7 semanas
+    const colorsArray = ["#1f77b4", "#38184C", "#04BF8A", "#DBF227", "#015958", "#03A64A","#005C53",];
+
     const weeklySalesChartOptions = {
         chart: {
             type: "column",
@@ -25,11 +28,17 @@ const WeeklySalesChart = ({ weeklySales }) => {
         series: [
             {
                 name: "Ventas",
-                data: Object.values(weeklySales), // Ventas
+                data: Object.values(weeklySales).map((value, index) => ({
+                    y: value, // Valor de la barra
+                    color: colorsArray[index % colorsArray.length], // Asigna un color del array
+                })),
             },
         ],
         credits: {
             enabled: false,
+        },
+        legend: {
+            enabled: false, // Oculta la leyenda
         },
     };
 
